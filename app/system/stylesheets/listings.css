@@ -1,0 +1,63 @@
+/**
+ * Page header
+ * ------------------------------------
+*/
+
+header.styled.all {
+	border-top-color: #000000;
+}
+
+header.styled.all h1 {
+	background: url(../images/icons/book.png) no-repeat #5C5C5C;
+	background-position: 7px 6px;
+	border-color: #3D3D3D;
+	color: #FFFFFF;
+	padding-left: 70px;
+}
+
+header.styled.all h2 {
+	color: #FFFFFF;
+}
+
+/**
+ * Unordered list of book categories
+ * ------------------------------------
+*/
+
+ul.listing {
+	list-style: none;
+	padding: 0px;
+}
+
+ul.listing li {
+	display:inline-block;
+	padding-bottom: 15px;
+	width: 320px;
+}
+
+ul.listing li img {
+	display:inline;
+	float: left;
+}
+
+ul.listing li a.title {
+	color: #3D3D3D;
+	display: inline-block;
+	font-weight: bold;
+	padding: 7px 0px 0px 5px;
+	vertical-align: top;
+}
+
+ul.listing li span.description {
+	display: inline-block;
+	float: right;
+	font-size: 11px;
+	padding-top: 7px;
+	vertical-align: top;
+	width: 187px;
+}
+
+ul.listing li a.buttonLink, ul.listing li span.buttonLink {
+	float: left;
+	margin-left: 4px;
+}

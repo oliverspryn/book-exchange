@@ -1,0 +1,436 @@
+/**
+ * General styles
+ * ------------------------------------
+*/
+
+.tooltip {
+	-moz-box-shadow: 0 0 10px #000000;
+	-ms-box-shadow: 0 0 10px #000000;
+	-o-box-shadow: 0 0 10px #000000;
+	-webkit-box-shadow: 0 0 10px #000000;
+    background-color: #000000;
+    border: 1px solid #FFFFFF;
+	box-shadow: 0 0 10px #000000;
+	color: #FFFFFF;
+	display: none;
+	font-size: 12px;
+    padding: 10px 15px;
+    width: 200px;
+    text-align: left;
+	z-index: 10;
+}
+
+/**
+ * Sell books dialog suggestion
+ * ------------------------------------
+*/
+
+section.dialog.suggestions div.content {
+	overflow: hidden;
+}
+
+section.dialog.suggestions div.content div h2 {
+	margin-top: 0px;
+}
+
+section.dialog.suggestions div.content div p {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0px 0px 25px 0px;
+	padding-top: 10px;
+}
+
+section.dialog.suggestions div.content div {
+	display: inline-block;
+	max-width: 23%;
+	padding-right: 15px;
+	vertical-align: top;
+}
+
+section.dialog.suggestions div.content div span {
+	display: block;
+	font-size: 12px;
+	padding-bottom: 7px;
+}
+
+section.dialog.suggestions div.content div.imagePreview {
+	background: url(../images/icons/sub_steps.png) no-repeat;
+	background-position: -79px 7px;
+	padding-left: 50px;
+}
+
+section.dialog.suggestions div.content div.imagePreview img {
+	max-width: 130px;
+}
+
+section.dialog.suggestions div.content div.bookInfo {
+	background: url(../images/icons/sub_steps.png) no-repeat;
+	background-position: -39px -48px;
+	padding-left: 50px;
+}
+
+section.dialog.suggestions div.content div.bookInfo span strong {
+	display: inline-block;
+	width: 50px;
+}
+
+section.dialog.suggestions div.content div.classInfo {
+	background: url(../images/icons/sub_steps.png) no-repeat;
+	background-position: 0px -102px;
+	max-height: 282px;
+	max-width: none;
+	overflow: hidden;
+	padding-left: 55px;
+	width: 260px;
+}
+
+section.dialog.suggestions div.content div.classInfo:hover {
+	overflow-y: auto;
+}
+
+section.dialog.suggestions div.content div.classInfo p span.highlight {
+	background-color: #FF9;
+	color: #000000;
+	display: inline;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 0px;
+}
+
+section.dialog.suggestions div.content div.classInfo span.class {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	color: #7B8084;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: normal;
+	height: 40px;
+	margin: 0px;
+	padding: 0px;
+	width: 248px;
+}
+
+section.dialog.suggestions div.content div.classInfo span.class:hover {
+	background: #EEEEEE;
+}
+
+section.dialog.suggestions div.content div.classInfo span.class.selected {
+	background: #B8FEBA url(../images/icons/selected_course.png) no-repeat top right;
+}
+
+section.dialog.suggestions div.content div.classInfo span.class span.band {
+	border-left-style: solid;
+	border-left-width: 50px;
+	display: block;
+	height: 33px;
+	width: 250px;
+}
+
+section.dialog.suggestions div.content div.classInfo span.class span.band span.icon {
+	background-repeat: no-repeat;
+	background-position: 9px 6px;
+	display: block;
+	height: 40px;
+	margin-left: -50px;
+	padding: 11px 0px 0px 55px;
+	width: 250px;
+}
+
+section.dialog.suggestions div.buttons button {
+	margin-left: 10px;
+	width: 215px;
+}
+
+/**
+ * Sell books header
+ * ------------------------------------
+*/
+
+header.styled.sell {
+	border-top-color: #009972;
+}
+
+header.styled.sell h1 {
+	background: #66C2AA;
+	border-color: #33AD8E;
+	color: #FFFFFF;
+	padding-left: 283px;
+}
+
+/**
+ * Sell books preview sidebar
+ * ------------------------------------
+*/
+
+aside.preview {
+	border-right: 4px double #EDEDED;
+	height: 100%;
+	float: left;
+	position: relative;
+	width: 260px;
+}
+
+aside.preview section.bookPreview {
+	background: #3D3D3D;
+	border: 2px solid #FFFFFF;
+	color: #FFFFFF;
+	float: left;
+	margin: -45px 0px 15px 10px;
+	padding: 15px;
+	position: relative;
+	width: 200px;
+}
+
+aside.preview section.bookPreview div.imageContainer {
+	background: #CCCCCC;
+	color: #000000;
+	padding: 5px;
+	min-height: 125px;
+	margin: 0px auto 15px auto;
+	max-width: 130px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+aside.preview section.bookPreview div.imageContainer p {
+	display: block;
+	font-size: 14px;
+	margin: 0px;
+	padding: 45px 0px 45px 0px;
+}
+
+aside.preview section.bookPreview div.imageContainer img {
+	max-width: 130px;
+}
+
+aside.preview section.bookPreview div.imageBrowser {
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+/**
+ * Sell books image browser buttons
+ * ------------------------------------
+*/
+
+aside.preview section.bookPreview div.imageBrowser span.back {
+	background: url(../images/icons/navigation_buttons.png) no-repeat;
+	background-position: -23px -23px;
+	cursor: pointer;
+	display: inline-block;
+	height: 23px;
+	width: 23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.back:hover {
+	background-position: -46px -23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.back:active {
+	background-position: -69px -23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.back.disabled {
+	background-position: 0px -23px;
+	cursor: default;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.back.disabled:hover {
+	background-position: 0px -23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.back.disabled:active {
+	background-position: 0px -23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward {
+	background: url(../images/icons/navigation_buttons.png) no-repeat;
+	background-position: -23px 0px;
+	cursor: pointer;
+	display: inline-block;
+	height: 23px;
+	width: 23px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward:hover {
+	background-position: -46px 0px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward:active {
+	background-position: -69px 0px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward.disabled {
+	background-position: 0px 0px;
+	cursor: default;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward.disabled:hover {
+	background-position: 0px 0px;
+}
+
+aside.preview section.bookPreview div.imageBrowser span.forward.disabled:active {
+	background-position: 0px 0px;
+}
+
+aside.preview section.bookPreview span.titlePreview {
+	display: block;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+aside.preview section.bookPreview span.details {
+	display: block;
+}
+
+aside.preview section.bookPreview span.details strong {
+	display: inline-block;
+	width: 40px;
+}
+
+/**
+ * Sell books sidebar tips and hints
+ * ------------------------------------
+*/
+
+aside.preview section.hints h2 {
+	color: #009972;
+	font-size: 21px;
+	font-weight: lighter;
+	margin-bottom: 5px;
+}
+
+aside.preview section.hints ul {
+	list-style: square;
+	padding-right: 15px;
+}
+
+/**
+ * Sell books main content
+ * ------------------------------------
+*/
+
+section.sell {
+	border-left: 4px double #EDEDED;
+	margin-left: 260px;
+	padding-left: 15px;
+	width: auto;
+}
+
+/* Using the direct child operator, so that no <div> with the targeted <div> is styled */
+section.sell > section {
+	background: url(../images/icons/steps.png) no-repeat;
+	padding-left: 60px;
+}
+
+section.sell section h2 {
+	color: #333333;
+	font-size: 18px;
+	padding-top: 18px;
+}
+
+/**
+ * Sell books book information section
+ * ------------------------------------
+*/
+
+section.sell section.bookInformationSection {
+	background-position: -109px 0px;
+}
+
+/**
+ * Sell books course information
+ * section and table
+ * ------------------------------------
+*/
+
+section.sell section.courseInformationSection {
+	background-position: -55px -55px;
+}
+
+section.sell section.courseInformationSection div.classTableHeader {
+	font-weight: bold;
+	padding-top: 5px;
+}
+
+section.sell section.courseInformationSection div.classTableHeader span.className {
+	padding-left: 50px;
+}
+
+section.sell section.courseInformationSection div.classTableHeader span.classNum {
+	padding-left: 85px;
+}
+
+section.sell section.courseInformationSection div.classTableHeader span.classSec {
+	padding-left: 35px;
+}
+
+section.sell section.courseInformationSection div.classUsed {
+	border-top: 1px solid #CCCCCC;
+	height: 42px;
+	padding: 7px 0px 7px 0px;
+	vertical-align: middle;
+}
+
+section.sell section.courseInformationSection div.classUsed div.inputWrapper {
+	padding-left: 55px;
+	width: 27px;
+}
+
+section.sell section.courseInformationSection div.classUsed div.inputWrapper input {
+	margin: 10px 0px 0px 10px;
+	width: 27px;
+}
+
+section.sell section.courseInformationSection div.classUsed div.dropdownWrapper {
+	display: inline-block;
+	padding: 10px 0px 0px 100px;
+}
+
+section.sell section.courseInformationSection div.classUsed span.delete {
+	background: url(../images/icons/delete.png) no-repeat;
+	cursor: pointer;
+	display: inline-block;
+	float: right;
+	height: 19px;
+	margin: 12px 10px 0px 0px;
+	width: 19px;
+}
+
+section.sell section.courseInformationSection span.add {
+	background: url(../images/icons/add.png) no-repeat left bottom;
+	display: inline-block;
+	cursor: pointer;
+	padding: 5px 0px 0px 25px;
+}
+
+/**
+ * Sell books user information section
+ * ------------------------------------
+*/
+
+section.sell section.userInformationSection {
+	background-position: 0px -109px;
+}
+
+section.sell section.userInformationSection table tbody tr td.price span.align {
+	display: inline-block;
+	padding-top: 6px;
+}
+
+section.sell section.userInformationSection table tbody tr td.price input {
+	width: 47px;
+}
+
+section.sell section.userInformationSection table tbody tr td.containsMenu div {
+	
+}
+
+section.sell section.userInformationSection table tbody tr.editor td.description {
+	padding-top: 5px;
+	vertical-align: top;
+}
+
+section.sell section.userInformationSection table tbody tr.editor td textarea {
+	width: 450px;
+}

@@ -1,0 +1,546 @@
+/**
+ * Global module styles
+ * ------------------------------------
+*/
+
+a.buttonLink, span.buttonLink {
+	background: #999999;
+	border: 1px solid #999999;
+	color: #FFFFFF;
+	display: inline-block;
+	height: 16px;
+	font-size: 11px;
+	margin-top: 17px;
+	max-height: 16px;
+	max-width: 187px;
+	min-height: 16px;
+	padding-top: 2px;
+	vertical-align: bottom;
+	width: auto;
+}
+
+a.buttonLink:active {
+	color: #FFFFFF;
+}
+
+a.buttonLink:hover {
+	color: #FFFFFF;
+}
+
+a.buttonLink:visited {
+	color: #FFFFFF;
+}
+
+a.buttonLink span, span.buttonLink span {
+	border: 1px solid #FFFFFF;
+	padding: 1px 3px 1px 3px;
+}
+
+a.buttonLink span:hover {
+	background: #33CCFF;
+}
+
+a.buttonLink.big, span.buttonLink.big {
+	background: #3D3D3D;
+	border: 1px solid #FFFFFF;
+	padding: 4px 1px 4px 1px;
+	white-space: nowrap;
+}
+
+a.buttonLink.big span, span.buttonLink.big span {
+	background: #42B6C9;
+	font-size: 15px;
+	padding: 2px 7px 2px 7px;
+}
+
+a.buttonLink.big span:hover {
+	background: #33CCFF;
+}
+
+span.title, a.title {
+	display: block;
+	font-size: 13px;
+	font-weight: bold;
+	max-width: 130px;
+	overflow: hidden;
+	padding-top: 10px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+span.details {
+	display: block;
+	font-size: 10px;
+	max-width: 170px;
+	overflow: hidden;
+	padding-top: 5px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.error {
+	-moz-box-shadow: 0 0 15px #FF0000;
+	-ms-box-shadow: 0 0 15px #FF0000;
+	-o-box-shadow: 0 0 15px #FF0000;
+	-webkit-box-shadow: 0 0 15px #FF0000;
+	background: #FF6666;
+	border: 1px solid #FF0000;
+	border-radius: 5px;
+	box-shadow: 0 0 15px #FF0000;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: bolder;
+	margin: 0px auto 0px auto;
+	padding: 5px 25px 5px 25px;
+	position: fixed;
+	top: 45px;
+	z-index: 5;
+}
+
+.message {
+	-moz-box-shadow: 0 0 15px #000000;
+	-ms-box-shadow: 0 0 15px #000000;
+	-o-box-shadow: 0 0 15px #000000;
+	-webkit-box-shadow: 0 0 15px #000000;
+	background: #CCCCCC;
+	border: 1px solid #000000;
+	border-radius: 5px;
+	box-shadow: 0 0 15px #000000;
+	color: #000000;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: bolder;
+	margin: 0px auto 0px auto;
+	padding: 5px 25px 5px 25px;
+	position: fixed;
+	top: 45px;
+	z-index: 5;
+}
+
+.success {
+	-moz-box-shadow: 0 0 15px #003300;
+	-ms-box-shadow: 0 0 15px #003300;
+	-o-box-shadow: 0 0 15px #003300;
+	-webkit-box-shadow: 0 0 15px #003300;
+	background: #00FF66;
+	border: 1px solid #003300;
+	border-radius: 5px;
+	box-shadow: 0 0 15px #003300;
+	color: #000000;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: bolder;
+	margin: 0px auto 0px auto;
+	padding: 5px 25px 5px 25px;
+	position: fixed;
+	top: 45px;
+	z-index: 5;
+}
+
+/**
+ * jQuery UI auto-suggest list styles
+ * ------------------------------------
+*/
+
+ul.ui-autocomplete li a {
+	cursor: pointer;
+	height: 57px;
+	position: relative;
+}
+
+ul.ui-autocomplete li a img {
+	max-height: 50px;
+	max-width: 37px;
+	min-width: 37px;
+}
+
+ul.ui-autocomplete li a span.label {
+	left: 50px;
+	padding-top: 0px;
+	position: absolute;
+	max-width: none;
+	right: 10px;
+	top: 0px;
+	width: auto;
+}
+
+ul.ui-autocomplete li a span.byLine {
+	left: 50px;
+	max-width: 130px;
+	position: absolute;
+	max-width: none;
+	right: 10px;
+	top: 12px;
+	width: auto;
+}
+
+ul.ui-autocomplete li a span.total {
+	left: 50px;
+	position: absolute;
+	top: 37px;
+}
+
+/**
+ * Book exchange category flyout
+ * ------------------------------------
+*/
+
+div.menuWrapper {
+	display: inline-block;
+	float: left;
+	height: 42px; /* Extra 2 px to compensate for the 1 px border around the unordered list */
+	margin: 0px;
+	overflow: hidden;
+	padding: 0px;
+	width: 200px; /* Extra 2 px to compensate for the 1 px border around the unordered list */
+}
+
+ul.categoryFly {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	color: #7B8084;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: normal;
+	height: 40px;
+	margin: 0px;
+	list-style: none;
+	overflow: hidden;
+	padding: 0px;
+	width: 198px;
+}
+
+ul.categoryFly li {
+	display: table-cell;
+	vertical-align: top;
+}
+
+ul.categoryFly li ul {
+	display: inline-block;
+	margin: 0px;
+	list-style: none;
+	padding: 0px;
+}
+
+ul.categoryFly li ul li {
+	cursor: pointer;
+	display: none;
+}
+
+ul.categoryFly li ul li.selected {
+	display: list-item;
+}
+
+ul.categoryFly li ul li span.band {
+	border-left-style: solid;
+	border-left-width: 50px;
+	display: block;
+	height: 40px;
+	width: 200px;
+}
+
+ul.categoryFly li ul li span.band span.icon {
+	background-repeat: no-repeat;
+	background-position: 9px 6px;
+	display: block;
+	height: 40px;
+	margin-left: -50px;
+	padding: 11px 0px 0px 55px;
+	width: 200px;
+}
+
+ul.categoryFly li ul li.all span.band span.icon {
+	background-position: 9px 4px;
+}
+
+ul.categoryFly.open li ul li.selected {
+	background: #BADFF5;
+	display: list-item;
+}
+
+ul.categoryFly.open li ul li:hover {
+	background: #EEEEEE;
+}
+
+/**
+ * Header base classes
+ * ------------------------------------
+*/
+
+header.styled {
+	border-top-style: solid;
+	border-top-width: 5px;
+}
+
+header.styled h1 {
+	border-style: solid;
+	border-width: 5px;
+	color: #3D3D3D;
+	font-size: 24px;
+	font-weight: bold;
+	margin: 0px;
+	padding: 10px 10px 10px 300px;
+}
+
+header.styled h2 {
+	color: #3D3D3D;
+	font-weight: lighter;
+	margin: 17px 0px 15px 0px;
+	position: absolute;
+	right: 11.5%;
+	top: 138px;
+}
+
+/**
+ * Purchase book dialog
+ * ------------------------------------
+*/
+
+section.purchase div.loading {
+	color: #CCCCCC;
+	font-size: 36px;
+	padding: 60px 20px 45px 20px;
+	text-align: center;
+}
+
+section.purchase aside.bookInfo {
+	border-right: 4px double #EDEDED;
+	float: left;
+	height: 100%;
+	overflow-y: auto;
+	padding-right: 15px;
+	width: 250px;
+}
+
+section.purchase aside.bookInfo div.cover {
+	padding-bottom: 25px;
+	text-align: center;
+}
+
+section.purchase aside.bookInfo div.cover img {
+	max-height: 200px;
+	min-height: 200px;
+}
+
+section.purchase aside.bookInfo span.previewTitle {
+	color: #333333;
+	display: block;
+	font-weight: bold;
+}
+
+section.purchase aside.bookInfo span.buttonLink {
+	margin-bottom: 20px;
+}
+
+section.purchase aside.bookInfo span.previewDetails {
+	color: #7B8084;
+	display: block;
+	font-size: 14px;
+	padding-bottom: 5px;
+}
+
+section.purchase aside.bookInfo span.previewDetails strong {
+	display: inline-block;
+	width: 55px;
+}
+
+section.purchase aside.bookInfo span.excellent {
+	background: url(../images/icons/condition.png) no-repeat #33CC66;
+	background-position: 3px 3px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.veryGood {
+	background: url(../images/icons/condition.png) no-repeat #0099FF;
+	background-position: 3px 3px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.good {
+	background: url(../images/icons/condition.png) no-repeat #FFCC33;
+	background-position: 3px -15px;
+	border: 1px solid #7B8084;
+	color: #000000;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.fair {
+	background: url(../images/icons/condition.png) no-repeat #FF6633;
+	background-position: 3px -34px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.poor {
+	background: url(../images/icons/condition.png) no-repeat #CC0000;
+	background-position: 3px -34px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.noMarks {
+	background: url(../images/icons/quill.png) no-repeat #33CC66;
+	background-position: 3px 3px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase aside.bookInfo span.marks {
+	background: url(../images/icons/quill.png) no-repeat #FF6633;
+	background-position: 3px 3px;
+	border: 1px solid #7B8084;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 14px;
+	margin-top: 5px;
+	padding: 2px 3px 2px 25px;
+}
+
+section.purchase section.main {
+	background: url(../images/icons/tips.png) no-repeat bottom right;
+	border-left: 4px double #EDEDED;
+	margin-left: 265px;
+	min-height: 100%;
+	padding-left: 15px;
+	width: auto;
+}
+
+section.purchase section.main div.userInfo {
+	border: 1px solid #DDDDDD;
+}
+
+section.purchase section.main div.userInfo {
+	margin: 0px auto 0px auto;
+	width: 300px;
+}
+
+section.purchase section.main div.userInfo h2 {
+	background: #DDDDDD;
+	color: #333333;
+	font-size: 16px;
+	margin: 2px 2px 0px 2px;
+}
+
+section.purchase section.main div.userInfo div {
+	background: url(../images/icons/avatar.jpg) #EEEEEE no-repeat left;
+	height: 85px;
+	padding-left: 90px;
+	margin: 0px 2px 2px 2px;
+}
+
+section.purchase section.main div.userInfo div span {
+	display: block;
+	font-size: 14px;
+	padding: 5px 0px 5px 0px;
+}
+
+section.purchase section.main h2 {
+	background: url(../images/icons/book_details.png) no-repeat left;
+	color: #333333;
+	font-size: 18px;
+	padding: 5px 0px 5px 35px;
+}
+
+section.purchase section.main h2:first-child {
+	margin-top: 0px;
+}
+
+section.purchase section.main h2.comments {
+	background-position: -75px -33px;
+}
+
+section.purchase section.main div.comments {
+	font-size: 14px;
+}
+
+section.purchase section.main div.comments p {
+	margin: 0px;
+	padding-left: 35px;
+}
+
+section.purchase section.main h2.classes {
+	background-position: 0px -110px;
+}
+
+
+section.purchase section.main div.classes ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px 0px 0px 35px;
+}
+
+section.purchase section.main div.classes ul li {
+	display: inline-block;
+	padding: 5px 10px 5px 0px;
+}
+
+section.purchase section.main div.classes ul li span.courseDetails {
+	color: black;
+	display: block;
+	font-size: 10px;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+section.purchase section.main h2.seller {
+	background-position: -38px -75px;
+	
+}
+
+section.purchase section.main div.seller span.details {
+	font-size: 13px;
+	max-width: none;
+	padding-left: 35px;
+}
+
+section.purchase section.main div.seller span.details strong {
+	display: inline-block;
+	width: 50px;
+}
+
+section.purchase section.main div.seller span.details strong.extended {
+	width: 110px;
+}
+
+section.confirm span {
+	 float: left;
+	 margin: 5px 7px 100px 0px;
+}
+
+/**
+ * Mozilla-specific hacks
+ * ------------------------------------------
+ */
+
+@-moz-document url-prefix() {
+	a.buttonLink.big, span.buttonLink.big {
+		padding: 3px 1px 4px 1px;
+	}
+}
