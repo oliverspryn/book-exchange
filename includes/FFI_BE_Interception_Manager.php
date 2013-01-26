@@ -19,7 +19,7 @@
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
- * @package   book-exchange
+ * @package   includes
  * @since     v2.0 Dev
 */
 
@@ -154,11 +154,6 @@ class FFI_BE_Interception_Manager {
 			}
 		}
 		
-	//Add the query string, if there is any
-		if ($URL['query'] != "") {
-			$return .= "?" . $URL['query'];
-		}
-		
 		$this->scriptURL = $return;
 	}
 	
@@ -171,6 +166,10 @@ class FFI_BE_Interception_Manager {
  * @since  v2.0 Dev
 */
 	public function intercept() {
+	//Globalize a few necessary variables
+		global $essentials;
+		global $wpdb;
+		
 		require_once(FFI_BE_PATH . "app" . $this->scriptURL);
 	}
 	
@@ -184,6 +183,10 @@ class FFI_BE_Interception_Manager {
 */
 	
 	public function intercept404() {
+	//Globalize a few necessary variables
+		global $essentials;
+		global $wpdb;
+		
 		$path = FFI_BE_PATH . "app" . $this->scriptURL;
 		
 	//Check to see if the user is really requesting a page that exists

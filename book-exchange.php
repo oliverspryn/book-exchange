@@ -12,9 +12,19 @@ License: MIT
 //Create plugin-specific global definitions
 	define("FFI_BE_FILE", __FILE__);
 	define("FFI_BE_PATH", plugin_dir_path(__FILE__));
+	
+//Add a new user role to the system
+	add_role("book_exchange_user", "Book Exchange User", array(
+		"read" => true
+	));
 
-//Require the Book Exchange initialization class
+//Require the Book Exchange Initialization and Essentials classes
 	if (!is_admin()) {
+	//Plugin essentials
+		require_once(FFI_BE_PATH . "/includes/FFI_BE_Essentials.php");
+		$essentials = new FFI_BE_Essentials();
+		
+	//Initialization
 		require_once(FFI_BE_PATH . "/includes/FFI_BE_Interception_Manager.php");
 		new FFI_BE_Interception_Manager();
 	}

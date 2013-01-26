@@ -1,18 +1,13 @@
 <?php
-//Include the system's core
-	require_once("../../Connections/connDBA.php");
-	require_once("../system/server/Validate.php");
-	
 //Verify that the user is logged in
-	if (!loggedIn()) {
-		redirect("../../login.php?accesscheck=" . $_SERVER['REQUEST_URI']);
-	}
+	$essentials->requireLogin();
 	
 //Is the user editing a book?
 	if (isset($_GET['id'])) {
 		$editing = true;
-		$bookDataGrabber = mysql_query("SELECT books.*, GROUP_CONCAT(books.id) AS bookIDs, GROUP_CONCAT(books.course) AS classIDs, GROUP_CONCAT(books.number) AS classNums, GROUP_CONCAT(books.section) AS classSec FROM books RIGHT JOIN (bookcategories) ON books.course = bookcategories.id WHERE books.linkID = (SELECT linkID FROM books WHERE id = '{$_GET['id']}' LIMIT 1) AND books.userID = '{$userData['id']}' GROUP BY books.linkID ORDER BY books.course ASC, books.number ASC, books.section ASC", $connDBA);
-		
+		$bookDataGrabber = $wpdb->get_results("SELECT books.*, GROUP_CONCAT(books.id) AS bookIDs, GROUP_CONCAT(books.course) AS classIDs, GROUP_CONCAT(books.number) AS classNums, GROUP_CONCAT(books.section) AS classSec FROM ffi_be_books RIGHT JOIN (bookcategories) ON books.course = bookcategories.id WHERE books.linkID = (SELECT linkID FROM ffi_be_books WHERE id = '{$_GET['id']}' LIMIT 1) AND books.userID = '{$userData['id']}' GROUP BY books.linkID ORDER BY books.course ASC, books.number ASC, books.section ASC");
+		echo print_r($bookDataGrabber);
+		exit;
 		if ($bookDataGrabber && mysql_num_rows($bookDataGrabber)) {
 			$bookData = mysql_fetch_assoc($bookDataGrabber);
 			
