@@ -1,33 +1,43 @@
 <?php
 //Verify that the user is logged in
 	$essentials->requireLogin();
+	$essentials->setTitle("Sell Books");
+	$essentials->includeCSS("system/stylesheets/style.css");
+	$essentials->includeCSS("system/stylesheets/sell.css");
+	$essentials->includeCSS("system/stylesheets/validationEngine.jquery.min.css");
+	$essentials->includeJS("system/javascripts/interface.js");
+	$essentials->includeJS("system/javascripts/sell_wizard.min.js");
+	$essentials->includeJS("//cdn.jquerytools.org/1.2.7/tiny/jquery.tools.min.js");
+	$essentials->includeJS("system/tiny_mce/tiny_mce.js");
+	$essentials->includeJS("system/tiny_mce/jquery.tinymce.js");
+	$essentials->includeJS("system/javascripts/tiny_mce_simple.php");
+	$essentials->includeJS("system/javascripts/jquery.validationEngine.min.js");
 	
 //Is the user editing a book?
 	if (isset($_GET['id'])) {
 		$editing = true;
-		$bookDataGrabber = $wpdb->get_results("SELECT books.*, GROUP_CONCAT(books.id) AS bookIDs, GROUP_CONCAT(books.course) AS classIDs, GROUP_CONCAT(books.number) AS classNums, GROUP_CONCAT(books.section) AS classSec FROM ffi_be_books RIGHT JOIN (bookcategories) ON books.course = bookcategories.id WHERE books.linkID = (SELECT linkID FROM ffi_be_books WHERE id = '{$_GET['id']}' LIMIT 1) AND books.userID = '{$userData['id']}' GROUP BY books.linkID ORDER BY books.course ASC, books.number ASC, books.section ASC");
-		echo print_r($bookDataGrabber);
-		exit;
-		if ($bookDataGrabber && mysql_num_rows($bookDataGrabber)) {
-			$bookData = mysql_fetch_assoc($bookDataGrabber);
+		$bookData = $wpdb->get_results("SELECT ffi_be_books.*, GROUP_CONCAT(ffi_be_books.id) AS bookIDs, GROUP_CONCAT(ffi_be_books.course) AS classIDs, GROUP_CONCAT(ffi_be_books.number) AS classNums, GROUP_CONCAT(ffi_be_books.section) AS classSec FROM ffi_be_books RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id WHERE ffi_be_books.linkID = (SELECT linkID FROM ffi_be_books WHERE id = '{$_GET['id']}' LIMIT 1) AND ffi_be_books.userID = '{$essentials->user->ID}' GROUP BY ffi_be_books.linkID ORDER BY ffi_be_books.course ASC, ffi_be_books.number ASC, ffi_be_books.section ASC");
+		
+		if ($bookData && count($bookData)) {
+			$bookData = $bookData[0];
 			
 		//Users cannot edit books that don't belong to them!
-			if ($bookData['userID'] != $userData['id']) {
-				redirect("../");
+			if ($bookData->userID != $essentials->user->ID) {
+				wp_redirect("../");
 			}
 		} else {
-			redirect("../");
+			wp_redirect("../");
 		}
 	} else {
 		$editing = false;
 	}
 	
 //Generate the breadcrumb
-	$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
-	$title = unserialize($home['content' . $home['display']]);
-	$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
-<li><a href=\"../\">Book Exchange</a></li>
-<li>Sell Books</li>\n";
+	//$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
+	//$title = unserialize($home['content' . $home['display']]);
+	//$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
+//<li><a href=\"../\">Book Exchange</a></li>
+//<li>Sell Books</li>\n";
 	
 /**
  * Process the form
@@ -50,7 +60,7 @@
  *
  * The first values for className and classSec will be discarded.
 */
-	
+	/*
 //Insert a new book
 	if (isset($_POST) && !empty($_POST) && is_array($_POST) && isset($_POST['ISBN'])) {
 	//Generate the server-side data needed to store a book
@@ -139,7 +149,7 @@
 		 * If there more classes in the update, just added some more rows into the database.
 		 * If there are less classes in the update, then remove a few rows.
 		*/
-			
+			/*
 		//Are more or less rows needed?
 			$oldClasses = explode(",", $bookData['bookIDs']);
 			$action = "none";
@@ -198,21 +208,7 @@
 			redirect("../account/?message=edited#book_" . $bookData['id']);
 		}
 	}
-
-//Include the top of the page from the administration template
-	topPage("public", "Sell Books", "" , "", "<link href=\"../system/stylesheets/style.css\" rel=\"stylesheet\" />
-<link href=\"../system/stylesheets/sell.css\" rel=\"stylesheet\" />
-<link href=\"../../styles/jQuery/validationEngine.jquery.min.css\" rel=\"stylesheet\" />
-<script src=\"../system/javascripts/interface.js\"></script>
-<script src=\"../system/javascripts/sell_wizard.min.js\"></script>
-<script src=\"http://cdn.jquerytools.org/1.2.7/tiny/jquery.tools.min.js\"></script>
-<script src=\"../../tiny_mce/tiny_mce.js\"></script>
-<script src=\"../../tiny_mce/jquery.tinymce.js\"></script>
-<script src=\"../../javascripts/common/tiny_mce_simple.php\"></script>
-<script src=\"../../javascripts/jQuery/jquery.validationEngine.min.js\"></script>", $breadcrumb);
-	
-	echo "<section class=\"body\">
-";
+	*/
 
 //Display any needed success messages
 	if (isset($_GET['message']) && $_GET['message'] == "added") {
@@ -228,7 +224,8 @@
 	}
 
 //Display the page header
-	echo "<form action=\"" . $_SERVER['REQUEST_URI'] . "\" method=\"post\">
+	echo "<section class=\"body\">
+<form action=\"" . $_SERVER['REQUEST_URI'] . "\" method=\"post\">
 <header class=\"styled sell\"><h1>Sell Your Books</h1></header>
 
 <aside class=\"preview\">
@@ -236,17 +233,17 @@
 	
 //Determine where the actual book URL is located, not the placeholder URL
 	if ($editing) {
-		if (!empty($bookData['awaitingImage'])) {
-			$imageURL = stripslashes($bookData['awaitingImage']);
+		if (!empty($bookData->awaitingImage)) {
+			$imageURL = stripslashes($bookData->awaitingImage);
 		} else {
-			$imageURL = stripslashes($bookData['imageURL']);
+			$imageURL = stripslashes($bookData->imageURL);
 		}
 	}
 	
 //Determine how the edition string should display
 	if ($editing) {
-		if (!empty($bookData['edition'])) {
-			$edition = "<span class=\"editionPreview details\"><strong>Edition:</strong> " . stripslashes($bookData['edition']) . "</span>";
+		if (!empty($bookData->edition)) {
+			$edition = "<span class=\"editionPreview details\"><strong>Edition:</strong> " . stripslashes($bookData->edition) . "</span>";
 		} else {
 			$edition = "<span class=\"editionPreview details\" style=\"display: none;\"><strong>Edition:</strong> </span>";
 		}
@@ -257,7 +254,7 @@
 //Include a book preview box, the double <div> around the text input is a lazy fix for a positioning bug in the jQuery validator
 	echo "<section class=\"bookPreview\">
 <div style=\"height: 0px;\"><div><input class=\"imageURL noMod collapse validate[required,funcCall[checkImage]]\" name=\"imageURL\" type=\"text\"" . ($editing ? " value=\"" . htmlentities($imageURL) . "\"" : "") . " /></div></div>
-<input class=\"imageID\" name=\"imageID\" type=\"hidden\"" . ($editing ? " value=\"" . htmlentities($bookData['imageID']) . "\"" : "") . " />
+<input class=\"imageID\" name=\"imageID\" type=\"hidden\"" . ($editing ? " value=\"" . htmlentities($bookData->imageID) . "\"" : "") . " />
 
 <div class=\"imageContainer\">
 " . ($editing ? "<img src=\"" . $imageURL . "\" />" : "<p>Enter the book's ISBN and we'll show the book cover here</p>") . "
@@ -268,12 +265,12 @@
 <span class=\"forward\"></span>
 </div>
 
-<span class=\"titlePreview\">" . ($editing ? stripslashes($bookData['title']) : "&lt;Book Title&gt;") . "</span>
-<span class=\"authorPreview details\"><strong>Author:</strong> " . ($editing ? stripslashes($bookData['author']) : "&lt;Book Author&gt;") . "</span>
-<span class=\"details\"><strong>Seller:</strong> " . stripslashes($userData['firstName']) . " " . stripslashes($userData['lastName']) . "</span>
+<span class=\"titlePreview\">" . ($editing ? stripslashes($bookData->title) : "&lt;Book Title&gt;") . "</span>
+<span class=\"authorPreview details\"><strong>Author:</strong> " . ($editing ? stripslashes($bookData->author) : "&lt;Book Author&gt;") . "</span>
+<span class=\"details\"><strong>Seller:</strong> " . stripslashes($essentials->user->first_name) . " " . stripslashes($essentials->user->last_name) . "</span>
 " . $edition . "
 <br>
-<span class=\"buttonLink big pricePreview\"><span>\$" . ($editing ? stripslashes($bookData['price']) : "0.00") . "</span></span>
+<span class=\"buttonLink big pricePreview\"><span>\$" . ($editing ? stripslashes($bookData->price) : "0.00") . "</span></span>
 </section>
 
 ";
@@ -305,22 +302,22 @@
 <tbody>
 <tr>
 <td>ISBN:</td>
-<td><input autocomplete=\"off\" class=\"ISBN noIcon validate[required,funcCall[checkISBN]]\" name=\"ISBN\" title=\"This is a 10 or 13 digit number, usually printed on the back of the book by the barcode, but is <strong>NOT</strong> the barcode number itself.<br><br>In some cases, an ISBN may include a letter.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData['ISBN'])) . "\"" : "") . " /></td>
+<td><input autocomplete=\"off\" class=\"ISBN noIcon validate[required,funcCall[checkISBN]]\" name=\"ISBN\" title=\"This is a 10 or 13 digit number, usually printed on the back of the book by the barcode, but is <strong>NOT</strong> the barcode number itself.<br><br>In some cases, an ISBN may include a letter.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData->ISBN)) . "\"" : "") . " /></td>
 </tr>
 
 <tr>
 <td>Title:</td>
-<td><input autocomplete=\"off\" class=\"noIcon titleInput validate[required]\" name=\"title\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData['title'])) . "\"" : "") . " /></td>
+<td><input autocomplete=\"off\" class=\"noIcon titleInput validate[required]\" name=\"title\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData->title)) . "\"" : "") . " /></td>
 </tr>
 
 <tr>
 <td>Author:</td>
-<td><input autocomplete=\"off\" class=\"noIcon authorInput validate[required]\" name=\"author\" title=\"Seperate multiple authors by a comma and a space\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData['author'])) . "\"" : "") . " /></td>
+<td><input autocomplete=\"off\" class=\"noIcon authorInput validate[required]\" name=\"author\" title=\"Seperate multiple authors by a comma and a space\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData->author)) . "\"" : "") . " /></td>
 </tr>
 
 <tr>
 <td>Edition:</td>
-<td><input autocomplete=\"off\" class=\"editionInput noIcon\" name=\"edition\" title=\"[Optional]<br><br>Enter the edition of this book, such as &quot;Second Edition&quot; or &quot;Revised Edition&quot;.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData['edition'])) . "\"" : "") . " /></td>
+<td><input autocomplete=\"off\" class=\"editionInput noIcon\" name=\"edition\" title=\"[Optional]<br><br>Enter the edition of this book, such as &quot;Second Edition&quot; or &quot;Revised Edition&quot;.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData->edition)) . "\"" : "") . " /></td>
 </tr>
 </tbody>
 </table>
@@ -335,12 +332,12 @@
 ";
 
 //Grab the categories from the database
-	if (exist("bookcategories")) {
+	if ($wpdb->get_results("SELECT * FROM `ffi_be_bookcategories`")) {
 		$categories = array();
-		$categoryGrabber = mysql_query("SELECT * FROM `bookcategories` ORDER BY name ASC", $connDBA);
+		$category = $wpdb->get_results("SELECT * FROM `ffi_be_bookcategories` ORDER BY name ASC");
 		
-		while($category = mysql_fetch_array($categoryGrabber)) {
-			array_push($categories, $category);
+		for ($i = 0; $i < count($category); $i++) {
+			array_push($categories, $category[$i]);
 		}
 	} else {
 		$categories = false;
@@ -375,7 +372,7 @@
 		}
 		
 		$courseFlyout .= "
-<li data-value=\"" . $category['id'] . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category['color1']) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category['id'] . "/icon_032.png');\">" . stripslashes($category['name']) . "</span></span></li>";
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
 
 		if ($counter % 10 == 0) {
 			$courseFlyout .= "
@@ -453,9 +450,9 @@
 ";
 		
 	//Fetch all of the relavent data from the query
-		$classIDs = explode(",", $bookData['classIDs']);
-		$classNums = explode(",", $bookData['classNums']);
-		$classSec = explode(",", $bookData['classSec']);
+		$classIDs = explode(",", $bookData->classIDs);
+		$classNums = explode(",", $bookData->classNums);
+		$classSec = explode(",", $bookData->classSec);
 		
 	//Display each row in the table
 		for ($i = 0; $i <= sizeof($classIDs) - 1; $i ++) {
@@ -470,7 +467,7 @@
 		
 			foreach($categories as $category) {
 			//Catch when a specific item in the list should be selected
-				if ($category['id'] == $classIDs[$i]) {
+				if ($category->id == $classIDs[$i]) {
 					$class =" class=\"selected\"";
 				} else {
 					$class = "";
@@ -495,7 +492,7 @@
 				}
 				
 				$courseFlyout .= "
-<li" . $class . " data-value=\"" . $category['id'] . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category['color1']) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category['id'] . "/icon_032.png');\">" . stripslashes($category['name']) . "</span></span></li>";
+<li" . $class . " data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
 		
 				if ($counter % 10 == 0) {
 					$courseFlyout .= "
@@ -561,7 +558,7 @@
 <td>Price:</td>
 <td class=\"price\">
 <span class=\"align\">\$</span>
-<input autocomplete=\"off\" class=\"priceInput noIcon validate[required,funcCall[checkPrice]]\" maxlength=\"6\" name=\"price\" title=\"Valid prices range from \$0.00 to \$999.99.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData['price'])) . "\"" : "") . " />
+<input autocomplete=\"off\" class=\"priceInput noIcon validate[required,funcCall[checkPrice]]\" maxlength=\"6\" name=\"price\" title=\"Valid prices range from \$0.00 to \$999.99.\" type=\"text\"" . ($editing ? " value=\"" . htmlentities(stripslashes($bookData->price)) . "\"" : "") . " />
 </td>
 </tr>
 
@@ -569,11 +566,11 @@
 <td>Condition:</td>
 <td class=\"containsMenu\">
 <ul class=\"dropdown\" data-name=\"condition\">
-<li" . ($editing && $bookData['condition'] == "Excellent" ? " class=\"selected\"" : "") . ">Excellent</li>
-<li" . (!$editing || ($editing && $bookData['condition'] == "Very Good") ? " class=\"selected\"" : "") . ">Very Good</li>
-<li" . ($editing && $bookData['condition'] == "Good" ? " class=\"selected\"" : "") . ">Good</li>
-<li" . ($editing && $bookData['condition'] == "Fair" ? " class=\"selected\"" : "") . ">Fair</li>
-<li" . ($editing && $bookData['condition'] == "Poor" ? " class=\"selected\"" : "") . ">Poor</li>
+<li" . ($editing && $bookData->condition == "Excellent" ? " class=\"selected\"" : "") . ">Excellent</li>
+<li" . (!$editing || ($editing && $bookData->condition == "Very Good") ? " class=\"selected\"" : "") . ">Very Good</li>
+<li" . ($editing && $bookData->condition == "Good" ? " class=\"selected\"" : "") . ">Good</li>
+<li" . ($editing && $bookData->condition == "Fair" ? " class=\"selected\"" : "") . ">Fair</li>
+<li" . ($editing && $bookData->condition == "Poor" ? " class=\"selected\"" : "") . ">Poor</li>
 </ul>
 </td>
 </tr>
@@ -582,15 +579,15 @@
 <td>Written in:</td>
 <td class=\"containsMenu\">
 <ul class=\"dropdown\" data-name=\"written\">
-<li" . (!$editing || ($editing && $bookData['written'] == "No") ? " class=\"selected\"" : "") . ">No</li>
-<li" . ($editing && $bookData['written'] == "Yes" ? " class=\"selected\"" : "") . ">Yes</li>
+<li" . (!$editing || ($editing && $bookData->written == "No") ? " class=\"selected\"" : "") . ">No</li>
+<li" . ($editing && $bookData->written == "Yes" ? " class=\"selected\"" : "") . ">Yes</li>
 </ul>
 </td>
 </tr>
 
 <tr class=\"editor\">
 <td class=\"description\">Comments:</td>
-<td><textarea name=\"comments\">" . ($editing ? stripslashes($bookData['comments']) : "") . "</textarea></td>
+<td><textarea name=\"comments\">" . ($editing ? stripslashes($bookData->comments) : "") . "</textarea></td>
 </tr>
 </tbody>
 </table>
@@ -618,6 +615,4 @@
 </section>
 </form>
 </section>";
-
-	footer("public");
 ?>

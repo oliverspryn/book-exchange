@@ -88,7 +88,7 @@ class FFI_BE_Interception_Manager {
 			
 		//Request application scripts just after the header is called
 			add_filter("the_content", array($this, "intercept"));
-			add_action('404_template', array($this, "intercept404"));
+			add_action("404_template", array($this, "intercept404"));
 		}
 	}
 	
@@ -191,8 +191,15 @@ class FFI_BE_Interception_Manager {
 		
 	//Check to see if the user is really requesting a page that exists
 		if (file_exists($path)) {
-			get_header();
+		//Run the required script first, so if any modifications should be made to header...
+			ob_start();
 			require_once($path);
+			$output = ob_get_contents();
+			ob_end_clean();
+			
+		//... we can do that down here
+			get_header();
+			echo $output;
 			get_footer();
 			exit;
 		} else {

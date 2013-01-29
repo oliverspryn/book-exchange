@@ -1,0 +1,37 @@
+<Files ~ "\.(css)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(js)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(htm)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(html)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(png)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(jpg)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(gif)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(bmp)$">
+	order allow,deny
+	allow from all
+</Files>
+<Files ~ "\.(swf)$">
+	order allow,deny
+	allow from all
+</Files>
+deny from all

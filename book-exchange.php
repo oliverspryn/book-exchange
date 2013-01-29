@@ -12,13 +12,15 @@ License: MIT
 //Create plugin-specific global definitions
 	define("FFI_BE_FILE", __FILE__);
 	define("FFI_BE_PATH", plugin_dir_path(__FILE__));
+	define("FFI_BE_REAL_ADDR", get_site_url() . "/wp-content/plugins/book-exchange/");
+	define("FFI_BE_FAKE_ADDR", get_site_url() . "/book-exchange/");
 	
 //Add a new user role to the system
 	add_role("book_exchange_user", "Book Exchange User", array(
 		"read" => true
 	));
 
-//Require the Book Exchange Initialization and Essentials classes
+//Require the Book Exchange Initialization and Essentials classes, if we are not in the administration interface
 	if (!is_admin()) {
 	//Plugin essentials
 		require_once(FFI_BE_PATH . "/includes/FFI_BE_Essentials.php");
