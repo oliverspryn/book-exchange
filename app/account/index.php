@@ -1,12 +1,14 @@
 <?php
 //Include the system's core
-	require_once("../../Connections/connDBA.php");
-	require_once("../system/server/Validate.php");
-	
-//Verify that the user is logged in
-	if (!loggedIn()) {
-		redirect("../../login.php?accesscheck=" . $_SERVER['REQUEST_URI'] . "&message=required");
-	}
+	$essentials->requireLogin();
+	$essentials->setTitle("All Book Listings");
+	$essentials->includePHP("system/server/Validate.php");
+	$essentials->includeCSS("system/stylesheets/style.css");
+	$essentials->includeCSS("system/stylesheets/account.css");
+	$essentials->includeCSS("system/stylesheets/validationEngine.jquery.min.css");
+	$essentials->includeJS("system/javascripts/jquery.validationEngine.min.js");
+	$essentials->includeJS("system/javascripts/interface.js");
+	$essentials->includeJS("system/javascripts/md5.min.js");
 	
 //Update a user's profile
 	if (isset($_POST['action']) && $_POST['action'] == "profile") {
@@ -22,7 +24,7 @@
 			$hash = "+y4hn&T/'K";
 			$password = md5($_POST['password'] . "_" . $hash);
 			
-			mysql_query("UPDATE users SET firstName = '{$first}', lastName = '{$last}', emailAddress1 = '{$emailAddress1}', emailAddress2 = '{$emailAddress2}', emailAddress3 = '{$emailAddress3}', passWord = PASSWORD('{$password}')", $connDBA);
+			$wpdb->query("UPDATE users SET firstName = '{$first}', lastName = '{$last}', emailAddress1 = '{$emailAddress1}', emailAddress2 = '{$emailAddress2}', emailAddress3 = '{$emailAddress3}', passWord = PASSWORD('{$password}')", $connDBA);
 		} else {
 			mysql_query("UPDATE users SET firstName = '{$first}', lastName = '{$last}', emailAddress1 = '{$emailAddress1}', emailAddress2 = '{$emailAddress2}', emailAddress3 = '{$emailAddress3}'", $connDBA);
 		}
@@ -68,19 +70,12 @@
 	}
 	
 //Generate the breadcrumb
-	$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
+	////$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
 	$title = unserialize($home['content' . $home['display']]);
-	$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
-<li><a href=\"../\">Book Exchange</a></li>
-<li>My Account</li>\n";
+	//$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
+//<li><a href=\"../\">Book Exchange</a></li>
+//<li>My Account</li>\n";
 	
-//Include the top of the page from the administration template
-	topPage("public", "All Book Listings", "" , "", "<link href=\"../system/stylesheets/style.css\" rel=\"stylesheet\" />
-<link href=\"../system/stylesheets/account.css\" rel=\"stylesheet\" />
-<link href=\"../../styles/jQuery/validationEngine.jquery.min.css\" rel=\"stylesheet\" />
-<script src=\"../../javascripts/jQuery/jquery.validationEngine.min.js\"></script>
-<script src=\"../../javascripts/common/md5.min.js\"></script>
-<script src=\"../system/javascripts/interface.js\"></script>", $breadcrumb);
 	echo "<section class=\"body\">
 ";
 	
@@ -124,49 +119,15 @@
 <h2>My Profile</h2>
 <span class=\"row\">
 <strong>Name:</strong>
-<span class=\"firstName\">" . stripslashes($userData['firstName']) . "</span> <span class=\"lastName\">" . stripslashes($userData['lastName']) . "</span>
+<span class=\"firstName\">" . stripslashes($essentials->user->first_name) . "</span> <span class=\"lastName\">" . stripslashes($essentials->user->last_name) . "</span>
 </span>
 
 <span class=\"row\">
 <strong>Email:</strong>
-<a class=\"emailAddress1\" href=\"mailto:" . htmlentities(stripslashes($userData['emailAddress1'])) .  "\">" . stripslashes($userData['emailAddress1']) . "</a>
+<a class=\"emailAddress1\" href=\"mailto:" . htmlentities(stripslashes($essentials->user->user_email)) .  "\">" . stripslashes($essentials->user->user_email) . "</a>
 </span>
 
-";
-	
-	if ($userData['emailAddress2'] != "") {
-		echo "<span class=\"row\">
-<strong>Alternate email:</strong>
-<a class=\"emailAddress2\" href=\"mailto:" . htmlentities(stripslashes($userData['emailAddress2'])) .  "\">" . stripslashes($userData['emailAddress2']) . "</a>
-</span>
-
-";
-	} else {
-		echo "<span class=\"row\">
-<strong>Alternate email:</strong>
-<a class=\"none emailAddress2\">None given</a>
-</span>
-
-";
-	}
-	
-	if ($userData['emailAddress3'] != "") {
-		echo "<span class=\"row\">
-<strong>Alternate email:</strong>
-<a class=\"emailAddress3\" href=\"mailto:" . htmlentities(stripslashes($userData['emailAddress3'])) .  "\">" . stripslashes($userData['emailAddress3']) . "</a>
-</span>
-
-";
-	} else {
-		echo "<span class=\"row\">
-<strong>Alternate email:</strong>
-<a class=\"none emailAddress3\">None given</a>
-</span>
-
-";
-	}
-	
-	echo "<span class=\"row\">
+<span class=\"row\">
 <strong>Password:</strong>
 <span>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
 </span>
@@ -177,40 +138,43 @@
 ";
 	
 //Include a list of books that the user has listed for sale
-	$booksGrabber = mysql_query("SELECT books.*, bookcategories.*, books.id AS bookID, books.course AS courseID FROM books RIGHT JOIN (bookcategories) ON books.course = bookcategories.id WHERE books.userID = '{$userData['id']}' AND books.id IS NOT NULL GROUP BY books.linkID ORDER BY books.upload DESC", $connDBA);
-	$exchangeSettings = mysql_fetch_assoc(mysql_query("SELECT * FROM exchangesettings WHERE id = '1'", $connDBA));
+	$booksGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_bookcategories.*, ffi_be_books.id AS bookID, ffi_be_books.course AS courseID FROM ffi_be_books RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id WHERE ffi_be_books.userID = '{$essentials->user->ID}' AND ffi_be_books.id IS NOT NULL GROUP BY ffi_be_books.linkID ORDER BY ffi_be_books.upload DESC");
+	$exchangeSettings = $wpdb->get_results("SELECT * FROM ffi_be_exchangesettings WHERE id = '1'");
+	$exchangeSettings = $exchangeSettings[0];
 	
 	echo "<section class=\"books\">
 <h2>My Books</h2>
 ";
 	
-	if (mysql_num_rows($booksGrabber)) {
+	if (count($booksGrabber)) {
 		echo "<ul>";
 		
 		$now = strtotime("now");
 		$week = strtotime("+1 week");
 		
-		while ($book = mysql_fetch_assoc($booksGrabber)) {
+		for($i = 0; $i < count($booksGrabber); $i++) {
+			$book = $booksGrabber[$i];
+			
 		//Has this book expired, been sold, or will it expire within the next week?
-			if ($book['sold'] == "0" && ($book['upload'] + $exchangeSettings['expires']) < $now) {
+			if ($book->sold == "0" && ($book->upload + $exchangeSettings->expires) < $now) {
 				$class = " expired";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book['bookID'] . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
 ";
-				$expire = "<span class=\"expire\">Expired: " . date("F jS, Y \a\\t h:i A", ($book['upload'] + $exchangeSettings['expires'])) . "</span>
+				$expire = "<span class=\"expire\">Expired: " . date("F jS, Y \a\\t h:i A", ($book->upload + $exchangeSettings->expires)) . "</span>
 ";
 				$status = "<span class=\"expired\">Expired</span>
 ";
-			} elseif ($book['sold'] == "0" && ($book['upload'] + $exchangeSettings['expires']) < ($week) && ($book['upload'] + $exchangeSettings['expires']) > ($now)) {
+			} elseif ($book->sold == "0" && ($book->upload + $exchangeSettings->expires) < ($week) && ($book->upload + $exchangeSettings->expires) > ($now)) {
 				$class = " soon";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book['bookID'] . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
 ";
-				$expire = "<span class=\"expire\">Expires: " . date("F jS, Y \a\\t h:i A", ($book['upload'] + $exchangeSettings['expires'])) . "</span>
+				$expire = "<span class=\"expire\">Expires: " . date("F jS, Y \a\\t h:i A", ($book->upload + $exchangeSettings->expires)) . "</span>
 ";
 				$status = "<span class=\"expiring\">Expiring Soon, Click the Renew Button to Prevent Expiration</span>
 ";
-			} elseif ($book['sold'] == "1") {
+			} elseif ($book->sold == "1") {
 				$class = " sold";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book['bookID'] . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
 ";
 				$expire = "";
 				$status = "<span class=\"sold\">Sold</span>
@@ -218,7 +182,7 @@
 			} else {
 				$class = "";
 				$expireRenew = "";
-				$expire = "<span class=\"expire\">Expires: " . date("F jS, Y \a\\t h:i A", ($book['upload'] + $exchangeSettings['expires'])) . "</span>
+				$expire = "<span class=\"expire\">Expires: " . date("F jS, Y \a\\t h:i A", ($book->upload + $exchangeSettings->expires)) . "</span>
 ";
 				$status = "";
 			}
@@ -226,13 +190,13 @@
 			echo "
 <li class=\"book\">
 <div class=\"alert" . $class . "\">
-<a name=\"book_" . $book['bookID'] . "\"></a>
-<a href=\"../book/?id=" . $book['bookID'] . "\"><img class=\"cover\" src=\"" . htmlentities(stripslashes($book['imageURL'])) . "\" /></a>
-<a class=\"title\" href=\"../book/?id=" . $book['bookID'] . "\">" . stripslashes($book['title']) . "</a>
-<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book['author'])) . "&searchBy=author&category=0\">" . stripslashes($book['author']) . "</a></span>
-<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book['ISBN'])) . "&searchBy=ISBN&category=0\">" . stripslashes($book['ISBN']) . "</a></span>
-" . $expireRenew . "<a class=\"action edit\" href=\"../sell-books/?id=" . $book['bookID'] . "\" title=\"Edit this Book\"><img src=\"../system/images/icons/edit.png\" /></a>
-<a class=\"action deleteBook\" data-id=\"" . $book['bookID'] . "\" href=\"javascript:;\" title=\"Delete this Book\"><img src=\"../system/images/icons/delete.png\" /></a>
+<a name=\"book_" . $book->bookID . "\"></a>
+<a href=\"../book/?id=" . $book->bookID . "\"><img class=\"cover\" src=\"" . htmlentities(stripslashes($book->imageURL)) . "\" /></a>
+<a class=\"title\" href=\"../book/?id=" . $book->bookID . "\">" . stripslashes($book->title) . "</a>
+<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book->author)) . "&searchBy=author&category=0\">" . stripslashes($book->author) . "</a></span>
+<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book->ISBN)) . "&searchBy=ISBN&category=0\">" . stripslashes($book->ISBN) . "</a></span>
+" . $expireRenew . "<a class=\"action edit\" href=\"../sell-books/?id=" . $book->bookID . "\" title=\"Edit this Book\"><img src=\"../system/images/icons/edit.png\" /></a>
+<a class=\"action deleteBook\" data-id=\"" . $book->bookID . "\" href=\"javascript:;\" title=\"Delete this Book\"><img src=\"../system/images/icons/delete.png\" /></a>
 " . $expire . $status . "</div>
 </li>
 ";
@@ -248,17 +212,19 @@
 </section>";
 	
 //Include a list of books that the user has purchased
-	$purchasedGrabber = mysql_query("SELECT books.*, purchases.*, users.*, books.id AS bookID FROM books RIGHT JOIN (purchases) ON books.id = purchases.bookID RIGHT JOIN (users) ON purchases.sellerID = users.id WHERE purchases.buyerID = '{$userData['id']}' AND books.id IS NOT NULL GROUP BY books.linkID ORDER BY purchases.time DESC", $connDBA);
+	$purchasedGrabber = $wpdb->get_results("SELECT books.*, purchases.*, users.*, books.id AS bookID FROM books RIGHT JOIN (purchases) ON books.id = purchases.bookID RIGHT JOIN (users) ON purchases.sellerID = users.id WHERE purchases.buyerID = '{$userData['id']}' AND books.id IS NOT NULL GROUP BY books.linkID ORDER BY purchases.time DESC");
 	
 	
 	echo "<section class=\"purchases\">
 <h2>My Purchases</h2>
 ";
 	
-	if (mysql_num_rows($purchasedGrabber)) {
+	if (count($purchasedGrabber)) {
 		echo "<ul>";
 		
-		while ($purchase = mysql_fetch_assoc($purchasedGrabber)) {
+		for($i = 0; $i < count($purchasedGrabber); $i++) {
+			$purchase = $purchasedGrabber[$i];
+			
 			echo "
 <li class=\"book\">
 <img src=\"" . htmlentities(stripslashes($purchase['imageURL'])) . "\" />
@@ -282,6 +248,4 @@
 //Include the footer from the public template
 	echo "
 </section>";
-
-	footer("public");
 ?>

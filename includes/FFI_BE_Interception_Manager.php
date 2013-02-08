@@ -109,7 +109,10 @@ class FFI_BE_Interception_Manager {
 	}
 	
 /**
- * Parse the address to see if the plugin should become active.
+ * Parse the address to see if the plugin should become active. This
+ * method also creates a global constant FFI_BE_ACTIVE, if the method
+ * has determined that this URL will display book exchange related 
+ * content.
  *
  * @access private
  * @return boolean
@@ -120,6 +123,7 @@ class FFI_BE_Interception_Manager {
 		$URL = parse_url($this->requestedURL);
 		
 		if (stristr($URL['path'], "book-exchange")) {
+			define("FFI_BE_ACTIVE", TRUE);
 			return true;
 		}
 		

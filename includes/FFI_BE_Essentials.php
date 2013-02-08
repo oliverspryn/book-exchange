@@ -9,7 +9,7 @@
  *  - Provide quick access to the current user's information
  *  - Importing necessary PHP scripts
  *  - Setting the page title
- *  - Including CSS or JS files
+ *  - Including PHP, CSS, or JS files
  * 
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -116,6 +116,25 @@ class FFI_BE_Essentials {
 	}
 	
 /**
+ * Include the requested PHP script with respect to the app folder.
+ * So a request like this "system/server/Validate.php" will include
+ * the script like soL .../book-exchange/app/system/server/Validate.php.
+ * regardless of the address of the PHP file which requested the script.
+ *
+ * This method uses the "require_once()" function to import the 
+ * script.
+ *
+ * @access public
+ * @param  string   $address The of the PHP script URL with respect to the "app" folder
+ * @return void
+ * @since  v2.0 Dev
+*/
+
+	public function includePHP($address) {
+		require_once(FFI_BE_PATH . "app/" . $address);
+	}
+	
+/**
  * Include the requested stylesheet in the <head> section of the page.
  * Local stylesheets are requested with respect to the "app" folder.
  * So a request such as "system/stylesheet/sell.css" would include the 
@@ -132,7 +151,7 @@ class FFI_BE_Essentials {
  * to the template in the order they were requested.
  *
  * @access public
- * @param  string   $address The absolute URL of the external stylesheet or the URL with respect to the "app" folder.
+ * @param  string   $address The absolute URL of the external stylesheet or the URL with respect to the "app" folder
  * @return void
  * @since  v2.0 Dev
 */
@@ -173,7 +192,7 @@ class FFI_BE_Essentials {
  * to the template in the order they were requested.
  *
  * @access public
- * @param  string   $address The absolute URL of the external script or the URL with respect to the "app" folder.
+ * @param  string   $address The absolute URL of the external script or the URL with respect to the "app" folder
  * @return void
  * @since  v2.0 Dev
 */

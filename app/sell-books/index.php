@@ -2,6 +2,7 @@
 //Verify that the user is logged in
 	$essentials->requireLogin();
 	$essentials->setTitle("Sell Books");
+	$essentials->includePHP("system/server/Validate.php");
 	$essentials->includeCSS("system/stylesheets/style.css");
 	$essentials->includeCSS("system/stylesheets/sell.css");
 	$essentials->includeCSS("system/stylesheets/validationEngine.jquery.min.css");
@@ -60,11 +61,11 @@
  *
  * The first values for className and classSec will be discarded.
 */
-	/*
+	
 //Insert a new book
 	if (isset($_POST) && !empty($_POST) && is_array($_POST) && isset($_POST['ISBN'])) {
 	//Generate the server-side data needed to store a book
-		$userID = $userData['id'];
+		$userID = $essentials->user->ID;
 		$upload = strtotime("now");
 		$linkID = md5($upload . "_" . $userID);
 		
@@ -79,24 +80,24 @@
 		
 	//Has an image ID been specified? If so, see if the image link ID has been approved for immediate publication
 		if (!empty($_POST['imageID'])) {
-			$imageTestGrabber = mysql_query("SELECT * FROM books WHERE imageID = '{$_POST['imageID']}' AND awaitingImage = ''", $connDBA);
+			$imageTestGrabber = $wpdb->get_results("SELECT * FROM ffi_be_books WHERE imageID = '{$_POST['imageID']}' AND awaitingImage = ''");
 			
 		//Another book of the same ISBN has been verified
-			if ($imageTestGrabber && mysql_num_rows($imageTestGrabber)) {
-				$imageTest = mysql_fetch_assoc($imageTestGrabber);
+			if ($imageTestGrabber && count($imageTestGrabber)) {
+				$imageTest = $imageTestGrabber[0];
 				
 				$imageID = $_POST['imageID'];
-				$imageURL = mysql_real_escape_string($imageTest['imageURL']);
+				$imageURL = mysql_real_escape_string($imageTest->imageURL);
 				$awaitingImage = "";
 		//No other book with this ISBN has been approved
 			} else {
 				$imageID = $_POST['imageID'];
-				$imageURL = mysql_real_escape_string("/book-exchange/system/images/icons/default_book.png");
+				$imageURL = mysql_real_escape_string(FFI_BE_REAL_ADDR . "system/images/icons/default_book.png");
 				$awaitingImage = mysql_real_escape_string(Validate::required($_POST['imageURL']));
 			}
 		} else {
 			$imageID = md5($userID . "_" . $upload);
-			$imageURL = mysql_real_escape_string("/book-exchange/system/images/icons/default_book.png");
+			$imageURL = mysql_real_escape_string(FFI_BE_REAL_ADDR . "system/images/icons/default_book.png");
 			$awaitingImage = mysql_real_escape_string(Validate::required($_POST['imageURL']));
 		}
 		
@@ -119,11 +120,11 @@
 				$classSec = mysql_real_escape_string(Validate::required($_POST['classSec'][$i + 1], false, false, false, 1));
 				
 			//Execute the data on the database
-				mysql_query("INSERT INTO books (
+				$wpdb->get_results("INSERT INTO ffi_be_books (
 						`id`, `userID`, `upload`, `sold`, `linkID`, `ISBN`, `title`, `author`, `edition`, `course`, `number`, `section`, `price`, `condition`, `written`, `comments`, `imageURL`, `awaitingImage`, `imageID`
 					 ) VALUES (
 						NULL, '{$userID}', '{$upload}', '0', '{$linkID}', '{$ISBN}', '{$title}', '{$author}', '{$edition}', '{$className}', '{$classNum}', '{$classSec}', '{$price}', '{$condition}', '{$written}', '{$comments}', '{$imageURL}', '{$awaitingImage}', '{$imageID}'
-					 )", $connDBA);
+					 )");
 			}
 			
 		//Determine where to redirect the user
@@ -134,11 +135,11 @@
 			}
 			
 			if ($_POST['redirect'] == "1") {
-				redirect("../sell-books/?message=added" . $extra);
+				wp_redirect("sell-books/?message=added" . $extra);
 			} else {
 				$id = mysql_insert_id();
 				
-				redirect("../account/?message=added" . $extra . "#book_" . $id);
+				wp_redirect("account/?message=added" . $extra . "#book_" . $id);
 			}
 		} else {
 		/**
@@ -149,9 +150,9 @@
 		 * If there more classes in the update, just added some more rows into the database.
 		 * If there are less classes in the update, then remove a few rows.
 		*/
-			/*
+		
 		//Are more or less rows needed?
-			$oldClasses = explode(",", $bookData['bookIDs']);
+			$oldClasses = explode(",", $bookData->bookIDs);
 			$action = "none";
 			
 		//Remove some rows
@@ -166,7 +167,7 @@
 				}
 				
 				$IDs = ltrim($IDs, " OR ");				
-				mysql_query("DELETE FROM books WHERE " . $IDs, $connDBA);
+				$wpdb->get_results("DELETE FROM ffi_be_books WHERE " . $IDs);
 			}
 			
 		//Add some rows
@@ -184,15 +185,15 @@
 					$classSec = mysql_real_escape_string(Validate::required($_POST['classSec'][$i + 1], false, false, false, 1));
 					
 				//Execute the data on the database
-					mysql_query("INSERT INTO books (
+					$wpdb->get_results("INSERT INTO ffi_be_books (
 							`id`, `userID`, `upload`, `sold`, `linkID`, `ISBN`, `title`, `author`, `edition`, `course`, `number`, `section`, `price`, `condition`, `written`, `comments`, `imageURL`, `awaitingImage`, `imageID`
 						 ) VALUES (
-							NULL, '{$bookData['userID']}', '{$bookData['upload']}', '0', '{$bookData['linkID']}', '{$ISBN}', '{$title}', '{$author}', '{$edition}', '{$className}', '{$classNum}', '{$classSec}', '{$price}', '{$condition}', '{$written}', '{$comments}', '{$imageURL}', '{$awaitingImage}', '{$imageID}'
-						 )", $connDBA);
+							NULL, '{$bookData->userID}', '{$bookData->upload}', '0', '{$bookData->linkID}', '{$ISBN}', '{$title}', '{$author}', '{$edition}', '{$className}', '{$classNum}', '{$classSec}', '{$price}', '{$condition}', '{$written}', '{$comments}', '{$imageURL}', '{$awaitingImage}', '{$imageID}'
+						 )");
 				}
 			}
 			
-			$oldClasses = explode(",", $bookData['bookIDs']);
+			$oldClasses = explode(",", $bookData->bookIDs);
 			
 		//Process this data multiple times, see above description for more details
 			for ($i = 0; $i <= sizeof($_POST['classNum']) - 1; $i ++) {
@@ -202,13 +203,12 @@
 				$classSec = mysql_real_escape_string(Validate::required($_POST['classSec'][$i + 1], false, false, false, 1));
 			
 			//Execute the data on the database
-				mysql_query("UPDATE books SET ISBN = '{$ISBN}', title = '{$title}', author = '{$author}', edition = '{$edition}', course = '{$className}', number = '{$classNum}', section = '{$classSec}', price = '{$price}', `condition` = '{$condition}', written = '{$written}', comments = '{$comments}', imageURL = '{$imageURL}', awaitingImage = '{$awaitingImage}', imageID = '{$imageID}' WHERE id = '{$oldClasses[$i]}'", $connDBA);
+				$wpdb->get_results("UPDATE ffi_be_books SET ISBN = '{$ISBN}', title = '{$title}', author = '{$author}', edition = '{$edition}', course = '{$className}', number = '{$classNum}', section = '{$classSec}', price = '{$price}', `condition` = '{$condition}', written = '{$written}', comments = '{$comments}', imageURL = '{$imageURL}', awaitingImage = '{$awaitingImage}', imageID = '{$imageID}' WHERE id = '{$oldClasses[$i]}'", $connDBA);
 			}
 			
-			redirect("../account/?message=edited#book_" . $bookData['id']);
+			wp_redirect("../account/?message=edited#book_" . $bookData->id);
 		}
 	}
-	*/
 
 //Display any needed success messages
 	if (isset($_GET['message']) && $_GET['message'] == "added") {
@@ -360,7 +360,7 @@
 				$courseFlyout .= "
 <li>
 <ul>
-<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../system/images/icons/all.png');\">Select a Discipline</span></span></li>";
+<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/icons/all.png');\">Select a Discipline</span></span></li>";
 
 			//Since we inserted a "free" item, add one to the counter
 				$counter++;
@@ -372,7 +372,7 @@
 		}
 		
 		$courseFlyout .= "
-<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/categories/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
 
 		if ($counter % 10 == 0) {
 			$courseFlyout .= "
@@ -480,7 +480,7 @@
 						$courseFlyout .= "
 <li>
 <ul>
-<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../system/images/icons/all.png');\">Select a Discipline</span></span></li>";
+<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/icons/all.png');\">Select a Discipline</span></span></li>";
 		
 					//Since we inserted a "free" item, add one to the counter
 						$counter++;
@@ -492,7 +492,7 @@
 				}
 				
 				$courseFlyout .= "
-<li" . $class . " data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
+<li" . $class . " data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/categories/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
 		
 				if ($counter % 10 == 0) {
 					$courseFlyout .= "

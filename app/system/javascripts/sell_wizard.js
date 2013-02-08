@@ -9,7 +9,7 @@
 		var forwardButton = $('span.forward');
 		var APIKey = 'AIzaSyCCfXsNv47Xg62-Kz6opyvmn3YBPhliZ0k';
 		var APIRequest = 'https://www.googleapis.com/shopping/search/v1/public/products?country=US&key=' + APIKey + '&q=';
-		var localRequest = '../system/server/suggest_local.php?ISBN=';
+		var localRequest = '../wp-content/plugins/book-exchange/app/system/server/suggest_local.php?ISBN=';
 		
 	/**
 	 * Fetch an image from the local 
@@ -49,7 +49,7 @@
 							var classes = '';
 							
 							for (var i = 0; i <= data.classes.length - 1; i++) {
-								classes += '<span class="class"><span class="band" style="border-left-color: ' + data.classes[i].color + ';"><span class="icon" style="background-image: url(\'../../data/book-exchange/icons/' + data.classes[i].id + '/icon_032.png\');">' + data.classes[i].name + ' ' + data.classes[i].classNum + ' ' + data.classes[i].section + '</span></span></span>'
+								classes += '<span class="class"><span class="band" style="border-left-color: ' + data.classes[i].color + ';"><span class="icon" style="background-image: url(\'../wp-content/plugins/book-exchange/app/system/images/categories/' + data.classes[i].id + '/icon_032.png\');">' + data.classes[i].name + ' ' + data.classes[i].classNum + ' ' + data.classes[i].section + '</span></span></span>'
 							}
 							
 						//Construct the alert dialog with the fetched information from the server

@@ -1,7 +1,7 @@
 <?php
 //Include the system's core
-	require_once("../../../Connections/connDBA.php");
-	require_once("../../../Connections/jsonwrapper/jsonwrapper.php");
+	define("WP_USE_THEMES", false);
+	require_once("../../../../../../wp-blog-header.php");
 	
 //Check and see if a given ISBN number exists in the database
 	if (isset($_GET['ISBN']) && strlen($_GET['ISBN']) == 10) {
@@ -9,27 +9,29 @@
 		$returnArray = array();
 		$counter = 0;
 		$ISBN = $_GET['ISBN'];
-		$ISBNGrabber = mysql_query("SELECT books.*, bookcategories.name, bookcategories.course AS courseID, bookcategories.color1 FROM `books` RIGHT JOIN (bookcategories) ON books.course = bookcategories.id WHERE books.ISBN = '{$ISBN}' ORDER BY bookcategories.course, books.number, books.section ASC", $connDBA);
+		$ISBNGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_bookcategories.name, ffi_be_bookcategories.course AS courseID, ffi_be_bookcategories.color1 FROM `ffi_be_books` RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id WHERE ffi_be_books.ISBN = '{$ISBN}' ORDER BY ffi_be_bookcategories.course, ffi_be_books.number, ffi_be_books.section ASC");
 		
-		while($ISBNData = mysql_fetch_array($ISBNGrabber)) {
+		for($i = 0; $i < count($ISBNGrabber); $i++) {
+			$ISBNData = $ISBNGrabber[$i];
+			
 		//We only need this info once
 			if (++$counter == 1) {
-				$returnArray['ISBN'] = stripslashes($ISBNData['ISBN']);
-				$returnArray['title'] = stripslashes($ISBNData['title']);
-				$returnArray['author'] = stripslashes($ISBNData['author']);
-				$returnArray['edition'] = stripslashes($ISBNData['edition']);
-				$returnArray['imageID'] = stripslashes($ISBNData['imageID']);
+				$returnArray['ISBN'] = stripslashes($ISBNData->ISBN);
+				$returnArray['title'] = stripslashes($ISBNData->title);
+				$returnArray['author'] = stripslashes($ISBNData->author);
+				$returnArray['edition'] = stripslashes($ISBNData->edition);
+				$returnArray['imageID'] = stripslashes($ISBNData->imageID);
 				
 			//Suggest the REAL cover image, even if it hasn't been approved yet
-				if (!empty($ISBNData['awaitingImage'])) {
-					$returnArray['imageURL'] = stripslashes($ISBNData['awaitingImage']);
+				if (!empty($ISBNData->awaitingImage)) {
+					$returnArray['imageURL'] = stripslashes($ISBNData->awaitingImage);
 				} else {
-					$returnArray['imageURL'] = stripslashes($ISBNData['imageURL']);
+					$returnArray['imageURL'] = stripslashes($ISBNData->imageURL);
 				}
 			}
 			
 		//Collect all of the classes in which this book is used
-			array_push($classes, array("id" => stripslashes($ISBNData['course']), "name" => stripslashes($ISBNData['name']), "collegeCID" => stripslashes($ISBNData['courseID']), "classNum" => stripslashes($ISBNData['number']), "section" => stripslashes($ISBNData['section']), "color" => stripslashes($ISBNData['color1'])));
+			array_push($classes, array("id" => stripslashes($ISBNData->course), "name" => stripslashes($ISBNData->name), "collegeCID" => stripslashes($ISBNData->courseID), "classNum" => stripslashes($ISBNData->number), "section" => stripslashes($ISBNData->section), "color" => stripslashes($ISBNData->color1)));
 		}
 		
 	//Was any data collected about for this ISBN?
