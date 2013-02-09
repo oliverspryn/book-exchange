@@ -151,7 +151,7 @@ class FFI_BE_Essentials {
  * to the template in the order they were requested.
  *
  * @access public
- * @param  string   $address The absolute URL of the external stylesheet or the URL with respect to the "app" folder
+ * @param  string   $address The URL of the external stylesheet or the URL with respect to the "app" folder
  * @return void
  * @since  v2.0 Dev
 */
@@ -164,7 +164,7 @@ class FFI_BE_Essentials {
 			$styleName = "FFI_BE_STYLE_ID_" . mt_rand();
 			
 		//Local stylesheets will need their address modified
-		//The adderss for external stylesheets begin with "//"
+		//The address for external stylesheets begin with "//"
 			if (substr($this->CSS[0], 0, 2) != "//") {
 				$this->CSS[0] = FFI_BE_REAL_ADDR . "app/" . $this->CSS[0];
 			}
@@ -192,7 +192,7 @@ class FFI_BE_Essentials {
  * to the template in the order they were requested.
  *
  * @access public
- * @param  string   $address The absolute URL of the external script or the URL with respect to the "app" folder
+ * @param  string   $address The URL of the external script or the URL with respect to the "app" folder
  * @return void
  * @since  v2.0 Dev
 */
@@ -205,7 +205,7 @@ class FFI_BE_Essentials {
 			$styleName = "FFI_BE_SCRIPT_ID_" . mt_rand();
 			
 		//Local scripts will need their address modified
-		//The adderss for external scripts begin with "//"
+		//The address for external scripts begin with "//"
 			if (substr($this->JS[0], 0, 2) != "//") {
 				$this->JS[0] = FFI_BE_REAL_ADDR . "app/" . $this->JS[0];
 			}
@@ -214,6 +214,39 @@ class FFI_BE_Essentials {
         	wp_enqueue_script($styleName);
 			array_shift($this->JS); //We're done with this script, so shift it off the front of the array
 		});
+	}
+	
+/**
+ * This method will take a URL relative to the plugin's "app"
+ * folder and append the actual physical address to this file.
+ * So a request such as "system/images/bkg.jpg" would rewrite
+ * the URL like so: .../book-exchange/app/system/images/bkg.jpg.
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "app" folder
+ * @return string   $address The normalized version of the given URL
+ * @since  v2.0 Dev
+*/
+	
+	public function normalizeURL($address) {
+		return FFI_BE_REAL_ADDR . "app/" . $address;
+	}
+	
+/**
+ * This method will take a URL relative with respect to the "app" 
+ * folder and give it an absolute URL with respect to the friendly 
+ * URL of this plugin. So a request such as "listings/details.php" 
+ * would rewrite the URL like so: 
+ * http://<wordpress-site/book-exchange/listings/details.php
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "app" folder
+ * @return string   $address The friendly version of the given URL
+ * @since  v2.0 Dev
+*/
+
+	public function friendlyURL($address) {
+		return FFI_BE_FAKE_ADDR . $address;
 	}
 }
 ?>

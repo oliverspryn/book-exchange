@@ -1,4 +1,11 @@
 <?php
+//Include the system's core
+	$essentials->setTitle("Book Exchange");
+	$essentials->includeCSS("system/stylesheets/style.css");
+	$essentials->includeCSS("system/stylesheets/welcome.css");
+	$essentials->includeJS("system/javascripts/jquery.jcarousel.min.js");
+	$essentials->includeJS("system/javascripts/interface.js");
+	
 //Include section one
 	echo "<section class=\"welcome\">
 <div class=\"design\">
@@ -36,7 +43,46 @@
 <div class=\"menuWrapper\">
 <div style=\"height: 0px;\"><div><input class=\"collapse noMod\" name=\"category\" type=\"text\" value=\"0\" /></div></div>
 
-<ul class=\"categoryFly\"></ul>
+<ul class=\"categoryFly\">";
+
+//Generate the category dropdown menu
+	$categories = $wpdb->get_results("SELECT * FROM `ffi_be_bookcategories` ORDER BY name ASC");
+	$counter = 1;
+
+	foreach($categories as $category) {
+	//Break up this "dropdown" list into columns every 10 items
+		if ($counter % 10 == 1) {
+		//Include an "all" menu item if this is the first item
+			if ($counter == 1) {
+				echo "
+<li>
+<ul>
+<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">All Disciplines</span></span></li>";
+
+			//Since we inserted a "free" item, add one to the counter
+				$counter++;
+			} else {
+				echo "
+<li>
+<ul>";
+			}
+		}
+
+		echo "
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" .  $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
+
+		if ($counter % 10 == 0) {
+			echo "
+</ul>
+</li>
+";
+		}
+
+		$counter++;
+	}
+
+
+	echo "</ul>
 </div>
 </div>
 
@@ -47,7 +93,7 @@
 </div>
 </section>
 
-<img class=\"shadow\" src=\"system/images/welcome/paper_shadow.png\" />
+<img class=\"shadow\" src=\"" . $essentials->normalizeURL("system/images/welcome/paper_shadow.png") . "\" />
 
 ";
 
@@ -77,11 +123,11 @@ Quick start video is on its way and will be posted soon!
 	echo "<section class=\"screenshots\">
 <div class=\"overflowHide\">
 <ul class=\"scrollerContainer\">
-<li><img src=\"system/images/welcome/view_categories.png\" /></li>
-<li><img src=\"system/images/welcome/view_sell_books.png\" /></li>
-<li><img src=\"system/images/welcome/view_listing.png\" /></li>
-<li><img src=\"system/images/welcome/view_search.png\" /></li>
-<li><img src=\"system/images/welcome/view_book.png\" /></li>
+<li><img src=\"" . $essentials->normalizeURL("system/images/welcome/view_categories.png") . "\" /></li>
+<li><img src=\"" . $essentials->normalizeURL("system/images/welcome/view_sell_books.png") . "\" /></li>
+<li><img src=\"" . $essentials->normalizeURL("system/images/welcome/view_listing.png") . "\" /></li>
+<li><img src=\"" . $essentials->normalizeURL("system/images/welcome/view_search.png") . "\" /></li>
+<li><img src=\"" . $essentials->normalizeURL("system/images/welcome/view_book.png") . "\" /></li>
 </ul>
 </div>
 
@@ -117,29 +163,29 @@ Quick start video is on its way and will be posted soon!
 <a class=\"explore highlight\" href=\"search\">Search for Books &raquo;</a>
 </div>
 
-<img class=\"sell\" src=\"system/images/welcome/view_sell_books_mini.png\" />
-<img class=\"search\" src=\"system/images/welcome/view_search_mini.png\" />
+<img class=\"sell\" src=\"" . $essentials->normalizeURL("system/images/welcome/view_sell_books_mini.png") . "\" />
+<img class=\"search\" src=\"" . $essentials->normalizeURL("system/images/welcome/view_search_mini.png") . "\" />
 </section>
 
 ";
 
-
+//Include section six
 	echo "<section class=\"closing\">
 <div class=\"design\">
 <ul>
-<li style=\"background-image: url(system/images/welcome/sell_books.png);\">
+<li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/sell_books.png") . ");\">
 <h3>Buy and Sell Books</h3>
 <p><strong>Set your own price</strong> and sell your books in three easy steps. You can often <strong>buy other books at discounted prices</strong>.</p>
 <a class=\"explore highlight\" href=\"sell-books\">Sell Your Books &raquo;</a>
 </li>
 
-<li style=\"background-image: url(system/images/welcome/search.png);\">
+<li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/search.png") . ");\">
 <h3>Search the Growing Database</h3>
-<p>Search <strong>Thousands</strong> of books by title, author, course, or ISBN, contributed by students like you!</p>
+<p>Search <strong>thousands</strong> of books by title, author, course, or ISBN, contributed by students like you!</p>
 <a class=\"explore highlight\" href=\"search\">Search for Books &raquo;</a>
 </li>
 
-<li style=\"background-image: url(system/images/welcome/categories.png);\">
+<li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/categories.png") . ");\">
 <h3>Browse by Category</h3>
 <p>Each category has its own unique <strong>color exchange tile</strong>, designed to catch your eye when you come across a class you recognize.</p>
 <a class=\"explore highlight\" href=\"listings\">Browse for Books &raquo;</a>
@@ -155,16 +201,16 @@ Quick start video is on its way and will be posted soon!
 <div class=\"books\">
 ";
 
-	//if (!loggedIn()) {
+	if (!is_user_logged_in()) {
 		echo "<h2>Convinced? Jump on board!</h2>
 <button class=\"green large openLogin\" data-login=\"sell-books/\">Register</button>
 <span class=\"alternate\">or <a class=\"highlight\" href=\"../login\">login</a></span>
 ";
-	//} else {
+	} else {
 		echo "<h2>Convinced? Start selling!</h2>
 <button class=\"green large\" onclick=\"document.location.href='sell-books/'\">Sell Books</button>
 ";
-	//}
+	}
 	
 	echo "<div class=\"pointer\"></div>
 </div>

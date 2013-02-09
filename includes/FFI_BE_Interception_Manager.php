@@ -45,6 +45,16 @@ class FFI_BE_Interception_Manager {
 	private $scriptURL;
 	
 /**
+ * Hold the generated page content until Wordpress is ready to place the
+ * content.
+ *
+ * @access private
+ * @type   string 
+*/
+
+	private $content;
+	
+/**
  * CONSTRUCTOR
  *
  * This method will:
@@ -52,6 +62,7 @@ class FFI_BE_Interception_Manager {
  *    http://<wordpress-site>/book-exchange/...
  *  - Parse the requested URL into an address which can be used to
  *    fetch correct script from the "app" directory
+ *  - Include the "pluggable" function library from Wordpress
  *  - Include requests for the appropriate application files
  *  - Utilize the FFI_BE_Page_Info_Manager class to give the page an
  *    appropriate title and load necessary stylesheets and scripts
@@ -63,6 +74,10 @@ class FFI_BE_Interception_Manager {
 */
 	
 	public function __construct() {
+	//Globalize a few necessary variables
+		global $essentials;
+		global $wpdb;
+		
 	//Check if the plugin should be activated
 		$this->URLNoRoot();
 	
@@ -85,6 +100,15 @@ class FFI_BE_Interception_Manager {
 		 * completely replace the contents of the 404 page with the correct
 		 * contents of the application, if one exists.
 		*/  
+		
+		//We need several methods from this function library
+			require_once(ABSPATH . "wp-includes/pluggable.php");
+			
+		//Run the required script first, so if any modifications should be made to header
+			ob_start();
+			require_once(FFI_BE_PATH . "app" . $this->scriptURL);
+			$this->content = ob_get_contents();
+			ob_end_clean();
 			
 		//Request application scripts just after the header is called
 			add_filter("the_content", array($this, "intercept"));
@@ -170,11 +194,7 @@ class FFI_BE_Interception_Manager {
  * @since  v2.0 Dev
 */
 	public function intercept() {
-	//Globalize a few necessary variables
-		global $essentials;
-		global $wpdb;
-		
-		require_once(FFI_BE_PATH . "app" . $this->scriptURL);
+		echo $this->content;
 	}
 	
 /**
@@ -195,15 +215,8 @@ class FFI_BE_Interception_Manager {
 		
 	//Check to see if the user is really requesting a page that exists
 		if (file_exists($path)) {
-		//Run the required script first, so if any modifications should be made to header...
-			ob_start();
-			require_once($path);
-			$output = ob_get_contents();
-			ob_end_clean();
-			
-		//... we can do that down here
 			get_header();
-			echo $output;
+			echo $this->content;
 			get_footer();
 			exit;
 		} else {
