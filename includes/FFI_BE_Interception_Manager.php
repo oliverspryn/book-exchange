@@ -99,16 +99,20 @@ class FFI_BE_Interception_Manager {
 		 * exist. Therefore, listening for the 404 action enables us to 
 		 * completely replace the contents of the 404 page with the correct
 		 * contents of the application, if one exists.
-		*/  
+		*/
 		
 		//We need several methods from this function library
 			require_once(ABSPATH . "wp-includes/pluggable.php");
 			
 		//Run the required script first, so if any modifications should be made to header
-			ob_start();
-			require_once(FFI_BE_PATH . "app" . $this->scriptURL);
-			$this->content = ob_get_contents();
-			ob_end_clean();
+			$path = FFI_BE_PATH . "app" . $this->scriptURL;
+		
+			if (file_exists($path)) {
+				ob_start();
+				require_once($path);
+				$this->content = ob_get_contents();
+				ob_end_clean();
+			}
 			
 		//Request application scripts just after the header is called
 			add_filter("the_content", array($this, "intercept"));
@@ -206,15 +210,9 @@ class FFI_BE_Interception_Manager {
  * @since  v2.0 Dev
 */
 	
-	public function intercept404() {
-	//Globalize a few necessary variables
-		global $essentials;
-		global $wpdb;
-		
-		$path = FFI_BE_PATH . "app" . $this->scriptURL;
-		
+	public function intercept404() {		
 	//Check to see if the user is really requesting a page that exists
-		if (file_exists($path)) {
+		if (!empty($this->content)) {
 			get_header();
 			echo $this->content;
 			get_footer();

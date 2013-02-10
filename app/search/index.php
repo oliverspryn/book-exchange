@@ -1,7 +1,10 @@
 <?php
 //Include the system's core
-	require_once("../../Connections/connDBA.php");
-	require_once("../system/server/Validate.php");
+	$essentials->storeUserInfo();
+	$essentials->includePHP("system/server/Validate.php");
+	$essentials->includeCSS("system/stylesheets/style.css");
+	$essentials->includeCSS("system/stylesheets/search.css");
+	$essentials->includeJS("system/javascripts/interface.js");
 	
 //Perform a search operation on the database
 	if (isset($_GET['search']) && $_GET['search'] != "") {
@@ -11,14 +14,13 @@
 		
 	//Search by a specific category
 		if ($category != 0) {
-			$category = " AND books.course = '" . $category . "'";
+			$category = " AND ffi_be_books.course = '" . $category . "'";
 		} else {
 			$category = "";
 		}
 		
 	//Don't fetch expired books
-		$exchangeSettings = mysql_fetch_assoc(mysql_query("SELECT * FROM exchangesettings WHERE id = '1'", $connDBA));
-		
+		$exchangeSettings = $wpdb->get_results("SELECT * FROM ffi_be_exchangesettings WHERE id = '1'");
 		
 	//Is there a sort criteria?
 		if (isset($_GET['sortBy'])) {
@@ -26,38 +28,38 @@
 			
 			switch($sortBy) {
 				case "titleASC" : 
-					$sort = "books.title ASC, books.price ASC";
+					$sort = "ffi_be_books.title ASC, ffi_be_books.price ASC";
 					break;
 					
 				case "titleDESC" : 
-					$sort = "books.title DESC, books.price ASC";
+					$sort = "ffi_be_books.title DESC, ffi_be_books.price ASC";
 					break;
 					
 				case "priceASC" : 
-					$sort = "books.price ASC, books.title ASC";
+					$sort = "ffi_be_books.price ASC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "priceDESC" : 
-					$sort = "books.price DESC, books.title ASC";
+					$sort = "ffi_be_books.price DESC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "authorASC" : 
-					$sort = "books.author ASC, books.title ASC";
+					$sort = "ffi_be_books.author ASC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "authorDESC" : 
-					$sort = "books.author DESC, books.title ASC";
+					$sort = "ffi_be_books.author DESC, ffi_be_books.title ASC";
 					break;
 					
 				default : 
-					$sort = "books.title ASC";
+					$sort = "ffi_be_books.title ASC";
 					break;
 			}
 		} else {
-			$sort = "books.title ASC";
+			$sort = "ffi_be_books.title ASC";
 		}
 		
 	//Only display a given number of queries		
@@ -67,8 +69,8 @@
 			$limit = 25;
 		}
 		
-		if (isset($_GET['page'])) {
-			$start = $limit * (Validate::numeric($_GET['page'], 1) - 1);
+		if (isset($_GET['pageLoc'])) {
+			$start = $limit * (Validate::numeric($_GET['pageLoc'], 1) - 1);
 		} else {
 			$start = 0;
 		}
@@ -78,59 +80,57 @@
 		
 		switch($searchBy) {
 			case "title" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort . " LIMIT " . $start . ", " . $limit, $connDBA);
-				$lengthGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort, $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort . " LIMIT " . $start . ", " . $limit);
+				$lengthGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort);
 				break;
 				
 			case "author" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort . " LIMIT " . $start . ", " . $limit, $connDBA);
-				$lengthGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort, $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort . " LIMIT " . $start . ", " . $limit);
+				$lengthGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY score DESC, " . $sort);
 				break;
 				
 			case "ISBN" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE ISBN = '{$query}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit, $connDBA);
-				$lengthGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE ISBN = '{$query}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort, $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ISBN = '{$query}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit);
+				$lengthGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ISBN = '{$query}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort);
 				break;
 				
 			case "course" : 
 				$number = substr($query, strlen($query) - 5, strlen($query) - 2);
 				$section = substr($query, strlen($query) - 1, strlen($query));
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE number = '{$number}' AND section = '{$section}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit, $connDBA);
-				$lengthGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection FROM books RIGHT JOIN (users) ON books.userID = users.id RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE number = '{$number}' AND section = '{$section}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort, $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE number = '{$number}' AND section = '{$section}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit);
+				$lengthGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE number = '{$number}' AND section = '{$section}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort);
 				break;
 				
 			case "seller" : 
-				$name = explode(" ", $query);
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, users.emailAddress1, users.emailAddress2, users.emailAddress3, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection, MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AS score FROM users RIGHT JOIN (books) ON users.id = books.userID RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON users.id WHERE MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit, $connDBA);
-				$lengthGrabber = mysql_query("SELECT books.*, exchangesettings.expires, users.firstName, users.lastName, users.emailAddress1, users.emailAddress2, users.emailAddress3, GROUP_CONCAT(books.course) AS listedInID, GROUP_CONCAT(bookcategories.name) AS listedIn, GROUP_CONCAT(books.number) AS listedInNumber, GROUP_CONCAT(books.section) AS listedInSection, MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AS score FROM users RIGHT JOIN (books) ON users.id = books.userID RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON users.id WHERE MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort, $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, wp_users.user_email, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection, MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AS score FROM wp_users RIGHT JOIN (ffi_be_books) ON wp_users.ID = ffi_be_books.userID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON wp_users.ID WHERE MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort . " LIMIT " . $start . ", " . $limit);
+				$lengthGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.display_name, wp_users.user_email, GROUP_CONCAT(ffi_be_books.course) AS listedInID, GROUP_CONCAT(ffi_be_bookcategories.name) AS listedIn, GROUP_CONCAT(ffi_be_books.number) AS listedInNumber, GROUP_CONCAT(ffi_be_books.section) AS listedInSection, MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AS score FROM wp_users RIGHT JOIN (ffi_be_books) ON wp_users.ID = ffi_be_books.userID RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON wp_users.ID WHERE MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY linkID ORDER BY " . $sort);
 				break;
 				
 			default : 
-				redirect("../search/");
+				wp_redirect($essentials->friendlyURL("search"));
+				exit;
 				break;
 		}
 			
 	//Is a paginator necessary?
-		if ($lengthGrabber) {
-			$length = mysql_num_rows($lengthGrabber);
-			
-			if ($length == 0) {
-				redirect("../search/?message=none&query=" . $_GET['search'] . "&by=" . $_GET['searchBy']);
-			}
+		if (count($lengthGrabber)) {
+			$length = count($lengthGrabber);
 	//Or did the query fail altogether?
 		} else {
-			redirect("../search/?message=none&query=" . $_GET['search'] . "&by=" . $_GET['searchBy']);
+			wp_redirect($essentials->friendlyURL("search/?message=none&query=" . $_GET['search'] . "&by=" . $_GET['searchBy']));
+			exit;
 		}
 	} else if (isset($_GET['search']) && $_GET['search'] == "") {
-		redirect("../search/");
+		wp_redirect($essentials->friendlyURL("search"));
+		exit;
 	}
 	
 //Generate the breadcrumb
-	$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
-	$title = unserialize($home['content' . $home['display']]);
-	$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
-<li><a href=\"../\">Book Exchange</a></li>
-";
+	//$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
+	//$title = unserialize($home['content' . $home['display']]);
+	//$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
+//<li><a href=\"../\">Book Exchange</a></li>
+//";
 	
 //The breadcrumb and title will requrie some specialization depending if a search query is entered
 	if (isset($_GET['search'])) {		
@@ -140,17 +140,13 @@
 			$title = urldecode($_GET['search']);
 		}
 		
-		$breadcrumb .= "<li><a href=\"../search\">Search</a></li>
-<li>" . $title . "</li>\n";
+	//	$breadcrumb .= "<li><a href=\"../search\">Search</a></li>
+//<li>" . $title . "</li>\n";
 	} else {
-		$breadcrumb .= "<li>Search</li>\n";
+	//	$breadcrumb .= "<li>Search</li>\n";
 		$title = "Search";
 	}
-
-//Include the top of the page from the administration template
-	topPage("public", $title, "" , "", "<link href=\"../system/stylesheets/style.css\" rel=\"stylesheet\" />
-<link href=\"../system/stylesheets/search.css\" rel=\"stylesheet\" />
-<script src=\"../system/javascripts/interface.js\"></script>", $breadcrumb);
+	
 	echo "<section class=\"body\">
 ";
 	
@@ -164,6 +160,8 @@
 		}
 		
 	//Properly format the results string
+		$length = count($lengthGrabber);
+	
 		if ($length == 1) {
 			$total = "1 Result";
 		} else {
@@ -171,12 +169,14 @@
 		}
 		
 		echo "<header class=\"styled search" . $class . "\">
-<h1>" . $title . "</h1>
+<h1>" . stripslashes($title) . "</h1>
 <h2>" . $total . "</h2>
 </header>
 
 ";
 	}
+	
+	$essentials->setTitle(stripslashes($title));
 
 //Display the results of the search...
 	if (isset($_GET['search'])) {
@@ -230,10 +230,10 @@
 <ul class=\"categoryFly\">";
 	
 	//Generate the category dropdown menu
-		$categoryGrabber = mysql_query("SELECT * FROM `bookcategories` ORDER BY name ASC", $connDBA);
+		$categoryGrabber = $wpdb->get_results("SELECT * FROM `ffi_be_bookcategories` ORDER BY name ASC");
 		$counter = 1;
 	
-		while($category = mysql_fetch_array($categoryGrabber)) {
+		foreach($categoryGrabber as $category) {
 		//Break up this "dropdown" list into columns every 10 items
 			if ($counter % 10 == 1) {
 			//Include an "all" menu item if this is the first item
@@ -245,9 +245,9 @@
 					
 				//Should the "All Categories" be selected?
 					if (!isset($_GET['category']) || (isset($_GET['category']) && $_GET['category'] == '0')) {
-						echo "<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../system/images/icons/all.png');\">All Disciplines</span></span></li>";
+						echo "<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">All Disciplines</span></span></li>";
 					} else {
-						echo "<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../system/images/icons/all.png');\">All Disciplines</span></span></li>";
+						echo "<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">All Disciplines</span></span></li>";
 					}
 	
 				//Since we inserted a "free" item, add one to the counter
@@ -260,12 +260,12 @@
 			}
 			
 		//Should this category be selected?
-			if (isset($_GET['category']) && $_GET['category'] == $category['id']) {
+			if (isset($_GET['category']) && $_GET['category'] == $category->id) {
 				echo "
-<li class=\"selected\" data-value=\"" . $category['id'] . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category['color1']) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category['id'] . "/icon_032.png');\">" . stripslashes($category['name']) . "</span></span></li>";
+<li class=\"selected\" data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
 			} else {
 				echo "
-<li data-value=\"" . $category['id'] . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category['color1']) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category['id'] . "/icon_032.png');\">" . stripslashes($category['name']) . "</span></span></li>";
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
 			}
 	
 			if ($counter % 10 == 0) {
@@ -289,15 +289,15 @@
 ";
 	
 	//Display a list of other categories that the user can browse
-			$allCatGrabber = mysql_query("SELECT * FROM `bookcategories` ORDER BY name ASC", $connDBA);
+			$allCatGrabber = $wpdb->get_results("SELECT * FROM `ffi_be_bookcategories` ORDER BY name ASC");
 			
 			echo "<section class=\"categories\">
-<h2 style=\"color:" . stripslashes($category['color1']) . "\">More Book Listings</h2>
+<h2 style=\"color:" . stripslashes($category->color1) . "\">More Book Listings</h2>
 <ul class=\"moreListings\">";
 			
-			while ($allCat = mysql_fetch_array($allCatGrabber)) {
+			foreach($allCatGrabber as $allCat) {
 				echo "
-<li><a href=\"../listings/view-listing.php?id=" . $allCat['id'] . "\">" . stripslashes($allCat['name']) . " <span class=\"arrow\">&raquo;</span></a></li>";
+<li><a href=\"../listings/view-listing.php?id=" . $allCat->id . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\">&raquo;</span></a></li>";
 			}
 			
 			echo "
@@ -316,29 +316,14 @@
 		}
 		
 	//If we are searching by seller, display the seller's profile at top
-		if ($_GET['searchBy'] == "seller" && loggedIn() && (!isset($_GET['page']) || (isset($_GET['page']) && $_GET['page'] == "1"))) {
+		if ($_GET['searchBy'] == "seller" && is_user_logged_in() && (!isset($_GET['pageLoc']) || (isset($_GET['pageLoc']) && $_GET['pageLoc'] == "1"))) {
 		//Yes, we did use $lengthGrabber for finding the number of results, but let's steal it here
-			$seller = mysql_fetch_array($lengthGrabber);
-			
-		//Sometimes the user may not provide an alternative email address
-			if ($seller['emailAddress2'] != "") {
-				$email2 = "<a href=\"mailto:" . stripslashes($seller['emailAddress2']) . "\">" . stripslashes($seller['emailAddress2']) . "</a>";
-			} else {
-				$email2 = "<span class=\"none\">None given</span>";
-			}
-			
-			if ($seller['emailAddress3'] != "") {
-				$email3 = "<a href=\"mailto:" . stripslashes($seller['emailAddress3']) . "\">" . stripslashes($seller['emailAddress3']) . "</a>";
-			} else {
-				$email3 = "<span class=\"none\">None given</span>";
-			}
+			$seller = $lengthGrabber[0];
 			
 			echo "<section class=\"profile" . $class . "\">
-<h2>" . stripslashes($seller['firstName']) . "'s Profile</h2>
-<span class=\"row\"><strong>Name:</strong> " . stripslashes($seller['firstName']) . " " . stripslashes($seller['lastName']) . "</a></span>
-<span class=\"row\"><strong>Email address:</strong> <a href=\"mailto:" . stripslashes($seller['emailAddress1']) . "\">" . stripslashes($seller['emailAddress1']) . "</a></span>
-<span class=\"row\"><strong>Alternate email:</strong> " . $email2 . "</span>
-<span class=\"row\"><strong>Alternate email:</strong> " . $email3 . "</span>
+<h2>" . stripslashes($seller->display_name) . "'s Profile</h2>
+<span class=\"row\"><strong>Name:</strong> " . stripslashes($seller->display_name) . "</a></span>
+<span class=\"row\"><strong>Email address:</strong> <a href=\"mailto:" . stripslashes($seller->user_email) . "\">" . stripslashes($seller->user_email) . "</a></span>
 </section>
 
 ";
@@ -348,18 +333,18 @@
 		echo "<section class=\"results" . $class . "\">
 <ul>";
 		
-		while ($search = mysql_fetch_array($searchGrabber)) {
+		foreach($searchGrabber as $search) {
 			echo "
 <li class=\"result\">
-<a href=\"../book/?id=" . $search['id'] . "\"><img src=\"" . stripslashes($search['imageURL']) . "\" /></a>
-<a class=\"title\" href=\"../book/?id=" . $search['id'] . "\" title=\"" . htmlentities(stripslashes($search['title'])) . "\">" . stripslashes($search['title']) . "</a>
-<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search['author'])) . "&searchBy=author&category=0\">" . stripslashes($search['author']) . "</a></span>
-<span class=\"details\"><strong>Seller:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search['firstName'] . " " . $search['lastName'])) . "&searchBy=seller&category=0\">" . stripslashes($search['firstName']) . " " . stripslashes($search['lastName']) . "</a></span>
-<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search['ISBN'])) . "&searchBy=ISBN&category=0\">" . stripslashes($search['ISBN']) . "</a></span>
+<a href=\"../book-details/?id=" . $search->id . "\"><img src=\"" . stripslashes($search->imageURL) . "\" /></a>
+<a class=\"title\" href=\"../book-details/?id=" . $search->id . "\" title=\"" . htmlentities(stripslashes($search->title)) . "\">" . stripslashes($search->title) . "</a>
+<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->author)) . "&searchBy=author&category=0\">" . stripslashes($search->author) . "</a></span>
+<span class=\"details\"><strong>Seller:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->display_name)) . "&searchBy=seller&category=0\">" . stripslashes($search->display_name) . "</a></span>
+<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->ISBN)) . "&searchBy=ISBN&category=0\">" . stripslashes($search->ISBN) . "</a></span>
 ";
 			
 		//Conditionally format the condition of the book
-			switch($search['condition']) {
+			switch($search->condition) {
 				case "Excellent" : 
 					echo "<span class=\"excellent\">Excellent Condition</span>";
 					break;
@@ -382,10 +367,10 @@
 			}
 			
 		//Generate the list of classes that are listed for this book
-			$classIDs = explode(",", stripslashes($search['listedInID']));
-			$classes = explode(",", stripslashes($search['listedIn']));
-			$classNums = explode(",", stripslashes($search['listedInNumber']));
-			$classSections = explode(",", stripslashes($search['listedInSection']));
+			$classIDs = explode(",", stripslashes($search->listedInID));
+			$classes = explode(",", stripslashes($search->listedIn));
+			$classNums = explode(",", stripslashes($search->listedInNumber));
+			$classSections = explode(",", stripslashes($search->listedInSection));
 			
 			echo "
 
@@ -395,13 +380,13 @@
 			for ($i = 0; $i <= sizeof($classIDs) - 1; $i++) {
 				echo "
 <li>
-<img src=\"../../data/book-exchange/icons/" . $classIDs[$i] . "/icon_032.png\" title=\"" . htmlentities(stripslashes($classes[$i])) . "\" />
+<img src=\"" . $essentials->normalizeURL("system/images/categories/" . $classIDs[$i] . "/icon_032.png") . "\" title=\"" . htmlentities(stripslashes($classes[$i])) . "\" />
 <span class=\"courseDetails\">" . stripslashes($classNums[$i]) . " " . stripslashes($classSections[$i]) . "</span>
 </li>
 ";
 			}
 			
-			if (loggedIn() && $search['userID'] == $userData['id']) {
+			if (is_user_logged_in() && $search->userID == $essentials->user->ID) {
 				$buy = " noBuy";
 			} else {
 				$buy = " buy";
@@ -409,7 +394,7 @@
 			
 			echo "</ul>
 			
-<a class=\"buttonLink" . $buy . "\" data-fetch=\"" . $search['id'] . "\" href=\"javascript:;\"><span>\$" . stripslashes($search['price']) . "</span></a>
+<a class=\"buttonLink" . $buy . "\" data-fetch=\"" . $search->id . "\" href=\"javascript:;\"><span>\$" . stripslashes($search->price) . "</span></a>
 </li>
 ";
 		}
@@ -426,9 +411,9 @@
 			$pagesNeeded = ceil($length / $limit);
 			
 		//The current page information will need validated
-			if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $pagesNeeded) {
-				$currentPage = $_GET['page'];
-			} else if (isset($_GET['page']) && (!is_numeric($_GET['page']) && $_GET['page'] > $pagesNeeded)) {
+			if (isset($_GET['pageLoc']) && is_numeric($_GET['pageLoc']) && $_GET['pageLoc'] <= $pagesNeeded) {
+				$currentPage = $_GET['pageLoc'];
+			} else if (isset($_GET['pageLoc']) && (!is_numeric($_GET['pageLoc']) && $_GET['pageLoc'] > $pagesNeeded)) {
 				$currentPage = 1;
 			} else {
 				$currentPage = 1;
@@ -458,7 +443,7 @@
 		//Can a back button be displayed?
 			if ($currentPage != 1) {
 				echo "
-<li class=\"back\"><a href=\"" . $baseURL . "&page=" . ($currentPage - 1) . "\"></a></li>";
+<li class=\"back\"><a href=\"" . $baseURL . "&pageLoc=" . ($currentPage - 1) . "\"></a></li>";
 			}
 				
 		/**
@@ -534,15 +519,15 @@
 			//Don't display something like 1 ... 2
 				if ($minOutput - 1 == 1) {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&page=1\">1</a></li>";
+<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>";
 			//Don't display something like 1 ... 3, just print 1 2 3
 				} else if ($minOutput - 2 == 1) {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&page=1\">1</a></li>
-<li><a href=\"" . $baseURL . "&page=2\">2</a></li>";
+<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>
+<li><a href=\"" . $baseURL . "&pageLoc=2\">2</a></li>";
 				} else {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&page=1\">1</a></li>
+<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>
 <li class=\"noDot more\">&hellip;</li>";
 				}
 			}
@@ -578,7 +563,7 @@
 				
 			//Display the list item
 				echo "
-<li" . $class . "><a href=\"" . $baseURL . "&page=" . $i . "\">" . $i . "</a></li>";
+<li" . $class . "><a href=\"" . $baseURL . "&pageLoc=" . $i . "\">" . $i . "</a></li>";
 			}
 			
 		//Were there extra pages that the paginator didn't print out to conserve space? Print the last page, if so.
@@ -586,23 +571,23 @@
 			//Don't display something like 19 ... 20
 				if ($maxOutput + 1 == $pagesNeeded) {
 					echo "
-<li><a href=\"" . $baseURL . "&page=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
 			//Don't display something like 18 ... 20, just print 18 19 20
 				} else if ($maxOutput + 2 == $pagesNeeded) {
 					echo "
-<li><a href=\"" . $baseURL . "&page=" . ($pagesNeeded - 1) . "\">" . ($pagesNeeded - 1) . "</a></li>
-<li><a href=\"" . $baseURL . "&page=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li><a href=\"" . $baseURL . "&pageLoc=" . ($pagesNeeded - 1) . "\">" . ($pagesNeeded - 1) . "</a></li>
+<li><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
 				} else {
 					echo "
 <li class=\"noDot more\">&hellip;</li>
-<li class=\"noDot\"><a href=\"" . $baseURL . "&page=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
 				}
 			}
 			
 		//Can a forward button be displayed?
 			if ($currentPage + 1 <= $pagesNeeded) {
 				echo "
-<li class=\"forward\"><a href=\"" . $baseURL . "&page=" . ($currentPage + 1) . "\"></a></li>";
+<li class=\"forward\"><a href=\"" . $baseURL . "&pageLoc=" . ($currentPage + 1) . "\"></a></li>";
 			}
 			
 			echo "
@@ -645,10 +630,10 @@
 <ul class=\"categoryFly\">";
 
 //Generate the category dropdown menu
-	$categoryGrabber = mysql_query("SELECT * FROM `bookcategories` ORDER BY name ASC", $connDBA);
+	$categoryGrabber = $wpdb->get_results("SELECT * FROM `ffi_be_bookcategories` ORDER BY name ASC");
 	$counter = 1;
-
-	while($category = mysql_fetch_array($categoryGrabber)) {
+	
+	foreach($categoryGrabber as $category) {
 	//Break up this "dropdown" list into columns every 10 items
 		if ($counter % 10 == 1) {
 		//Include an "all" menu item if this is the first item
@@ -656,7 +641,7 @@
 				echo "
 <li>
 <ul>
-<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../system/images/icons/all.png');\">All Disciplines</span></span></li>";
+<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">All Disciplines</span></span></li>";
 
 			//Since we inserted a "free" item, add one to the counter
 				$counter++;
@@ -668,7 +653,7 @@
 		}
 		
 		echo "
-<li data-value=\"" . $category['id'] . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category['color1']) . ";\"><span class=\"icon\" style=\"background-image: url('../../data/book-exchange/icons/" . $category['id'] . "/icon_032.png');\">" . stripslashes($category['name']) . "</span></span></li>";
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
 
 		if ($counter % 10 == 0) {
 			echo "
@@ -688,15 +673,13 @@
 </form>
 </div>
 
-<img class=\"animatedSearch\" src=\"../system/images/icons/search.png\" />
+<img class=\"animatedSearch\" src=\"" . $essentials->normalizeURL("system/images/icons/search.png") . "\" />
 </section>
 
-<img class=\"shadow\" src=\"../system/images/welcome/paper_shadow.png\" />";
+<img class=\"shadow\" src=\"" . $essentials->normalizeURL("system/images/welcome/paper_shadow.png") . "\" />";
 	}
 	
 //Include the footer from the administration template
 	echo "
 </section>";
-
-	footer("public");
 ?>

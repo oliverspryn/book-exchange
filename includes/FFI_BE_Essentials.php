@@ -99,6 +99,27 @@ class FFI_BE_Essentials {
 	}
 	
 /**
+ * This method will obtain access the the current user's  information, 
+ * if they are logged in.
+ * 
+ * @access public
+ * @return boolean  Whether or not the user's information could be obtained, based on their login status
+ * @since  v2.0 Dev
+*/
+	
+	public function storeUserInfo() {
+		if (is_user_logged_in()) {
+			global $current_user;
+			get_currentuserinfo();
+			
+			$this->user = $current_user;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+/**
  * Set the <title> of the HTML page.
  * 
  * @access public
