@@ -24,11 +24,11 @@
 			
 		//Users cannot edit books that don't belong to them!
 			if ($bookData->userID != $essentials->user->ID) {
-				wp_redirect($essentials->friendlyURL());
+				wp_redirect($essentials->friendlyURL(""));
 				exit;
 			}
 		} else {
-			wp_redirect($essentials->friendlyURL());
+			wp_redirect($essentials->friendlyURL(""));
 			exit;
 		}
 	} else {

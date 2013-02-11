@@ -132,9 +132,19 @@ class FFI_BE_Essentials {
 	public function setTitle($title) {
 		$this->title = $title;
 		
-		add_filter("wp_title", function($title) {
-			return $this->title;
-		});
+		add_filter("wp_title", array($this, "actionHookSetTitle"));
+	}
+	
+/**
+ * The method called by Wordpress to set the <title> of the HTML page.
+ * 
+ * @access public
+ * @return void
+ * @since  v2.0 Dev
+*/
+	
+	public function actionHookSetTitle($title) {
+		return $this->title;
 	}
 	
 /**
@@ -182,19 +192,30 @@ class FFI_BE_Essentials {
 	//Store this address for later
 		array_push($this->CSS, $address);
 		
-		add_action("wp_print_styles", function() {
+		add_action("wp_print_styles", array($this, "actionHookIncludeCSS"));
+	}
+	
+/**
+ * The method called by Wordpress to include the CSS in the HTML page.
+ * 
+ * @access public
+ * @return void
+ * @since  v2.0 Dev
+*/
+	
+	public function actionHookIncludeCSS($CSS) {		
+		for($i = count($this->CSS) - 1; $i >= 0; $i--) {
 			$styleName = "FFI_BE_STYLE_ID_" . mt_rand();
 			
 		//Local stylesheets will need their address modified
 		//The address for external stylesheets begin with "//"
-			if (substr($this->CSS[0], 0, 2) != "//") {
-				$this->CSS[0] = FFI_BE_REAL_ADDR . "app/" . $this->CSS[0];
+			if (substr($this->CSS[$i], 0, 2) != "//") {
+				$this->CSS[$i] = FFI_BE_REAL_ADDR . "app/" . $this->CSS[$i];
 			}
 			
-			wp_register_style($styleName, $this->CSS[0], array(), NULL); //NULL removes the ?ver from the URL
-        	wp_enqueue_style($styleName);
-			array_shift($this->CSS); //We're done with this stylesheet, so shift it off the front of the array
-		});
+			wp_register_style($styleName, $this->CSS[$i], array(), NULL); //NULL removes the ?ver from the URL
+			wp_enqueue_style($styleName);
+		}
 	}
 	
 /**
@@ -223,19 +244,30 @@ class FFI_BE_Essentials {
 	//Store this address for later
 		array_push($this->JS, $address);
 		
-		add_action("wp_enqueue_scripts", function() {
+		add_action("wp_enqueue_scripts", array($this, "actionHookIncludeJS"));
+	}
+	
+/**
+ * The method called by Wordpress to include the JS in the HTML page.
+ * 
+ * @access public
+ * @return void
+ * @since  v2.0 Dev
+*/
+	
+	public function actionHookIncludeJS() {
+		for($i = count($this->JS) - 1; $i >= 0; $i--) {
 			$styleName = "FFI_BE_SCRIPT_ID_" . mt_rand();
 			
 		//Local scripts will need their address modified
 		//The address for external scripts begin with "//"
-			if (substr($this->JS[0], 0, 2) != "//") {
-				$this->JS[0] = FFI_BE_REAL_ADDR . "app/" . $this->JS[0];
+			if (substr($this->JS[$i], 0, 2) != "//") {
+				$this->JS[$i] = FFI_BE_REAL_ADDR . "app/" . $this->JS[$i];
 			}
 			
-			wp_register_script($styleName, $this->JS[0], array(), NULL); //NULL removes the ?ver from the URL
-        	wp_enqueue_script($styleName);
-			array_shift($this->JS); //We're done with this script, so shift it off the front of the array
-		});
+			wp_register_script($styleName, $this->JS[$i], array(), NULL); //NULL removes the ?ver from the URL
+			wp_enqueue_script($styleName);
+		}
 	}
 	
 /**

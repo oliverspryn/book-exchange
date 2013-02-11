@@ -184,7 +184,7 @@
 		if (!isset($_GET['options']) || (!isset($_GET['options']) && $_GET['options'] != "false")) {
 			echo "<aside class=\"tools\">
 <section class=\"options\">
-<form action=\".\" method=\"get\">
+<form action=\"" . $essentials->friendlyURL("search") . "\" method=\"get\">
 <h2>Search for Books:</h2>
 <input autocomplete=\"off\" class=\"search full\" name=\"search\" type=\"text\" value=\"" . htmlentities($_GET['search']) . "\" />
 
