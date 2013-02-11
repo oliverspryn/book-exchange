@@ -24,10 +24,12 @@
 			
 		//Users cannot edit books that don't belong to them!
 			if ($bookData->userID != $essentials->user->ID) {
-				wp_redirect("../");
+				wp_redirect($essentials->friendlyURL());
+				exit;
 			}
 		} else {
-			wp_redirect("../");
+			wp_redirect($essentials->friendlyURL());
+			exit;
 		}
 	} else {
 		$editing = false;
@@ -75,7 +77,8 @@
 		if (strlen($ISBN) == 10 || strlen($ISBN) == 13) {
 			//Do nothing
 		} else {
-			redirect("../sell-books/");
+			wp_redirect($essentials->friendlyURL("sell-books"));
+			exit;
 		}
 		
 	//Has an image ID been specified? If so, see if the image link ID has been approved for immediate publication
@@ -135,11 +138,14 @@
 			}
 			
 			if ($_POST['redirect'] == "1") {
-				wp_redirect("sell-books/?message=added" . $extra);
+				wp_redirect($essentials->friendlyURL("sell-books/?message=added" . $extra));
+				exit;
 			} else {
-				$id = mysql_insert_id();
+				//$id = mysql_insert_id();
 				
-				wp_redirect("account/?message=added" . $extra . "#book_" . $id);
+				//wp_redirect("account/?message=added" . $extra . "#book_" . $id);
+				wp_redirect($essentials->friendlyURL("account/?message=added" . $extra));
+				exit;
 			}
 		} else {
 		/**
@@ -206,7 +212,8 @@
 				$wpdb->get_results("UPDATE ffi_be_books SET ISBN = '{$ISBN}', title = '{$title}', author = '{$author}', edition = '{$edition}', course = '{$className}', number = '{$classNum}', section = '{$classSec}', price = '{$price}', `condition` = '{$condition}', written = '{$written}', comments = '{$comments}', imageURL = '{$imageURL}', awaitingImage = '{$awaitingImage}', imageID = '{$imageID}' WHERE id = '{$oldClasses[$i]}'", $connDBA);
 			}
 			
-			wp_redirect("../account/?message=edited#book_" . $bookData->id);
+			wp_redirect($essentials->friendlyURL("account/?message=edited#book_" . $bookData->id));
+			exit;
 		}
 	}
 
@@ -360,7 +367,7 @@
 				$courseFlyout .= "
 <li>
 <ul>
-<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/icons/all.png');\">Select a Discipline</span></span></li>";
+<li class=\"all selected\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">Select a Discipline</span></span></li>";
 
 			//Since we inserted a "free" item, add one to the counter
 				$counter++;
@@ -372,7 +379,7 @@
 		}
 		
 		$courseFlyout .= "
-<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/categories/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
+<li data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
 
 		if ($counter % 10 == 0) {
 			$courseFlyout .= "
@@ -480,7 +487,7 @@
 						$courseFlyout .= "
 <li>
 <ul>
-<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/icons/all.png');\">Select a Discipline</span></span></li>";
+<li class=\"all\" data-value=\"0\"><span class=\"band\" style=\"border-left-color: #FFFFFF;\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/icons/all.png") . "');\">Select a Discipline</span></span></li>";
 		
 					//Since we inserted a "free" item, add one to the counter
 						$counter++;
@@ -492,7 +499,7 @@
 				}
 				
 				$courseFlyout .= "
-<li" . $class . " data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('../wp-content/plugins/book-exchange/app/system/images/categories/" . $category->id . "/icon_032.png');\">" . stripslashes($category->name) . "</span></span></li>";
+<li" . $class . " data-value=\"" . $category->id . "\"><span class=\"band\" style=\"border-left-color: " . stripslashes($category->color1) . ";\"><span class=\"icon\" style=\"background-image: url('" . $essentials->normalizeURL("system/images/categories/" . $category->id . "/icon_032.png") . "');\">" . stripslashes($category->name) . "</span></span></li>";
 		
 				if ($counter % 10 == 0) {
 					$courseFlyout .= "

@@ -20,12 +20,15 @@
 		//Has the book been sold, expired, or deleted? If so, only the seller can view it, unless it is deleted
 			if (((($book->expires + $book->upload) < $now) || $book->sold == '1') && $essentials->user->ID != $book->userID) {
 				wp_redirect($essentials->friendlyURL("listings"));
+				exit;
 			}
 		} else {
 			wp_redirect($essentials->friendlyURL("listings"));
+			exit;
 		}
 	} else {
 		wp_redirect($essentials->friendlyURL("listings"));
+		exit;
 	}
 	
 //Generate the breadcrumb
@@ -38,6 +41,7 @@
 //<li>" . stripslashes($book['title']) . "</li>\n";
 
 //Generate the meta tags for the social networking plugins
+	global $meta;
 	$meta = "<meta property=\"og:title\" content=\"" . htmlentities(stripslashes($book->title)) . "\" />
 <meta property=\"og:description\" content=\"" . htmlentities(stripslashes($book->display_name) . " is selling \"" . stripslashes($book->title) . "\" on the Grove City College Student Government Association book exchange for only \$" . stripslashes($book->price) . "!") . "\" />
 <meta property=\"og:image\" content=\"" . htmlentities(stripslashes($book->imageURL)) . "\" />
@@ -46,11 +50,11 @@
 <meta itemprop=\"image\" content=\"" . stripslashes($book->imageURL) . "\">
 ";
 
-	add_action("wp_head", function() {
-		global $meta;
-		
+	add_action("wp_head", "socialMeta", 0);
+	function socialMeta() {
+		global $meta;	
 		return $meta;
-	});
+	}
 	
 	$essentials->setTitle($book->title);
 
@@ -93,7 +97,7 @@
 //If this user owns this book, given them buttons to go an edit this book
 	if (is_user_logged_in() && $book->userID == $essentials->user->ID) {
 		echo "<section class=\"toolbar\">
-<button class=\"blue\" onclick=\"document.location.href='../sell-books/?id=" . $_GET['id'] . "'\">Edit this Book</button>
+<button class=\"blue\" onclick=\"document.location.href='" . $essentials->friendlyURL("sell-books/?id=" . $_GET['id']) . "'\">Edit this Book</button>
 <button class=\"red deleteBook\" data-id=\"" . $_GET['id'] . "\">Delete this Book</button>
 </section>
 
@@ -109,7 +113,7 @@
 		
 		foreach($allCatGrabber as $allCat) {
 			echo "
-<li><a href=\"../listings/view-listing.php?id=" . $allCat->id . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a></li>";
+<li><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $allCat->id) . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a></li>";
 		}
 		
 		echo "
@@ -244,8 +248,8 @@
 			
 			echo "
 <li>
-<a class=\"title\" href=\"../book-details/?id=" . $sellerOther->bookID . "\"><img src=\"" . htmlentities(stripslashes($sellerOther->imageURL)) . "\"></a>
-<a class=\"title\" href=\"../book-details/?id=" . $sellerOther->bookID . "\" title=\"" . htmlentities(stripslashes($sellerOther->title)) . "\">" . stripslashes($sellerOther->title) . "</a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $sellerOther->bookID) . "\"><img src=\"" . htmlentities(stripslashes($sellerOther->imageURL)) . "\"></a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $sellerOther->bookID) . "\" title=\"" . htmlentities(stripslashes($sellerOther->title)) . "\">" . stripslashes($sellerOther->title) . "</a>
 <span class=\"details\" title=\"Author: " . htmlentities(stripslashes($sellerOther->author)) . "\">Author: " . stripslashes($sellerOther->author) . "</span>
 <a class=\"buttonLink" . $buy . "\" href=\"javascript:;\" data-fetch=\"" . $sellerOther->bookID . "\"><span>\$" . stripslashes($sellerOther->price) . "</span></a>
 </li>
@@ -254,7 +258,7 @@
 		
 		echo "</ul>
 	
-<a class=\"more\" href=\"../search/?search=" . urlencode(stripslashes($book->display_name)) . "&searchBy=seller&category=0&options=false\">See More <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a>
+<a class=\"more\" href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($book->display_name)) . "&searchBy=seller&category=0&options=false") . "\">See More <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a>
 </section>
 
 ";
@@ -272,7 +276,7 @@
 //If there only one section that this class is listed in, then we only need a "See More" link, otherwise
 //generate a "See More" link for each specific class
 	if (sizeof($classIDs) == 1) {
-		$seeMore = "<a class=\"more\" href=\"../search/?search=" . urlencode(stripslashes($classNum['0'])) . " " . urlencode(stripslashes($classSec['0'])) . "&category=" . $classIDs['0'] . "&searchBy=course&options=false\">See More <span class=\"arrow\" style=\"color: " . stripslashes($book['color1']) . ";\">&raquo;</span></a>
+		$seeMore = "<a class=\"more\" href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($classNum['0'])) . " " . urlencode(stripslashes($classSec['0'])) . "&category=" . $classIDs['0'] . "&searchBy=course&options=false") . "\">See More <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a>
 ";
 	}
 	
@@ -302,7 +306,7 @@
 		
 	//Generate the "See More" links
 		if (sizeof($classIDs) > 1) {
-			$seeMore .= "<a class=\"more\" href=\"../search/?search=" . urlencode(stripslashes($classNum[$i])) . " " . urlencode(stripslashes($classSec[$i])) . "&category=" . urlencode(stripslashes($classIDs[$i])) . "&searchBy=course&options=false\">See More in " . stripslashes($classNames[$i]) . " " . stripslashes($classNum[$i]) . " " . stripslashes($classSec[$i]) . " <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a>
+			$seeMore .= "<a class=\"more\" href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($classNum[$i])) . " " . urlencode(stripslashes($classSec[$i])) . "&category=" . urlencode(stripslashes($classIDs[$i])) . "&searchBy=course&options=false") . "\">See More in " . stripslashes($classNames[$i]) . " " . stripslashes($classNum[$i]) . " " . stripslashes($classSec[$i]) . " <span class=\"arrow\" style=\"color: " . stripslashes($book->color1) . ";\">&raquo;</span></a>
 ";
 		}
 	}
@@ -326,8 +330,8 @@
 			
 			echo "
 <li>
-<a class=\"title\" href=\"../book-details/?id=" . $catOther->bookID . "\"><img src=\"" . htmlentities(stripslashes($catOther->imageURL)) . "\"></a>
-<a class=\"title\" href=\"../book-details/?id=" . $catOther->bookID . "\" title=\"" . htmlentities(stripslashes($catOther->title)) . "\">" . stripslashes($catOther->title) . "</a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $catOther->bookID) . "\"><img src=\"" . htmlentities(stripslashes($catOther->imageURL)) . "\"></a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $catOther->bookID) . "\" title=\"" . htmlentities(stripslashes($catOther->title)) . "\">" . stripslashes($catOther->title) . "</a>
 <span class=\"details\" title=\"Author: " . htmlentities(stripslashes($catOther->author)) . "\">Author: " . stripslashes($catOther->author) . "</span>
 <a class=\"buttonLink" . $buy . "\" href=\"javascript:;\" data-fetch=\"" . $catOther->bookID . "\"><span>\$" . stripslashes($catOther->price) . "</span></a>
 </li>

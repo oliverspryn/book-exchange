@@ -1,7 +1,7 @@
 <?php
 //Include the system's core
-	require_once("../../../Connections/connDBA.php");
-	require_once("../../../Connections/jsonwrapper/jsonwrapper.php");
+	define("WP_USE_THEMES", false);
+	require_once("../../../../../../wp-blog-header.php");
 	require_once("Validate.php");
 	
 //Perform a search operation on the database
@@ -12,7 +12,7 @@
 		
 	//Search by a specific category
 		if ($category != 0) {
-			$category = " AND books.course = '" . $category . "'";
+			$category = " AND ffi_be_books.course = '" . $category . "'";
 		} else {
 			$category = "";
 		}		
@@ -22,58 +22,61 @@
 		
 		switch($searchBy) {
 			case "title" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT books.linkID) AS total, MIN(books.price) AS price FROM books RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY title ORDER BY score DESC, books.title ASC LIMIT 5", $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT ffi_be_books.linkID) AS total, MIN(ffi_be_books.price) AS price FROM ffi_be_books RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(title) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY title ORDER BY score DESC, ffi_be_books.title ASC LIMIT 5");
 				break;
 				
 			case "author" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT books.linkID) AS total, MIN(books.price) AS price FROM books RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY author ORDER BY score DESC, books.title ASC LIMIT 5", $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT ffi_be_books.linkID) AS total, MIN(ffi_be_books.price) AS price FROM ffi_be_books RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(author) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY author ORDER BY score DESC, ffi_be_books.title ASC LIMIT 5");
 				break;
 				
 			case "ISBN" : 
-				$searchGrabber = mysql_query("SELECT books.*, exchangesettings.expires, COUNT(DISTINCT books.linkID) AS total, MIN(books.price) AS price FROM books RIGHT JOIN(exchangesettings) ON books.id WHERE ISBN = '{$query}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY ISBN ORDER BY books.title ASC LIMIT 5", $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, COUNT(DISTINCT ffi_be_books.linkID) AS total, MIN(ffi_be_books.price) AS price FROM ffi_be_books RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ISBN = '{$query}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY ISBN ORDER BY ffi_be_books.title ASC LIMIT 5");
 				break;
 				
 			case "course" : 
 				$number = substr($query, strlen($query) - 5, strlen($query) - 2);
 				$section = substr($query, strlen($query) - 1, strlen($query));
-				$searchGrabber = mysql_query("SELECT books.*, bookcategories.name, exchangesettings.expires, COUNT(DISTINCT books.linkID) AS total, MIN(books.price) AS price FROM books RIGHT JOIN (bookcategories) ON books.course = bookcategories.id RIGHT JOIN(exchangesettings) ON books.id WHERE number = '{$number}' AND section = '{$section}' AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY books.course, books.number, books.section ORDER BY books.title ASC LIMIT 5", $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_bookcategories.name, ffi_be_exchangesettings.expires, COUNT(DISTINCT ffi_be_books.linkID) AS total, MIN(ffi_be_books.price) AS price FROM ffi_be_books RIGHT JOIN (ffi_be_bookcategories) ON ffi_be_books.course = ffi_be_bookcategories.id RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE number = '{$number}' AND section = '{$section}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY ffi_be_books.course, ffi_be_books.number, ffi_be_books.section ORDER BY ffi_be_books.title ASC LIMIT 5");
 				break;
 				
 			case "seller" : 
-				$searchGrabber = mysql_query("SELECT books.*, users.*, exchangesettings.expires, MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT books.linkID) AS total, MIN(books.price) AS price FROM users RIGHT JOIN(books) ON users.id = books.userID RIGHT JOIN(exchangesettings) ON books.id WHERE MATCH(firstName, lastName) AGAINST('{$query}' IN BOOLEAN MODE) AND books.sold = '0' AND books.userID != '0' AND books.upload + exchangesettings.expires > {$now}{$category} GROUP BY users.firstName, users.lastName ORDER BY score DESC, books.title ASC LIMIT 5", $connDBA);
+				$searchGrabber = $wpdb->get_results("SELECT ffi_be_books.*, wp_users.*, ffi_be_exchangesettings.expires, MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AS score, COUNT(DISTINCT ffi_be_books.linkID) AS total, MIN(ffi_be_books.price) AS price FROM wp_users RIGHT JOIN(ffi_be_books) ON wp_users.ID = ffi_be_books.userID RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE MATCH(display_name) AGAINST('{$query}' IN BOOLEAN MODE) AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now}{$category} GROUP BY wp_users.display_name ORDER BY score DESC, ffi_be_books.title ASC LIMIT 5");
 				break;
 				
 			default : 
-				redirect("../../search/");
+				exit;
 				break;
 		}
 	} else {
-		redirect("../");
+		exit;
 	}
 
 //Display the results of the search
 	$output = array();
 	
-	while ($search = mysql_fetch_array($searchGrabber)) {
+	foreach($searchGrabber as $search) {
 		switch($searchBy) {
 			case "title" : 
-				array_push($output, array("label" => stripslashes($search['title']), "byLine" => "Author: " . stripslashes($search['author']), "image" => stripslashes($search['imageURL']), "total" => stripslashes($search['total']), "price" => stripslashes($search['price'])));
+				array_push($output, array("label" => stripslashes($search->title), "byLine" => "Author: " . stripslashes($search->author), "image" => stripslashes($search->imageURL), "total" => stripslashes($search->total), "price" => stripslashes($search->price)));
 				break;
 				
 			case "author" : 
-				array_push($output, array("label" => stripslashes($search['author']), "byLine" => "", "image" => $root . "book-exchange/system/images/icons/author.png", "total" => stripslashes($search['total']), "price" => stripslashes($search['price'])));
+				$image = $essentials->normalizeURL("system/images/icons/author.png");
+				array_push($output, array("label" => stripslashes($search->author), "byLine" => "", "image" => $image, "total" => stripslashes($search->total), "price" => stripslashes($search->price)));
 				break;
 				
 			case "ISBN" : 
-				array_push($output, array("label" => stripslashes($search['ISBN']), "byLine" => "Title: " . stripslashes($search['title']), "image" => stripslashes($search['imageURL']), "total" => stripslashes($search['total']), "price" => stripslashes($search['price'])));
+				array_push($output, array("label" => stripslashes($search->ISBN), "byLine" => "Title: " . stripslashes($search->title), "image" => stripslashes($search->imageURL), "total" => stripslashes($search->total), "price" => stripslashes($search->price)));
 				break;
 				
 			case "course" : 
-				array_push($output, array("ID" => stripslashes($search['course']), "label" => stripslashes($search['number']) . " " . stripslashes($search['section']), "byLine" => "", "image" => $root . "data/book-exchange/icons/" . $search['course'] . "/icon_032.png", "total" => stripslashes($search['total']), "price" => stripslashes($search['price'])));
+				$image = $essentials->normalizeURL("system/images/categories/" . $search->course . "/icon_032.png");
+				array_push($output, array("ID" => stripslashes($search->course), "label" => stripslashes($search->number) . " " . stripslashes($search->section), "byLine" => "", "image" => $image, "total" => stripslashes($search->total), "price" => stripslashes($search->price)));
 				break;
 				
 			case "seller" : 
-				array_push($output, array("label" => stripslashes($search['firstName']) . " " . stripslashes($search['lastName']), "byLine" => "", "image" => $root . "book-exchange/system/images/icons/seller.png", "total" => stripslashes($search['total']), "price" => stripslashes($search['price'])));
+				$image = $essentials->normalizeURL("system/images/icons/seller.png");
+				array_push($output, array("label" => stripslashes($search->display_name), "byLine" => "", "image" => $image, "total" => stripslashes($search->total), "price" => stripslashes($search->price)));
 				break;
 		}
 			

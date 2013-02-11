@@ -14,8 +14,7 @@ License: MIT
 	define("FFI_BE_PATH", plugin_dir_path(__FILE__));
 	define("FFI_BE_REAL_ADDR", get_site_url() . "/wp-content/plugins/book-exchange/");
 	define("FFI_BE_FAKE_ADDR", get_site_url() . "/book-exchange/");
-	error_reporting(E_ALL);
-		
+	
 //Add a new user role to the system
 	add_role("book_exchange_user", "Book Exchange User", array(
 		"read" => true

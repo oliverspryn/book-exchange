@@ -383,15 +383,10 @@ $(document).ready(function() {
 		
 	//Wait... is the user logged in? The login panel will exist if not
 		if ($('section.login').length) {
-			var queryString = document.location.href.split('?');
-			
-			if (queryString[1] && queryString[1] != '') {
-				queryString = '?' + queryString['1'];
-			}
-			
-			document.location.href = location.substring(0, location.indexOf('book-exchange')) + 'login.php?accesscheck=' + encodeURIComponent(document.location.pathname + queryString) + "&message=required";
+			var location = document.location.href;			
+			document.location.href = location.substring(0, location.indexOf('book-exchange')) + 'wp-login.php?redirect_to=' + encodeURIComponent(window.location.href);
 		} else {
-			var parentDialog = $('<section class="purchase" title="Purchase <i>' + title + '</i>"><div class="loading">Please wait...</div></section>').dialog({
+			var parentDialog = $('<section class="purchase" title="Purchase ' + title + '"><div class="loading">Please wait...</div></section>').dialog({
 				'height' : 600,
 				'modal' : true,
 				'resizable' : false,
@@ -408,8 +403,8 @@ $(document).ready(function() {
 							'buttons' : {
 								'Yes' : function() {
 									var unixTime = Math.round(new Date().getTime() / 1000);
-									var requestURL = 'http://sga.forwardfour.com/book-exchange/system/server/purchase-request.php?id=' + id + '&key=' + unixTime + '&UID=' + $.cookie('UID') + '&callback=?';
-									
+									var location = document.location.href;
+									var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/server/purchase-request.php?id=' + id + '&key=' + unixTime + '&UID=' + $.cookie('UID') + '&callback=?';
 									
 								//Close the open dialogs
 									confirmDialog.dialog('close').remove();
@@ -466,7 +461,7 @@ $(document).ready(function() {
 				'create' : function() {
 					var dialog = $(this);
 					var location = document.location.href;
-					var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'book-exchange/system/server/purchase-data.php?id=' + id;
+					var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/server/purchase-data.php?id=' + id;
 					
 					$.ajax({
 						'dataType' : 'json',
@@ -500,7 +495,7 @@ $(document).ready(function() {
 							if (data.written == 'Yes') {
 								HTML += '<span class="marks">Has Writing or Markings</span>';
 							} else {
-								HTML += '<span class="marks">Has Writing or Markings</span>';
+								HTML += '<span class="noMarks">No Writing or Markings</span>';
 							}
 							
 							HTML += '</aside><section class="main">';
@@ -520,7 +515,7 @@ $(document).ready(function() {
 							var icon;
 							
 							for(var i = 0; i <= name.length - 1; i++) {
-								icon = location.substring(0, location.indexOf('book-exchange')) + 'data/book-exchange/icons/' + classID[i] + '/icon_032.png';
+								icon = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/images/categories/' + classID[i] + '/icon_032.png';
 								
 								HTML += '<li><img src="' + icon + '" title="' + name[i] + '" /><span class="courseDetails">' + number[i] + ' ' + section[i] + '</li>';
 							}
@@ -528,25 +523,10 @@ $(document).ready(function() {
 							HTML += '</ul></div>';
 							
 						//Write out the seller's information
-							var classDef = '';
-							
-							if (data.emailAddress2 != '' || data.emailAddress3 != '') {
-								classDef = ' class="extended"';
-							}
-							
 							HTML += '<h2 class="seller">Seller Information</h2>';
 							HTML += '<div class="seller">';
-							HTML += '<span class="details"><strong' + classDef + '>Name:</strong> ' + data.firstName + ' ' + data.lastName + '</span>';
-							HTML += '<span class="details"><strong' + classDef + '>Email:</strong> <a href="mailto:' + data.emailAddress1 + '">' + data.emailAddress1 + '</a></span>';
-							
-							if (data.emailAddress2 != '') {
-								HTML += '<span class="details"><strong' + classDef + '>Alternate email:</strong> <a href="mailto:' + data.emailAddress2 + '">' + data.emailAddress2 + '</a></span>';
-							}
-							
-							if (data.emailAddress3 != '') {
-								HTML += '<span class="details"><strong' + classDef + '>Alternate email:</strong> <a href="mailto:' + data.emailAddress3 + '">' + data.emailAddress3 + '</a></span>';
-							}
-							
+							HTML += '<span class="details"><strong>Name:</strong> ' + data.displayName + '</span>';
+							HTML += '<span class="details"><strong>Email:</strong> <a href="mailto:' + data.userEmail + '">' + data.userEmail + '</a></span>';
 							HTML += '</div></section>';
 							
 							dialog.html(HTML);
@@ -567,9 +547,9 @@ $(document).ready(function() {
 		var id = $(this).attr('data-fetch');
 		var redirect = document.location.pathname + '?id=' + id;
 		var location = document.location.href;
-		var login = location.substring(0, location.indexOf('book-exchange')) + 'login.php?accesscheck=' + encodeURIComponent(redirect) + "&message=required";
+		var login = location.substring(0, location.indexOf('book-exchange')) + 'wp-login.php?redirect_to=' + encodeURIComponent(redirect);
 		var unixTime = Math.round(new Date().getTime() / 1000);
-		var requestURL = 'http://sga.forwardfour.com/book-exchange/system/server/purchase-request.php?id=' + id + '&key=' + unixTime + '&UID=' + $.cookie('UID') + '&callback=?';
+		var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/server/purchase-request.php?id=' + id + '&key=' + unixTime + '&UID=' + $.cookie('UID') + '&callback=?';
 		
 	//The login panel will not exist if the user is logged in
 		if ($('section.login').length) {
@@ -665,7 +645,7 @@ $(document).ready(function() {
 */
 	
 	var location = document.location.href;
-	var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'book-exchange/system/server/suggestions.php';
+	var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/server/suggestions.php';
 	
 	$('input.search.full').autocomplete({
 		'source' : requestURL,
@@ -730,8 +710,11 @@ $(document).ready(function() {
 */
 		
 	$('button.updateProfile').click(function() {
+		var location = document.location.href;
+		var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/account/index.php';
+		
 		$('<section class="update" title="Update Profile"></section>')
-		.html('<form action="index.php" class="updateProfile"><span class="row"><strong>First name:</strong> <input autocomplete="off" class="first noIcon validate[required]" name="first" type="text" /></span><span class="row"><strong>Last name:</strong> <input autocomplete="off" class="last noIcon validate[required]" name="last" type="text" /></span><span class="row"><strong>Email:</strong> <input autocomplete="off" class="emailAddress1 noIcon validate[required,custom[email]]" name="emailAddress1" type="text" /></span><span class="row"><strong>Alternate email:</strong> <input autocomplete="off" class="emailAddress2 noIcon validate[custom[email]]" name="emailAddress2" type="text" /></span><span class="row"><strong>Alternate email:</strong> <input autocomplete="off" class="emailAddress3 noIcon validate[custom[email]]" name="emailAddress3" type="text" /></span><br><br><span class="row notification">Leave blank to keep your current password</span><span class="row"><strong>Password:</strong> <input autocomplete="off" class="password noIcon" id="password" name="password" type="password" /></span><span class="row"><strong>Password (again):</strong> <input autocomplete="off" class="confirm noIcon validate[equals[password]]" name="confirm" type="password" /></span></form>')
+		.html('<form action="' + requestURL + '" class="updateProfile"><span class="row"><strong>First name:</strong> <input autocomplete="off" class="first noIcon validate[required]" name="first" type="text" /></span><span class="row"><strong>Last name:</strong> <input autocomplete="off" class="last noIcon validate[required]" name="last" type="text" /></span><span class="row"><strong>Email:</strong> <input autocomplete="off" class="emailAddress1 noIcon validate[required,custom[email]]" name="emailAddress1" type="text" /></span><br><br><span class="row notification">Leave blank to keep your current password</span><span class="row"><strong>Password:</strong> <input autocomplete="off" class="password noIcon" id="password" name="password" type="password" /></span><span class="row"><strong>Password (again):</strong> <input autocomplete="off" class="confirm noIcon validate[equals[password]]" name="confirm" type="password" /></span></form>')
 		.dialog({
 			'height' : 510,
 			'modal' : true,
@@ -791,11 +774,7 @@ $(document).ready(function() {
 					
 				//Are the passwords the same?
 					if (password === confirm) {
-						if (password != '') {
-							password = md5(confirm + '_' + hash);
-						} else {
-							password = '';
-						}
+						//Password is good
 					} else {
 						$('<section class="passwordUnmatch" title="Check Your Passwords"></section>')
 						.html('<p><span class="ui-icon ui-icon-alert"></span>Your password don\'t match. Try them again!</p>')
@@ -822,38 +801,22 @@ $(document).ready(function() {
 					page.find('span.row a.emailAddress1').text(form.find('input.emailAddress1').attr('value'));
 					page.find('span.row a.emailAddress1').attr('href', 'mailto:' + form.find('input.emailAddress1').attr('value'));
 					
-					var emailAddress2 = form.find('input.emailAddress2').attr('value');
-					var emailAddress3 = form.find('input.emailAddress3').attr('value');
-					
-					if (emailAddress2 == '') {
-						page.find('span.row a.emailAddress2').text('None given').addClass('none').removeAttr('href');
-					} else {
-						page.find('span.row a.emailAddress2').text(emailAddress2).removeClass('none');
-						page.find('span.row a.emailAddress2').attr('href', 'mailto:' + form.find('input.emailAddress2').attr('value'));
-					}
-					
-					if (emailAddress3 == '') {
-						page.find('span.row a.emailAddress3').text('None given').addClass('none').removeAttr('href');
-					} else {
-						page.find('span.row a.emailAddress3').text(emailAddress3).removeClass('none');
-						page.find('span.row a.emailAddress3').attr('href', 'mailto:' + form.find('input.emailAddress3').attr('value'));
-					}
-					
 				//Close the dialog
 					$(this).dialog('close').remove();
 					
 				//Send the results to the server
+					var location = document.location.href;
+					var requestURL = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/account/index.php';
+				
 					$.ajax({
 						'data' : {
 							'action' : 'profile',
 							'first' : first,
 							'last' : last,
 							'emailAddress1' : emailAddress1,
-							'emailAddress2' : emailAddress2,
-							'emailAddress3' : emailAddress3,
 							'password' : password
 						}, 'type' : 'POST',
-						'url' : 'index.php',
+						'url' : requestURL,
 						'success' : function(data) {
 							$(this).dialog('close').remove();
 							

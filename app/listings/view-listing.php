@@ -12,7 +12,7 @@
 		
 		if (isset($_GET['number']) && isset($_GET['section'])) {
 			$categoryGrabber = $wpdb->get_results("SELECT ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course WHERE ffi_be_bookcategories.id = '{$_GET['id']}' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.section = '{$_GET['section']}' GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
-			$countGrabber = $wpdb->get_results("SELECT ffi_be_exchangesettings.expires, ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_bookcategories.id = '{$_GET['id']}' ANDffi_be_ books.number = '{$_GET['number']}' AND ffi_be_books.section = '{$_GET['section']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now} GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
+			$countGrabber = $wpdb->get_results("SELECT ffi_be_exchangesettings.expires, ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_bookcategories.id = '{$_GET['id']}' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.section = '{$_GET['section']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now} GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
 		} elseif (isset($_GET['number']) && !isset($_GET['section'])) {
 			$categoryGrabber = $wpdb->get_results("SELECT ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course WHERE ffi_be_bookcategories.id = '{$_GET['id']}' AND ffi_be_books.number = '{$_GET['number']}' GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
 			$countGrabber = $wpdb->get_results("SELECT ffi_be_exchangesettings.expires, ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_bookcategories.id = '{$_GET['id']}' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now} GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
@@ -21,16 +21,16 @@
 			$countGrabber = $wpdb->get_results("SELECT ffi_be_exchangesettings.expires, ffi_be_bookcategories.*, COUNT(DISTINCT ffi_be_books.linkID) as total FROM `ffi_be_bookcategories` LEFT JOIN (ffi_be_books) ON ffi_be_bookcategories.id = ffi_be_books.course RIGHT JOIN(ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_bookcategories.id = '{$_GET['id']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > {$now} GROUP BY ffi_be_bookcategories.name ORDER BY name ASC");
 		}
 		
-		$category = $categoryGrabber[0];
-		
 		if (count($countGrabber)) {
 			$countAll = $countGrabber[0];
+			$category = $categoryGrabber[0];
 			$count = $countAll->total;
 		} else {
 			$count = 0;
 		}
 	} else {
 		wp_redirect($essentials->friendlyURL("listings"));
+		exit;
 	}
 	
 //Generate the breadcrumb
@@ -161,10 +161,10 @@
 		foreach($featuredGrabber as $featured) {
 			 $featuredList .= "
 <li>
-<a href=\"../search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false\"><img src=\"" . htmlentities(stripslashes($featured->imageURL)) . "\" /></a>
-<a href=\"../search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false\" class=\"title\" title=\"" . htmlentities(stripslashes($featured->title)) . "\">" . stripslashes($featured->title) . "</a>
-<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($featured->author)) . "\"><strong>Author:</strong> <a href=\"../search?search=" . urlencode(stripslashes($featured->author)) . "&searchBy=author&category=0\">" . stripslashes($featured->author) . "</a></span>
-<a href=\"../search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false\" class=\"buttonLink\"><span>Browse from " . $featured->repeats . " Sellers</span></a>
+<a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false") . "\"><img src=\"" . htmlentities(stripslashes($featured->imageURL)) . "\" /></a>
+<a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false") . "\" class=\"title\" title=\"" . htmlentities(stripslashes($featured->title)) . "\">" . stripslashes($featured->title) . "</a>
+<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($featured->author)) . "\"><strong>Author:</strong> <a href=\"" . $essentials->friendlyURL("search?search=" . urlencode(stripslashes($featured->author)) . "&searchBy=author&category=0") . "\">" . stripslashes($featured->author) . "</a></span>
+<a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($featured->ISBN)) . "&category=" . $_GET['id'] . "&searchBy=ISBN&options=false") . "\" class=\"buttonLink\"><span>Browse from " . $featured->repeats . " Sellers</span></a>
 </li>
 ";
 		}
@@ -184,10 +184,10 @@
 	//Display a listing of recent additions to this category
 		$recentList = "";
 		$now = strtotime("now");
-		$recentGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.ID AS userTableID, wp_users.display_name, users.user_email FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_books.course = '" . $_GET['id'] . "' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > '{$now}' GROUP BY ffi_be_books.linkID ORDER BY ffi_be_books.upload DESC LIMIT 7");
+		$recentGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.ID AS userTableID, wp_users.display_name, wp_users.user_email FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_books.course = '" . $_GET['id'] . "' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > '{$now}' GROUP BY ffi_be_books.linkID ORDER BY ffi_be_books.upload DESC LIMIT 7");
 				
 		foreach($recentGrabber as $recent) {
-			if (loggedIn() && $recent['userID'] == $essentials->user->ID) {
+			if (is_user_logged_in() && $recent->userID == $essentials->user->ID) {
 				$buy = " noBuy";
 			} else {
 				$buy = " buy";
@@ -195,10 +195,10 @@
 			
 			$recentList .= "
 <li>
-<a href=\"../book/?id=" . $recent->id . "\"><img src=\"" . htmlentities(stripslashes($recent->imageURL)) . "\" /></a>
-<a href=\"../book/?id=" . $recent->id . "\" class=\"title\" title=\"" . htmlentities(stripslashes($recent->title)) . "\">" . $recent->title . "</a>
-<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($recent->author)) . "\"><strong>Author:</strong>  <a href=\"../search?search=" . urlencode(stripslashes($recent->author)) . "&searchBy=author&category=0\">" . stripslashes($recent->author) . "</a></span>
-<span class=\"details\" title=\"Seller: " . htmlentities(stripslashes($recent->display_name)) . "\"><strong>Seller:</strong>  <a href=\"../search?search=" . urlencode(stripslashes($recent->display_name)) . "&searchBy=seller&category=0\">" . stripslashes($recent->display_name) . "</a></span>
+<a href=\"" . $essentials->friendlyURL("book-details/?id=" . $recent->id) . "\"><img src=\"" . htmlentities(stripslashes($recent->imageURL)) . "\" /></a>
+<a href=\"" . $essentials->friendlyURL("book-details/?id=" . $recent->id) . "\" class=\"title\" title=\"" . htmlentities(stripslashes($recent->title)) . "\">" . $recent->title . "</a>
+<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($recent->author)) . "\"><strong>Author:</strong>  <a href=\"" . $essentials->friendlyURL("search?search=" . urlencode(stripslashes($recent->author)) . "&searchBy=author&category=0\">" . stripslashes($recent->author)) . "</a></span>
+<span class=\"details\" title=\"Seller: " . htmlentities(stripslashes($recent->display_name)) . "\"><strong>Seller:</strong>  <a href=\"" . $essentials->friendlyURL("search?search=" . urlencode(stripslashes($recent->display_name)) . "&searchBy=seller&category=0") . "\">" . stripslashes($recent->display_name) . "</a></span>
 <a href=\"javascript:;\" class=\"buttonLink" . $buy . "\" data-fetch=\"" . $recent->id . "\"><span>\$" . stripslashes($recent->price) . "</span></a>
 </li>
 ";
@@ -228,10 +228,10 @@
 		foreach($allCatGrabber as $allCat) {
 			if ($allCat->id == $_GET['id']) {
 				echo "
-<li><a href=\"view-listing.php?id=" . $allCat->id . "\" style=\"color: " . stripslashes($category->color1) . "; font-weight: bold;\">" . stripslashes($allCat->name) . " <span class=\"arrow\">&raquo;</span></a></li>";
+<li><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $allCat->id) . "\" style=\"color: " . stripslashes($category->color1) . "; font-weight: bold;\">" . stripslashes($allCat->name) . " <span class=\"arrow\">&raquo;</span></a></li>";
 			} else {
 				echo "
-<li><a href=\"view-listing.php?id=" . $allCat->id . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a></li>";
+<li><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $allCat->id) . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a></li>";
 			}
 		}
 		
@@ -277,41 +277,41 @@
 		if (isset($_GET['sort'])) {
 			switch($_GET['sort']) {
 				case "titleASC" : 
-					$sort = "books.title ASC, books.price ASC";
+					$sort = "ffi_be_books.title ASC, ffi_be_books.price ASC";
 					break;
 					
 				case "titleDESC" : 
-					$sort = "books.title DESC, books.price ASC";
+					$sort = "ffi_be_books.title DESC, ffi_be_books.price ASC";
 					break;
 					
 				case "priceASC" : 
-					$sort = "books.price ASC, books.title ASC";
+					$sort = "ffi_be_books.price ASC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "priceDESC" : 
-					$sort = "books.price DESC, books.title ASC";
+					$sort = "ffi_be_books.price DESC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "authorASC" : 
-					$sort = "books.author ASC, books.title ASC";
+					$sort = "ffi_be_books.author ASC, ffi_be_books.title ASC";
 					break;
 					
 					
 				case "authorDESC" : 
-					$sort = "books.author DESC, books.title ASC";
+					$sort = "ffi_be_books.author DESC, ffi_be_books.title ASC";
 					break;
 					
 				default : 
-					$sort = "books.title ASC";
+					$sort = "ffi_be_books.title ASC";
 					break;
 			}
 		} else {
-			$sort = "books.title ASC";
+			$sort = "ffi_be_books.title ASC";
 		}
 		
-		$booksGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.ID AS userTableID, wp_users.display_name, wp_users.user_email FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_books.course = '" . $_GET['id'] . "' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.section = '{$_GET['section']}'AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > '{$now}' ORDER BY ffi_be_books.number ASC, ffi_be_books.section ASC, " . $sort);
+		$booksGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.ID AS userTableID, wp_users.display_name, wp_users.user_email FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_books.course = '" . $_GET['id'] . "' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.section = '{$_GET['section']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > '{$now}' ORDER BY ffi_be_books.number ASC, ffi_be_books.section ASC, " . $sort);
 	} elseif (isset($_GET['number']) && !isset($_GET['section'])) {
 		$booksGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_exchangesettings.expires, wp_users.ID AS userTableID, wp_users.display_name, wp_users.user_email FROM ffi_be_books RIGHT JOIN (wp_users) ON ffi_be_books.userID = wp_users.ID RIGHT JOIN (ffi_be_exchangesettings) ON ffi_be_books.id WHERE ffi_be_books.course = '" . $_GET['id'] . "' AND ffi_be_books.number = '{$_GET['number']}' AND ffi_be_books.sold = '0' AND ffi_be_books.userID != '0' AND ffi_be_books.upload + ffi_be_exchangesettings.expires > '{$now}' ORDER BY ffi_be_books.number ASC, ffi_be_books.section ASC, ffi_be_books.title ASC");
 	} else {
@@ -329,7 +329,7 @@
 ";
 				if (!isset($_GET['section'])) {
 					echo "
-<a class=\"more\" href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection)) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
+<a class=\"more\" href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection))) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
 ";
 				}
 
@@ -339,7 +339,7 @@
 ";
 
 				if (!isset($_GET['number'])) {
-					echo "<h2><a href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode($books->number) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " &raquo;</a></h2>
+					echo "<h2><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode($books->number)) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " &raquo;</a></h2>
 ";
 				}
 				
@@ -349,7 +349,7 @@
 				echo "<section class=\"courses\">
 ";
 				if (!isset($_GET['number'])) {
-					echo "<h2><a href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number)) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " &raquo;</a></h2>
+					echo "<h2><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number))) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " &raquo;</a></h2>
 ";
 				}
 			}
@@ -379,14 +379,14 @@
 ";
 				
 				if (!isset($_GET['section'])) {
-					echo "<a class=\"more\" href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection)) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
+					echo "<a class=\"more\" href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection))) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
 
 ";
 				}
 		
 			//Display a section letter if the user is viewing the class numbers...
 				if (isset($_GET['number'])) {
-					echo "<h2><a href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number)) . "&section=" . urlencode(stripslashes($books->section)) . "\" style=\"color: " . stripslashes($category->color1) . ";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " " . stripslashes($books->section) . " &raquo;</a></h2>
+					echo "<h2><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number)) . "&section=" . urlencode(stripslashes($books->section))) . "\" style=\"color: " . stripslashes($category->color1) . ";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " " . stripslashes($books->section) . " &raquo;</a></h2>
 ";
 				}
 
@@ -404,7 +404,7 @@
 			} else {
 			//Display a section letter if the user is viewing the class numbers...
 				if (isset($_GET['number']) && !isset($_GET['section'])) {
-					echo "<h2><a href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number)) . "&section=" . urlencode(stripslashes($books->section)) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " " . stripslashes($books->section) . " &raquo;</a></h2>
+					echo "<h2><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($books->number)) . "&section=" . urlencode(stripslashes($books->section))) . "\" style=\"color: " . stripslashes($category->color1) .";\">" . stripslashes($category->course) . " " . stripslashes($books->number) . " " . stripslashes($books->section) . " &raquo;</a></h2>
 ";
 				}
 				
@@ -441,10 +441,10 @@
 			
 			echo "
 <li" . $class . ">
-<a href=\"../book/?id=" . $books->id . "\"><img src=\"" . htmlentities(stripslashes($books->imageURL)) . "\" /></a>
-<a class=\"title\" href=\"../book/?id=" . $books->id . "\" title=\"" . htmlentities(stripslashes($books->title)) . "\">" . stripslashes($books->title) . "</a>
-<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($books->author)) . "\"><strong>Author:</strong> <a href=\"../search?search=" . urlencode(stripslashes($books->author)) . "&searchBy=author&category=0\">" . stripslashes($books->author) . "</a></span>
-<span class=\"details\" title=\"Seller: " . stripslashes($books->display_name) . "\"><strong>Seller:</strong> <a href=\"../search?search=" . urlencode(stripslashes($books->display_name)) . "&searchBy=seller&category=0\">" . stripslashes($books->display_name) . "</a></span>
+<a href=\"" . $essentials->friendlyURL("book-details/?id=" . $books->id) . "\"><img src=\"" . htmlentities(stripslashes($books->imageURL)) . "\" /></a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $books->id) . "\" title=\"" . htmlentities(stripslashes($books->title)) . "\">" . stripslashes($books->title) . "</a>
+<span class=\"details\" title=\"Author: " . htmlentities(stripslashes($books->author)) . "\"><strong>Author:</strong> <a href=\"" . $essentials->friendlyURL("search?search=" . urlencode(stripslashes($books->author)) . "&searchBy=author&category=0") . "\">" . stripslashes($books->author) . "</a></span>
+<span class=\"details\" title=\"Seller: " . stripslashes($books->display_name) . "\"><strong>Seller:</strong> <a href=\"" . $essentials->friendlyURL("search?search=" . urlencode(stripslashes($books->display_name)) . "&searchBy=seller&category=0") . "\">" . stripslashes($books->display_name) . "</a></span>
 <a href=\"javascript:;\" class=\"buttonLink" . $buy . "\" data-fetch=\"" . $books->id . "\"><span>\$" .stripslashes($books->price) . "</span></a>
 </li>
 ";
@@ -467,7 +467,7 @@
 	//Don't show the see more whenever the user has drilled down to a class section
 		if (!isset($_GET['section'])) {
 			echo "
-<a class=\"more\" href=\"view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection)) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
+<a class=\"more\" href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id'] . "&number=" . urlencode(stripslashes($currentNumber)) . "&section=" . urlencode(stripslashes($currentSection))) . "\">See more <span class=\"arrow\" style=\"color: " . stripslashes($category->color1) . ";\">&raquo;</span></a>
 ";
 		}
  
@@ -477,7 +477,8 @@
 		
 	//Is it just a particular section or number where we don't have any books?
 		if (isset($_GET['number']) || isset($_GET['section'])) {
-			redirect("view-listing.php?id=" . $_GET['id']);
+			wp_redirect($essentials->friendlyURL("listings/view-listing.php?id=" . $_GET['id']));
+			exit;
 		}
 		
 		echo "<section class=\"empty\">

@@ -90,6 +90,7 @@ class FFI_BE_Essentials {
 	public function requireLogin() {
 		if (!is_user_logged_in()) {
 			wp_redirect(get_site_url() . "/wp-login.php?redirect_to=" . urlencode($_SERVER['REQUEST_URI']));
+			exit;
 		} else {
 			global $current_user;
 			get_currentuserinfo();

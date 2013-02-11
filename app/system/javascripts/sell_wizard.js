@@ -9,7 +9,8 @@
 		var forwardButton = $('span.forward');
 		var APIKey = 'AIzaSyCCfXsNv47Xg62-Kz6opyvmn3YBPhliZ0k';
 		var APIRequest = 'https://www.googleapis.com/shopping/search/v1/public/products?country=US&key=' + APIKey + '&q=';
-		var localRequest = '../wp-content/plugins/book-exchange/app/system/server/suggest_local.php?ISBN=';
+		var location = document.location.href;
+		var localRequest = location.substring(0, location.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/server/suggest_local.php?ISBN=';
 		
 	/**
 	 * Fetch an image from the local 

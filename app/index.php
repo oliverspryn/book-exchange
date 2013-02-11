@@ -14,16 +14,16 @@
 <div class=\"mask\">
 <div class=\"sell\">
 <ul>
-<li class=\"sell\"><a class=\"openLogin\" href=\"sell-books/\">Sell Your Books</a></li>
-<li class=\"search\"><a href=\"search\">Search</a></li>
-<li class=\"browse\"><a href=\"listings\">Browse Listings</a></li>
+<li class=\"sell\"><a class=\"openLogin\" href=\"" . $essentials->friendlyURL("sell-books") . "\">Sell Your Books</a></li>
+<li class=\"search\"><a href=\"" . $essentials->friendlyURL("search") . "\">Search</a></li>
+<li class=\"browse\"><a href=\"" . $essentials->friendlyURL("listings") . "\">Browse Listings</a></li>
 </ul>
 </div>
 
 <span class=\"divider\"></span>
 
 <div class=\"search\">
-<form action=\"search\" method=\"get\">
+<form action=\"" . $essentials->friendlyURL("search") . "\" method=\"get\">
 <h2 class=\"search\">Search for Books:</h2>
 <input autocomplete=\"off\" class=\"search full\" name=\"search\" type=\"text\" />
 <span class=\"expand\">Advanced Search Options</span>
@@ -145,7 +145,7 @@ Quick start video is on its way and will be posted soon!
 <h2>Something New: Exchange Tiles</h2>
 <p>Life in college is hard enough, but exchanging your books shouldn't be. That's why we've introduced the exchange titles. They are a colorful feature of our cataloguing system which are designed to <strong>catch your eye</strong> and <strong>trigger your memory</strong> whenever you see one of them.</p>
 <p>These tiles show up all through out the site, from browsing and searching our database, to selling books of your own. Each discipline of study is assigned a <strong>unique color and pair of letters</strong> to help set them apart from others. You'll learn to <strong>quickly spot</strong> them on a page for your <strong>areas of interest</strong>.</p>
-<a class=\"explore highlight\" href=\"listings\">Start Exploring &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("listings") . "\">Start Exploring &raquo;</a>
 </div>
 </section>
 
@@ -156,11 +156,11 @@ Quick start video is on its way and will be posted soon!
 <div class=\"description\">
 <h2>Sell Your Book in 17.5 Seconds</h2>
 <p>Yes, we actually counted. We've engineered this exchange to be as easy as possible. With lots of <strong>integrated tools</strong> that are desgined to <strong>enhance your speed and productivity</strong>, you'll be able to buy and sell books fast, so you can get back to what is really important. Who knows? Maybe you can break this record!</p>
-<a class=\"explore highlight\" href=\"sell-books\">Sell Your Books &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("sell-books") . "\">Sell Your Books &raquo;</a>
 
 <h2>Real-time Results As You Search</h2>
 <p><strong>Get up to the second</strong> search results as you search for books in our database. Before you can even finish typing the title of your book, you are given a <strong>short, comprehensive overview</strong> of the book you are searching, with details such as the <strong>total number up for sale</strong> and it <strong>starting price</strong>.</p>
-<a class=\"explore highlight\" href=\"search\">Search for Books &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("search") . "\">Search for Books &raquo;</a>
 </div>
 
 <img class=\"sell\" src=\"" . $essentials->normalizeURL("system/images/welcome/view_sell_books_mini.png") . "\" />
@@ -176,19 +176,19 @@ Quick start video is on its way and will be posted soon!
 <li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/sell_books.png") . ");\">
 <h3>Buy and Sell Books</h3>
 <p><strong>Set your own price</strong> and sell your books in three easy steps. You can often <strong>buy other books at discounted prices</strong>.</p>
-<a class=\"explore highlight\" href=\"sell-books\">Sell Your Books &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("sell-books") . "\">Sell Your Books &raquo;</a>
 </li>
 
 <li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/search.png") . ");\">
 <h3>Search the Growing Database</h3>
 <p>Search <strong>thousands</strong> of books by title, author, course, or ISBN, contributed by students like you!</p>
-<a class=\"explore highlight\" href=\"search\">Search for Books &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("search") . "\">Search for Books &raquo;</a>
 </li>
 
 <li style=\"background-image: url(" . $essentials->normalizeURL("system/images/welcome/categories.png") . ");\">
 <h3>Browse by Category</h3>
 <p>Each category has its own unique <strong>color exchange tile</strong>, designed to catch your eye when you come across a class you recognize.</p>
-<a class=\"explore highlight\" href=\"listings\">Browse for Books &raquo;</a>
+<a class=\"explore highlight\" href=\"" . $essentials->friendlyURL("listings") . "\">Browse for Books &raquo;</a>
 </li>
 </ul>
 </div>
@@ -204,11 +204,11 @@ Quick start video is on its way and will be posted soon!
 	if (!is_user_logged_in()) {
 		echo "<h2>Convinced? Jump on board!</h2>
 <button class=\"green large openLogin\" data-login=\"sell-books/\">Register</button>
-<span class=\"alternate\">or <a class=\"highlight\" href=\"../login\">login</a></span>
+<span class=\"alternate\">or <a class=\"highlight\" href=\"" . site_url("/login/") . "\">login</a></span>
 ";
 	} else {
 		echo "<h2>Convinced? Start selling!</h2>
-<button class=\"green large\" onclick=\"document.location.href='sell-books/'\">Sell Books</button>
+<button class=\"green large\" onclick=\"document.location.href='" . $essentials->friendlyURL("sell-books") . "'\">Sell Books</button>
 ";
 	}
 	

@@ -297,7 +297,7 @@
 			
 			foreach($allCatGrabber as $allCat) {
 				echo "
-<li><a href=\"../listings/view-listing.php?id=" . $allCat->id . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\">&raquo;</span></a></li>";
+<li><a href=\"" . $essentials->friendlyURL("listings/view-listing.php?id=" . $allCat->id) . "\">" . stripslashes($allCat->name) . " <span class=\"arrow\">&raquo;</span></a></li>";
 			}
 			
 			echo "
@@ -336,11 +336,11 @@
 		foreach($searchGrabber as $search) {
 			echo "
 <li class=\"result\">
-<a href=\"../book-details/?id=" . $search->id . "\"><img src=\"" . stripslashes($search->imageURL) . "\" /></a>
-<a class=\"title\" href=\"../book-details/?id=" . $search->id . "\" title=\"" . htmlentities(stripslashes($search->title)) . "\">" . stripslashes($search->title) . "</a>
-<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->author)) . "&searchBy=author&category=0\">" . stripslashes($search->author) . "</a></span>
-<span class=\"details\"><strong>Seller:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->display_name)) . "&searchBy=seller&category=0\">" . stripslashes($search->display_name) . "</a></span>
-<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($search->ISBN)) . "&searchBy=ISBN&category=0\">" . stripslashes($search->ISBN) . "</a></span>
+<a href=\"" . $essentials->friendlyURL("book-details/?id=" . $search->id) . "\"><img src=\"" . stripslashes($search->imageURL) . "\" /></a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $search->id) . "\" title=\"" . htmlentities(stripslashes($search->title)) . "\">" . stripslashes($search->title) . "</a>
+<span class=\"details\"><strong>Author:</strong> <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($search->author)) . "&searchBy=author&category=0") . "\">" . stripslashes($search->author) . "</a></span>
+<span class=\"details\"><strong>Seller:</strong> <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($search->display_name)) . "&searchBy=seller&category=0") . "\">" . stripslashes($search->display_name) . "</a></span>
+<span class=\"details\"><strong>ISBN:</strong> <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($search->ISBN)) . "&searchBy=ISBN&category=0") . "\">" . stripslashes($search->ISBN) . "</a></span>
 ";
 			
 		//Conditionally format the condition of the book
@@ -420,7 +420,7 @@
 			}
 			
 		//Generate the base URL for each of the pagination links
-			$baseURL = "../search/";
+			$baseURL = "search/";
 			$baseURL .= "?search=" . urlencode(urldecode($_GET['search']));
 			$baseURL .= "&searchBy=" . urlencode(urldecode($_GET['searchBy']));
 			$baseURL .= "&category=" . urlencode(urldecode($_GET['category']));
@@ -443,7 +443,7 @@
 		//Can a back button be displayed?
 			if ($currentPage != 1) {
 				echo "
-<li class=\"back\"><a href=\"" . $baseURL . "&pageLoc=" . ($currentPage - 1) . "\"></a></li>";
+<li class=\"back\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . ($currentPage - 1)) . "\"></a></li>";
 			}
 				
 		/**
@@ -519,15 +519,15 @@
 			//Don't display something like 1 ... 2
 				if ($minOutput - 1 == 1) {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>";
+<li class=\"noDot\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=1") . "\">1</a></li>";
 			//Don't display something like 1 ... 3, just print 1 2 3
 				} else if ($minOutput - 2 == 1) {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>
-<li><a href=\"" . $baseURL . "&pageLoc=2\">2</a></li>";
+<li class=\"noDot\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=1") . "\">1</a></li>
+<li><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=2") . "\">2</a></li>";
 				} else {
 					echo "
-<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=1\">1</a></li>
+<li class=\"noDot\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=1") . "\">1</a></li>
 <li class=\"noDot more\">&hellip;</li>";
 				}
 			}
@@ -563,7 +563,7 @@
 				
 			//Display the list item
 				echo "
-<li" . $class . "><a href=\"" . $baseURL . "&pageLoc=" . $i . "\">" . $i . "</a></li>";
+<li" . $class . "><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . $i) . "\">" . $i . "</a></li>";
 			}
 			
 		//Were there extra pages that the paginator didn't print out to conserve space? Print the last page, if so.
@@ -571,23 +571,23 @@
 			//Don't display something like 19 ... 20
 				if ($maxOutput + 1 == $pagesNeeded) {
 					echo "
-<li><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . $pagesNeeded) . "\">" . $pagesNeeded . "</a></li>";
 			//Don't display something like 18 ... 20, just print 18 19 20
 				} else if ($maxOutput + 2 == $pagesNeeded) {
 					echo "
-<li><a href=\"" . $baseURL . "&pageLoc=" . ($pagesNeeded - 1) . "\">" . ($pagesNeeded - 1) . "</a></li>
-<li><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . ($pagesNeeded - 1)) . "\">" . ($pagesNeeded - 1) . "</a></li>
+<li><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . $pagesNeeded) . "\">" . $pagesNeeded . "</a></li>";
 				} else {
 					echo "
 <li class=\"noDot more\">&hellip;</li>
-<li class=\"noDot\"><a href=\"" . $baseURL . "&pageLoc=" . $pagesNeeded . "\">" . $pagesNeeded . "</a></li>";
+<li class=\"noDot\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . $pagesNeeded) . "\">" . $pagesNeeded . "</a></li>";
 				}
 			}
 			
 		//Can a forward button be displayed?
 			if ($currentPage + 1 <= $pagesNeeded) {
 				echo "
-<li class=\"forward\"><a href=\"" . $baseURL . "&pageLoc=" . ($currentPage + 1) . "\"></a></li>";
+<li class=\"forward\"><a href=\"" . $essentials->friendlyURL($baseURL . "&pageLoc=" . ($currentPage + 1)) . "\"></a></li>";
 			}
 			
 			echo "

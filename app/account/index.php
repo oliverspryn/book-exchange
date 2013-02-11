@@ -1,7 +1,7 @@
 <?php
 //Include the system's core
 	$essentials->requireLogin();
-	$essentials->setTitle("All Book Listings");
+	$essentials->setTitle("My Account");
 	$essentials->includePHP("system/server/Validate.php");
 	$essentials->includeCSS("system/stylesheets/style.css");
 	$essentials->includeCSS("system/stylesheets/account.css");
@@ -12,66 +12,97 @@
 	
 //Update a user's profile
 	if (isset($_POST['action']) && $_POST['action'] == "profile") {
-		$id = $userData['id'];
-		$first = mysql_real_escape_string(Validate::required($_POST['first']));
-		$last = mysql_real_escape_string(Validate::required($_POST['last']));
-		$emailAddress1 = mysql_real_escape_string(Validate::email($_POST['emailAddress1']));
-		$emailAddress2 = mysql_real_escape_string(Validate::email($_POST['emailAddress2'], true));
-		$emailAddress3 = mysql_real_escape_string(Validate::email($_POST['emailAddress3'], true));
+		$id = $essentials->user->ID;
+		$first = Validate::required($_POST['first']);
+		$last = Validate::required($_POST['last']);
+		$displayName = $first . " " . $last;
+		$emailAddress1 = Validate::isEmail($_POST['emailAddress1']);
+		//$emailAddress2 = mysql_real_escape_string(Validate::email($_POST['emailAddress2'], true));
+		//$emailAddress3 = mysql_real_escape_string(Validate::email($_POST['emailAddress3'], true));
+		
+	//Check if the username exists
+		$username = username_exists($emailAddress1);
+		
+		if (!is_null($username) && $username != $id) {
+			echo "This username already exists";
+			exit;
+		}
 		
 	//Check the password, did we get one?
 		if ($_POST['password'] != "") {
-			$hash = "+y4hn&T/'K";
-			$password = md5($_POST['password'] . "_" . $hash);
+			$password = $_POST['password'];
 			
-			$wpdb->query("UPDATE users SET firstName = '{$first}', lastName = '{$last}', emailAddress1 = '{$emailAddress1}', emailAddress2 = '{$emailAddress2}', emailAddress3 = '{$emailAddress3}', passWord = PASSWORD('{$password}')", $connDBA);
+			wp_update_user(array(
+				"ID" => $id,
+				"first_name" => $first,
+				"last_name" => $last,
+				"display_name" => $displayName,
+				"user_email" => $emailAddress1,
+				"user_pass" => $password
+			));
 		} else {
-			mysql_query("UPDATE users SET firstName = '{$first}', lastName = '{$last}', emailAddress1 = '{$emailAddress1}', emailAddress2 = '{$emailAddress2}', emailAddress3 = '{$emailAddress3}'", $connDBA);
+			wp_update_user(array(
+				"ID" => $id,
+				"first_name" => $first,
+				"last_name" => $last,
+				"display_name" => $displayName,
+				"user_email" => $emailAddress1
+			));
 		}
 		
+		$wpdb->update(
+			"wp_users",
+			array("user_login" => $emailAddress1),
+			array("ID" => $id)
+		);
+				
 		echo "success";
 		exit;
 	}
 	
 //Renew a book
 	if (isset($_GET['action']) && $_GET['action'] == "renew" && isset($_GET['id'])) {
-		if ($userData['role'] == "Administrator") {
-			$booksGrabber = mysql_query("SELECT linkID FROM books WHERE id = '{$_GET['id']}' AND books.id IS NOT NULL", $connDBA);
-		} else {
-			$booksGrabber = mysql_query("SELECT linkID FROM books WHERE books.userID = '{$userData['id']}' AND id = '{$_GET['id']}' AND books.id IS NOT NULL", $connDBA);
-		}
+		//if ($userData['role'] == "Administrator") {
+		//	$booksGrabber = mysql_query("SELECT linkID FROM books WHERE id = '{$_GET['id']}' AND books.id IS NOT NULL", $connDBA);
+		//} else {
+			$booksGrabber = $wpdb->get_results("SELECT linkID FROM ffi_be_books WHERE ffi_be_books.userID = '{$essentials->user->ID}' AND id = '{$_GET['id']}' AND ffi_be_books.id IS NOT NULL");
+		//}
 		
-		if (mysql_num_rows($booksGrabber)) {
-			$booksLink = mysql_fetch_assoc($booksGrabber);
+		if (count($booksGrabber)) {
+			$booksLink = $booksGrabber[0];
 			$now = strtotime("now");
 			
-			mysql_query("UPDATE books SET upload = '{$now}', sold = '0' WHERE linkID = '{$booksLink['linkID']}'", $connDBA);
-			mysql_query("DELETE FROM purchases WHERE bookID = '{$_GET['id']}'", $connDBA); //Delete this from the purchase list. Guess the seller didn't sell it to anyone
-			redirect("../account/?message=renewed#book_" . $_GET['id']);
+			$wpdb->get_results("UPDATE ffi_be_books SET upload = '{$now}', sold = '0' WHERE linkID = '{$booksLink->linkID}'");
+			$wpdb->get_results("DELETE FROM ffi_be_purchases WHERE bookID = '{$_GET['id']}'"); //Delete this from the purchase list. Guess the seller didn't sell it to anyone
+			wp_redirect($essentials->friendlyURL("account/?message=renewed#book_" . $_GET['id']));
+			exit;
 		} else {
-			redirect("../account/");
+			wp_redirect($essentials->friendlyURL("account"));
+			exit;
 		}
 	}
 	
 //Delete a book
 	if (isset($_GET['action']) && $_GET['action'] == "delete" && isset($_GET['id'])) {
-		$booksGrabber = mysql_query("SELECT linkID FROM books WHERE books.userID = '{$userData['id']}' AND id = '{$_GET['id']}' AND books.id IS NOT NULL", $connDBA);
+		$booksGrabber = $wpdb->get_results("SELECT linkID FROM ffi_be_books WHERE ffi_be_books.userID = '{$essentials->user->ID}' AND id = '{$_GET['id']}' AND ffi_be_books.id IS NOT NULL");
 		
-		if (mysql_num_rows($booksGrabber)) {
-			$booksLink = mysql_fetch_assoc($booksGrabber);
+		if (count($booksGrabber)) {
+			$booksLink = $booksGrabber[0];
 			
 		//We set the userID equal to 0, so it is not associated with any user, but
 		//also isn't deleted from a buyer's purchase history
-			mysql_query("UPDATE books SET userID = '0' WHERE linkID = '{$booksLink['linkID']}'", $connDBA);
-			redirect("../account/?message=deleted");
+			$wpdb->get_results("UPDATE ffi_be_books SET userID = '0' WHERE linkID = '{$booksLink->linkID}'", $connDBA);
+			wp_redirect($essentials->friendlyURL("account/?message=deleted"));
+			exit;
 		} else {
-			redirect("../account/");
+			wp_redirect($essentials->friendlyURL("account"));
+			exit;
 		}
 	}
 	
 //Generate the breadcrumb
 	////$home = mysql_fetch_array(mysql_query("SELECT * FROM pages WHERE position = '1' AND `published` != '0'", $connDBA));
-	$title = unserialize($home['content' . $home['display']]);
+	//$title = unserialize($home['content' . $home['display']]);
 	//$breadcrumb = "\n<li><a href=\"" . $root . "index.php?page=" . $home['id'] . "\">" . stripslashes($title['title']) . "</a></li>
 //<li><a href=\"../\">Book Exchange</a></li>
 //<li>My Account</li>\n";
@@ -158,7 +189,7 @@
 		//Has this book expired, been sold, or will it expire within the next week?
 			if ($book->sold == "0" && ($book->upload + $exchangeSettings->expires) < $now) {
 				$class = " expired";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"" . $essentials->friendlyURL("account/?action=renew&id=" . $book->bookID) . "\" title=\"Restore to the Exchange\"><img src=\"" . $essentials->normalizedURL("system/images/icons/renew.png") . "\" /></a>
 ";
 				$expire = "<span class=\"expire\">Expired: " . date("F jS, Y \a\\t h:i A", ($book->upload + $exchangeSettings->expires)) . "</span>
 ";
@@ -166,7 +197,7 @@
 ";
 			} elseif ($book->sold == "0" && ($book->upload + $exchangeSettings->expires) < ($week) && ($book->upload + $exchangeSettings->expires) > ($now)) {
 				$class = " soon";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"" . $essentials->friendlyURL("account/?action=renew&id=" . $book->bookID) . "\" title=\"Restore to the Exchange\"><img src=\"" . $essentials->normalizeURL("system/images/icons/renew.png") . "\" /></a>
 ";
 				$expire = "<span class=\"expire\">Expires: " . date("F jS, Y \a\\t h:i A", ($book->upload + $exchangeSettings->expires)) . "</span>
 ";
@@ -174,7 +205,7 @@
 ";
 			} elseif ($book->sold == "1") {
 				$class = " sold";
-				$expireRenew = "<a class=\"action renew\" href=\"../account/?action=renew&id=" . $book->bookID . "\" title=\"Restore to the Exchange\"><img src=\"../system/images/icons/renew.png\" /></a>
+				$expireRenew = "<a class=\"action renew\" href=\"" . $essentials->friendlyURL("account/?action=renew&id=" . $book->bookID) . "\" title=\"Restore to the Exchange\"><img src=\"" . $essentials->normalizeURL("system/images/icons/renew.png") . "\" /></a>
 ";
 				$expire = "";
 				$status = "<span class=\"sold\">Sold</span>
@@ -191,12 +222,12 @@
 <li class=\"book\">
 <div class=\"alert" . $class . "\">
 <a name=\"book_" . $book->bookID . "\"></a>
-<a href=\"../book/?id=" . $book->bookID . "\"><img class=\"cover\" src=\"" . htmlentities(stripslashes($book->imageURL)) . "\" /></a>
-<a class=\"title\" href=\"../book/?id=" . $book->bookID . "\">" . stripslashes($book->title) . "</a>
-<span class=\"details\"><strong>Author:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book->author)) . "&searchBy=author&category=0\">" . stripslashes($book->author) . "</a></span>
-<span class=\"details\"><strong>ISBN:</strong> <a href=\"../search/?search=" . urlencode(stripslashes($book->ISBN)) . "&searchBy=ISBN&category=0\">" . stripslashes($book->ISBN) . "</a></span>
-" . $expireRenew . "<a class=\"action edit\" href=\"../sell-books/?id=" . $book->bookID . "\" title=\"Edit this Book\"><img src=\"../system/images/icons/edit.png\" /></a>
-<a class=\"action deleteBook\" data-id=\"" . $book->bookID . "\" href=\"javascript:;\" title=\"Delete this Book\"><img src=\"../system/images/icons/delete.png\" /></a>
+<a href=\"" . $essentials->friendlyURL("book-details/?id=" . $book->bookID) . "\"><img class=\"cover\" src=\"" . htmlentities(stripslashes($book->imageURL)) . "\" /></a>
+<a class=\"title\" href=\"" . $essentials->friendlyURL("book-details/?id=" . $book->bookID) . "\">" . stripslashes($book->title) . "</a>
+<span class=\"details\"><strong>Author:</strong> <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($book->author)) . "&searchBy=author&category=0") . "\">" . stripslashes($book->author) . "</a></span>
+<span class=\"details\"><strong>ISBN:</strong> <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($book->ISBN)) . "&searchBy=ISBN&category=0") . "\">" . stripslashes($book->ISBN) . "</a></span>
+" . $expireRenew . "<a class=\"action edit\" href=\"" . $essentials->friendlyURL("sell-books/?id=" . $book->bookID) . "\" title=\"Edit this Book\"><img src=\"" . $essentials->normalizeURL("system/images/icons/edit.png") . "\" /></a>
+<a class=\"action deleteBook\" data-id=\"" . $book->bookID . "\" href=\"javascript:;\" title=\"Delete this Book\"><img src=\"" . $essentials->normalizeURL("system/images/icons/delete.png") . "\" /></a>
 " . $expire . $status . "</div>
 </li>
 ";
@@ -205,14 +236,14 @@
 		echo "</ul>";
 	} else {
 		echo "
-<div class=\"none\">You don't have any books for sale yet! <a class=\"highlight\" href=\"../sell-books/\">Sell some now</a>.</div>";
+<div class=\"none\">You don't have any books for sale yet! <a class=\"highlight\" href=\"" . $essentials->normalizeURL("sell-books") . "\">Sell some now</a>.</div>";
 	}
 	
 	echo "
 </section>";
 	
 //Include a list of books that the user has purchased
-	$purchasedGrabber = $wpdb->get_results("SELECT books.*, purchases.*, users.*, books.id AS bookID FROM books RIGHT JOIN (purchases) ON books.id = purchases.bookID RIGHT JOIN (users) ON purchases.sellerID = users.id WHERE purchases.buyerID = '{$userData['id']}' AND books.id IS NOT NULL GROUP BY books.linkID ORDER BY purchases.time DESC");
+	$purchasedGrabber = $wpdb->get_results("SELECT ffi_be_books.*, ffi_be_purchases.*, wp_users.*, ffi_be_books.id AS bookID FROM ffi_be_books RIGHT JOIN (ffi_be_purchases) ON ffi_be_books.id = ffi_be_purchases.bookID RIGHT JOIN (wp_users) ON ffi_be_purchases.sellerID = wp_users.ID WHERE ffi_be_purchases.buyerID = '{$essentials->user->ID}' AND ffi_be_books.id IS NOT NULL GROUP BY ffi_be_books.linkID ORDER BY ffi_be_purchases.time DESC");
 	
 	
 	echo "<section class=\"purchases\">
@@ -227,11 +258,11 @@
 			
 			echo "
 <li class=\"book\">
-<img src=\"" . htmlentities(stripslashes($purchase['imageURL'])) . "\" />
-<span class=\"title\">" . stripslashes($purchase['title']) . "</span>
-<span class=\"details\"><strong>Seller</strong>: <a href=\"../search/?search=" . urlencode(stripslashes($purchase['firstName']) . " " . stripslashes($purchase['lastName'])) . "&searchBy=seller&category=0\">" . stripslashes($purchase['firstName']) . " " . stripslashes($purchase['lastName']) . "</a></span>
-<span class=\"details\"><strong>Purchased</strong>: " . date("F jS, Y", $purchase['time']) . "</span>
-<span class=\"buttonLink\"><span>\$" . stripslashes($purchase['price']) . "</span></span>
+<img src=\"" . htmlentities(stripslashes($purchase->imageURL)) . "\" />
+<span class=\"title\">" . stripslashes($purchase->title) . "</span>
+<span class=\"details\"><strong>Seller</strong>: <a href=\"" . $essentials->friendlyURL("search/?search=" . urlencode(stripslashes($purchase->display_name)) . "&searchBy=seller&category=0") . "\">" . stripslashes($purchase->display_name) . "</a></span>
+<span class=\"details\"><strong>Purchased</strong>: " . date("F jS, Y", $purchase->time) . "</span>
+<span class=\"buttonLink\"><span>\$" . stripslashes($purchase->price) . "</span></span>
 </li>
 ";
 		}
@@ -239,7 +270,7 @@
 		echo "</ul>";
 	} else {
 		echo "
-<div class=\"none\">You haven't purchased any books yet! <a class=\"highlight\" href=\"../listings/\">Browse</a> or <a class=\"highlight\" href=\"../search/\">search</a> for books now.</div>";
+<div class=\"none\">You haven't purchased any books yet! <a class=\"highlight\" href=\"" . $essentials->friendlyURL("listings") . "\">Browse</a> or <a class=\"highlight\" href=\"" . $essentials->friendlyURL("search") . "\">search</a> for books now.</div>";
 	}
 	
 	echo "
