@@ -607,7 +607,7 @@
 		
 		echo "<section class=\"searchForm\">
 <div class=\"mask\">
-<form action=\".\" method=\"get\">
+<form action=\"" . $essentials->friendlyURL("search") . "\" method=\"get\">
 <h2 class=\"search\">Search for Books:</h2>
 <input autocomplete=\"off\" class=\"search full\" name=\"search\" type=\"text\" />
 <span class=\"expand\">Advanced Search Options</span>
