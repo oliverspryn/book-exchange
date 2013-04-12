@@ -1,0 +1,64 @@
+/**
+ * General styles
+ * ----------------------------------
+*/
+
+h1 {
+	display: none;
+}
+
+/**
+ * Splash display
+ * ----------------------------------
+*/
+
+section#splash {
+	border-bottom: 1px solid #DDDDDD;
+	border-top: 1px solid #DDDDDD;
+	position: relative;
+}
+
+section#splash > h2 {
+    display: none;
+}
+
+section#splash div.ad-container {
+	background-position: top center;
+	background-repeat: no-repeat;
+	border-top: 1px solid #DDDDDD;
+	height: 500px;
+	max-height: 500px;
+	min-height: 500px;
+}
+
+section#splash div.ad-container div.ad-contents {
+	background-color: rgba(34, 34, 34, 0.5);
+	height: 100%;
+	padding: 0px 10% 0px 10%;
+	text-align: center;
+	width: 80%;
+}
+
+section#splash div.ad-container div.ad-contents > h2 {
+	color: #FFFFFF;
+	font-size: 60px;
+	font-weight: lighter;
+	margin: 0px;
+	padding-top: 190px;
+	text-transform: uppercase;
+}
+
+section#splash div.ad-container div.ad-contents > h2::before {
+	border-top: 4px solid #FFFFFF;
+	content: ' ';
+	display: block;
+	margin: 7px auto 20px auto;
+	padding: 0px;
+	width: 300px;
+}
+
+@media screen and (max-width: 650px) {    
+	section#splash {
+		display: none;
+	}
+}

@@ -9,25 +9,22 @@ Author URI: http://forwardfour.com/
 License: MIT
 */
 
-//Create plugin-specific global definitions
-	define("FFI_BE_FILE", __FILE__);
-	define("FFI_BE_PATH", plugin_dir_path(__FILE__));
-	define("FFI_BE_REAL_ADDR", get_site_url() . "/wp-content/plugins/book-exchange/");
-	define("FFI_BE_FAKE_ADDR", get_site_url() . "/book-exchange/");
+	namespace FFI\BE;
 	
-//Add a new user role to the system
-	add_role("book_exchange_user", "Book Exchange User", array(
-		"read" => true
-	));
-
-//Require the Book Exchange Initialization and Essentials classes, if we are not in the administration interface
-	if (!is_admin()) {
-	//Plugin essentials
-		require_once(FFI_BE_PATH . "/includes/FFI_BE_Essentials.php");
-		$essentials = new FFI_BE_Essentials();
-		
-	//Initialization
-		require_once(FFI_BE_PATH . "/includes/FFI_BE_Interception_Manager.php");
-		new FFI_BE_Interception_Manager();
+//Create plugin-specific global definitions
+	define("FFI\BE\FAKE_ADDR", get_site_url() . "/book-exchange/");
+	define("FFI\BE\PATH", plugin_dir_path(__FILE__));
+	define("FFI\BE\REAL_ADDR", get_site_url() . "/wp-content/plugins/book-exchange/");
+	define("FFI\BE\URL_ACTIVATE", "book-exchange");
+	
+	define("FFI\BE\ACTIVE", true);
+	define("FFI\BE\NAME", "Book Exchange");
+	
+//Instantiate the Interception_Manager
+	if(!is_admin()) {
+		require_once(PATH . "includes/Interception_Manager.php");
+		$intercept = new Interception_Manager();
+		$intercept->registerException("sell-books", "sell-books/index.php", 2);
+		$intercept->go();
 	}
 ?>
