@@ -108,6 +108,10 @@ class FFI_BE_Interception_Manager {
 			$path = FFI_BE_PATH . "app" . $this->scriptURL;
 		
 			if (file_exists($path)) {
+			//Run the global plugin file
+				require_once(FFI_BE_PATH . "global.php");
+				
+			//Generate the content of the page
 				ob_start();
 				require_once($path);
 				$this->content = ob_get_contents();
@@ -214,7 +218,9 @@ class FFI_BE_Interception_Manager {
 	//Check to see if the user is really requesting a page that exists
 		if (!empty($this->content)) {
 			get_header();
-			echo $this->content;
+			echo "<section class=\"content\">
+" . $this->content . "
+</section>";
 			get_footer();
 			exit;
 		} else {
