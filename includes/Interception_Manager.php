@@ -27,7 +27,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   includes
- * @since     v1.0 Dev
+ * @since     3.0
 */
 
 namespace FFI\BE;
@@ -90,7 +90,7 @@ class Interception_Manager {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function __construct() {
@@ -151,7 +151,7 @@ class Interception_Manager {
  * @param  string   $redirectURL The URL of the file this class should request when this exception is encountered, with respect to the "app" folder
  * @param  int      ...$indexes  The index elements of the array holding the exploded page URL for which this method should store for later use
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function registerException() {
@@ -190,7 +190,7 @@ class Interception_Manager {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function go() {
@@ -251,7 +251,7 @@ class Interception_Manager {
  *
  * @access private
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	private function URLNoRoot() {
@@ -266,7 +266,7 @@ class Interception_Manager {
  *
  * @access private
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	private function activatePlugin() {
@@ -281,7 +281,7 @@ class Interception_Manager {
  * @access private
  * @param  string   $exception The string the URL should START with in order to activate the exception, with respect to the "app" folder
  * @return boolean             Whether or not the requested exception should be activated
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	private function activateException($exception) {
@@ -297,7 +297,7 @@ class Interception_Manager {
  *
  * @access private
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	private function generateURL() {
@@ -334,7 +334,7 @@ class Interception_Manager {
  *
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	public function intercept() {
 		echo $this->content;
@@ -346,7 +346,7 @@ class Interception_Manager {
  *
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function intercept404() {

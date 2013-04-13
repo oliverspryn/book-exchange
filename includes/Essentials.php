@@ -18,7 +18,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   includes
- * @since     v1.0 Dev
+ * @since     3.0
 */
 
 namespace FFI\BE;
@@ -83,7 +83,7 @@ class Essentials {
  * @access public
  * @param  boolean|array<string> $params An array of parameters from the URL fetched by Interception_Manager::registerException(), or false if none
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function __construct($params) {
@@ -99,7 +99,7 @@ class Essentials {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function requireLogin() {
@@ -120,7 +120,7 @@ class Essentials {
  * 
  * @access public
  * @return boolean  Whether or not the user's information could be obtained, based on their login status
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function storeUserInfo() {
@@ -141,7 +141,7 @@ class Essentials {
  * @access public
  * @param  string   $title The title of the HTML page
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function setTitle($title) {
@@ -155,7 +155,7 @@ class Essentials {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function actionHookSetTitle($title) {
@@ -174,7 +174,7 @@ class Essentials {
  * @access public
  * @param  string   $address The of the PHP script URL with respect to the "app" folder
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function includePHP($address) {
@@ -193,7 +193,7 @@ class Essentials {
  * @access public
  * @param  string   $class The name of of the PHP plugin class to import
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function includePluginClass($class) {
@@ -219,7 +219,7 @@ class Essentials {
  * @access public
  * @param  string   $address The URL of the external stylesheet or the URL with respect to the "app" folder
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function includeCSS($address) {
@@ -234,7 +234,7 @@ class Essentials {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function actionHookIncludeCSS($CSS) {		
@@ -271,7 +271,7 @@ class Essentials {
  * @access public
  * @param  string   $address The URL of the external script or the URL with respect to the "app" folder
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function includeJS($address) {
@@ -286,7 +286,7 @@ class Essentials {
  * 
  * @access public
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function actionHookIncludeJS() {
@@ -313,7 +313,7 @@ class Essentials {
  * @access public
  * @param  string   $address The URL with respect to the "app" folder
  * @return string   $address The normalized version of the given URL
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function normalizeURL($address) {
@@ -330,7 +330,7 @@ class Essentials {
  * @access public
  * @param  string   $address The URL with respect to the "app" folder
  * @return string   $address The friendly version of the given URL
- * @since  v1.0 Dev
+ * @since  3.0
 */
 
 	public function friendlyURL($address) {

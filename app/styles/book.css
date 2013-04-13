@@ -1,0 +1,112 @@
+/**
+ * Book details welcome
+ * ----------------------------------
+*/
+
+article.book-welcome {	
+	background-position: left center;
+	background-repeat: no-repeat;
+	height: 350px;
+	margin: 40px 340px 55px 0px;
+}
+
+article.book-welcome h2 {
+	background-color: rgba(24, 24, 24, 0.6);
+	color: #222222;
+	font-size: 32px;
+	font-weight: bolder;
+	letter-spacing: 1px;
+	margin-left: 60px;
+	padding-left: 300px;
+	text-transform: uppercase;
+}
+
+article.book-welcome h2 span.author {
+	color: #999999;
+	font-size: 20px;
+	font-weight: lighter;
+	text-transform: none;
+}
+
+article.book-welcome section.cover {
+	-moz-shadow: 0px 0px 15px #000000;
+	-ms-shadow: 0px 0px 15px #000000;
+    -o-shadow: 0px 0px 15px #000000;
+	-webkit-shadow: 0px 0px 15px #000000;
+	box-shadow: 0px 0px 15px #000000;
+	
+	background: #181818;
+	clear: both;
+	display: inline-block;
+	float: left;
+	margin: -40px 0px 0px 25px;
+	padding: 11px 10px;
+}
+
+article.book-welcome section.cover footer ul {
+	list-style: none;
+	margin: 10px 0px 0px 0px;
+	text-align: center;
+}
+
+article.book-welcome section.cover footer ul li {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	background: url(sprites/social-icons.png) no-repeat;
+	display: inline-block;
+	height: 45px;
+	margin: 0px 5px 0px 5px;
+	width: 45px;
+}
+
+article.book-welcome section.cover footer ul li:first-child {
+	margin-left: 0px;
+}
+
+article.book-welcome section.cover footer ul li:last-child {
+	margin-right: 0px;
+}
+
+article.book-welcome section.cover footer ul li.facebook {
+	background-position: 17px 11px;
+}
+
+article.book-welcome section.cover footer ul li.facebook:hover {
+	background-color: #3B5998;
+}
+
+article.book-welcome section.cover footer ul li.twitter {
+	background-position: -27px 11px;
+}
+
+article.book-welcome section.cover footer ul li.twitter:hover {
+	background-color: #46C8F5;
+}
+
+article.book-welcome section.cover footer ul li.google-plus {
+	background-position: -71px 12px;
+}
+
+article.book-welcome section.cover footer ul li.google-plus:hover {
+	background-color: #DE4B38;
+}
+
+article.book-welcome section.cover footer ul li.pinterest {
+	background-position: -115px 11px;
+}
+
+article.book-welcome section.cover footer ul li.pinterest:hover {
+	background-color: #CC2127;
+}
+
+article.book-welcome section.cover footer ul li.email {
+	background-position: -158px 11px;
+}
+
+article.book-welcome section.cover footer ul li.email:hover {
+	background-color: #009BAD;
+}

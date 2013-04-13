@@ -15,7 +15,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   includes.form.display
- * @since     v1.0 Dev
+ * @since     3.0
 */
 
 namespace FFI\BE;
@@ -41,7 +41,7 @@ class Sell_Book_Display {
  * @param  int      $userID       The ID of the user requesting this page
  * @param  string   $failRedirect The URL to redirect to if the SQL query returns zero tuples (i.e. an invalid $ID or $userID is given)
  * @return void
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function __construct($ID, $userID, $failRedirect) {
@@ -66,7 +66,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getISBN10() {
@@ -79,7 +79,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getISBN13() {
@@ -92,7 +92,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getTitle() {
@@ -105,7 +105,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getAuthors() {
@@ -118,7 +118,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getEdition() {
@@ -131,7 +131,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getPrice() {
@@ -144,7 +144,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getWriting() {
@@ -166,7 +166,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getCondition() {
@@ -197,7 +197,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getEndDate() {
@@ -216,7 +216,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  v1.0 Dev
+ * @since  3.0
 */
 	
 	public function getComments() {

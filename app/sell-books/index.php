@@ -1,5 +1,5 @@
 <?php
-//Verify that the user is logged in
+//Include the necessary scripts
 	$essentials->requireLogin();
 	$essentials->setTitle("Sell Your Books");
 	$essentials->includePluginClass("forms/display/Sell_Book_Display");
