@@ -34,7 +34,8 @@
 </section>
 
 <section class=\"quick-info\">
-<h2>" . $book->data[0]->Title . " <span class=\"author\">by " . $book->data[0]->Author . "</span></h2>
+<h2>" . $book->data[0]->Title . "</h2>
+<h3>by " . $book->data[0]->Author . "</h3>
 <button class=\"btn btn-large btn-primary\">Buy for \$" . $book->data[0]->Price . ".00</button>
 </section>
 </article>

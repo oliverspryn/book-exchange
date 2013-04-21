@@ -10,21 +10,24 @@ article.book-welcome {
 	margin: 40px 340px 55px 0px;
 }
 
-article.book-welcome h2 {
-	background-color: rgba(24, 24, 24, 0.6);
+article.book-welcome section.quick-info h2 {
+	background-color: rgba(24, 24, 24, 0.3);
 	color: #222222;
 	font-size: 32px;
 	font-weight: bolder;
 	letter-spacing: 1px;
-	margin-left: 60px;
-	padding-left: 300px;
+	margin: 0px 0px 0px 60px;
+	padding: 15px 15px 15px 300px;
 	text-transform: uppercase;
 }
 
-article.book-welcome h2 span.author {
-	color: #999999;
+article.book-welcome section.quick-info h3 {
+	background-color: rgba(24, 24, 24, 0.3);
+	color: #222222;
 	font-size: 20px;
 	font-weight: lighter;
+	margin: 0px 0px 0px 300px;
+	padding-left: 60px;
 	text-transform: none;
 }
 

@@ -59,7 +59,7 @@ class General {
 	public static function bookBackgroundLarge($imageKey) {
 		self::getCloudName();
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_1000,h_350,c_fill,e_blur:800/e_vibrance:100/" . $imageKey;
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_1500,h_350,c_fill,e_blur:800/e_vibrance:100/" . $imageKey;
 	}
 	
 /**
