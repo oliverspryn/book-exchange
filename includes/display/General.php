@@ -76,7 +76,7 @@ class General {
 	public static function bookCoverPreview($imageKey) {
 		self::getCloudName();
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_300,h_350,c_pad,e_vibrance:100/" . $imageKey;
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_125,c_pad,e_vibrance:100/" . $imageKey;
 	}
 }
 ?>
