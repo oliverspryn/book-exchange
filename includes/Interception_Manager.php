@@ -15,6 +15,12 @@
  * Much of this plugin will involve rewriting the content of 404
  * error pages into an application page, assuming the application
  * has a page which matches the URL.
+ *
+ * This class also has the ability to highlight specified link on 
+ * the main navigation bar, which can be useful for highlighting 
+ * active links for the plugin when Wordpress is unable to. This
+ * feature works only with themese designed by ForwardFour
+ * Innovations.
  * 
  * This class will also listen for any specially crafted URLs as
  * defined by the paramters given to the addException() method and will
@@ -42,6 +48,16 @@ class Interception_Manager {
 */
 
 	private $content = "";
+	
+/**
+ * Hold a reference to the URL of the page which should be highlighted
+ * on the main navigation bar.
+ *
+ * @access private
+ * @type   string 
+*/
+
+	private $navLink = "";
 	
 /**
  * If a page URL exception is encountered, then store the parsed parameters
@@ -246,6 +262,25 @@ class Interception_Manager {
 	}
 	
 /**
+ * This method is intended to highlight the given URL on the main
+ * navigation bar. The URL should be given with respect to the "app"
+ * folder of this plugin. So, a parameter such as "my-plugin", will
+ * highlight the menu item with the URL of:
+ * http://<wordpress-site>/my-plugin
+ *
+ * NOTE: This feature will ONLY work with Wordpress themes designed by 
+ * ForwardFour Innovations
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "app" folder
+ * @since  3.0
+*/
+	
+	public function highlightNavLink($address) {
+		$this->navLink = get_site_url() . "/" . $address;
+	}
+	
+/**
  * Get the URL of the current page without the protocol and installation
  * address of Wordpress.
  *
@@ -358,8 +393,12 @@ class Interception_Manager {
 			status_header(200);
 			$wp_query->is_404 = false;
 			
+		//Make the URL of the highlighted navigation link avaliable to the theme's header file
+			$GLOBALS['highlight'] = $this->navLink;
+			
 		//Build the page content
 			get_header();
+			unset($GLOBALS['highlight']); //Well... that was evil, DESTROY IT!
 			echo $this->content;
 			get_footer();
 			exit;

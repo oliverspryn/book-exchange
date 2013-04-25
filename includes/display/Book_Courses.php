@@ -36,11 +36,16 @@ class Book_Courses {
 		return $wpdb->get_results("SELECT ffi_be_new_courses.*, COALESCE(`Total`, 0) AS `Total` FROM `ffi_be_new_courses` LEFT JOIN (SELECT ffi_be_new_courses.*, COUNT(*) AS `Total` FROM (SELECT ffi_be_new_bookcourses.Course AS `CourseID` FROM `ffi_be_new_bookcourses` LEFT JOIN `ffi_be_new_sale` ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID WHERE DATE_ADD(ffi_be_new_sale.Upload, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_new_settings`) MONTH) < CURDATE() AND ffi_be_new_sale.Sold = '0' GROUP BY ffi_be_new_bookcourses.SaleID) `info` LEFT JOIN `ffi_be_new_courses` ON info.CourseID = ffi_be_new_courses.CourseID GROUP BY info.CourseID) AS `info` ON ffi_be_new_courses.CourseID = info.CourseID WHERE ffi_be_new_courses.Type = 'Science' ORDER BY ffi_be_new_courses.Name ASC");
 	}
 	
-	public static function URLPurify($name) {
-		$name = preg_replace("/[^a-zA-Z0-9\s]/", "", $name); //Remove all non-alphanumeric characters, except for spaces
-		$name = preg_replace("/[\s]/", "-", $name);          //Replace remaining spaces with a "-"
-		$name = str_replace("--", "-", $name);               //Replace "--" with "-", will occur if a something like " & " is removed
-		return strtolower($name);
+	public static function getCourseInfo($courseURL, $failRedirect) {
+		global $wpdb;
+		$info = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_courses` WHERE `URL` = %s", $courseURL));
+		
+		if (!count($info)) {
+			wp_redirect($failRedirect);
+			exit;
+		}
+		
+		return $info[0];
 	}
 }
 ?>

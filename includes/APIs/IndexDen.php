@@ -74,6 +74,7 @@ class IndexDen {
 				"author" => $author,
 				"condition" => $item->Condition,
 				"imageURL" => General::bookCoverPreview($item->ImageID),
+				"ID" => $item->BookID,
 				"merchant" => $item->Name,
 				"price" => $item->Price,
 				"title" => $title
