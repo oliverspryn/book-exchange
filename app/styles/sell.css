@@ -102,3 +102,76 @@ section.step header h4.step {
 	position: absolute;
 	top: 27.5px;
 }
+
+/**
+ * Dependent courses table
+ * ----------------------------------
+*/
+
+section.dependent table {
+	margin-left: 65px;
+	width: 100%;
+}
+
+section.dependent table thead th {
+	font-weight: bolder;
+}
+
+section.dependent table tbody tr td {
+	border-top: 1px solid #DDD;
+	padding: 7px 8px;
+	text-align: center;
+}
+
+section.dependent table tbody tr td.delete {
+	border-top: none;
+}
+
+section.dependent table tbody tr td span {
+	display: none;
+}
+
+@media screen and (max-width: 650px) {
+	section.dependent table {
+		margin-left: 0px;
+	}
+	
+	section.dependent table thead th {
+		display: none;
+	}
+	
+	section.dependent table tbody tr td:first-child {
+		margin-top: 20px;
+	}
+	
+	section.dependent table tbody tr:first-child td:first-child {
+		margin-top: 0px;
+	}
+	
+	section.dependent table tbody tr td {
+		border-top: none;
+		display: block;
+		padding: 7px 0px;
+		text-align: left;
+		width: 100%;
+	}
+	
+	section.dependent table tbody tr td:first-child {
+		border-top: none;
+	}
+	
+	section.dependent table tbody tr td span {
+		display: inline-block;
+		padding-right: 20px;
+		text-align: right;
+		width: 160px;
+	}
+}
+
+@media screen and (max-width:480px) {	
+	section.dependent table tbody tr td span {
+		display: block;
+		padding-bottom: 5px;
+		text-align: left;
+	}
+}

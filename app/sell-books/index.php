@@ -2,6 +2,7 @@
 //Include the necessary scripts
 	$essentials->requireLogin();
 	$essentials->setTitle("Sell Your Books");
+	$essentials->includePluginClass("display/Book_Courses");
 	$essentials->includePluginClass("forms/display/Sell_Book_Display");
 	$essentials->includeCSS("styles/sell.css");
 	$essentials->includeCSS("styles/bootleg.css");
@@ -69,9 +70,7 @@
 <div class=\"control-group\">
 <label class=\"control-label\" for=\"where-city\">Author(s):</label>
 <div class=\"controls\">
-<div class=\"input-append input-prepend\">
 " . $display->getAuthors() . "
-</div>
 </div>
 </div>
 
@@ -86,12 +85,79 @@
 ";
 
 //Display the book classes section
-	echo "<section class=\"step\">
+	$allCourses = FFI\BE\Book_Courses::getCourses();
+	$courses = "";
+	$sections = "";
+	
+	foreach($allCourses as $course) {
+		$courses .= "<option value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
+";
+	}
+	
+	foreach(range("A", "Z") as $letter) {
+		$sections .= "<option value=\"" . $letter . "\">" . $letter . "</option>
+";
+	}
+
+	echo "<section class=\"step dependent\">
 <header>
 <h2>Dependent Courses</h2>
 <h3>In which classes did you use this book? Don't bother researching all of the classes which use this book, just tell us the ones where you used it.</h3>
 <h4 class=\"step\">2</h4>
 </header>
+
+<table>
+<thead>
+<th>Course</th>
+<th>Number</th>
+<th>Section</th>
+<th></th>
+</thead>
+
+<tbody>
+<tr>
+<td>
+<span>Course:</span>
+<select name=\"course[]\">
+<option value=\"\">- Select Course -</option>
+" . $courses . "</select>
+</td>
+<td>
+<span>Number:</span>
+<input class=\"input-small\" name=\"number[]\" type=\"text\">
+</td>
+<td>
+<span>Section:</span>
+<select class=\"input-small\" name=\"section[]\">
+<option value=\"\">-</option>
+" . $sections . "</select>
+</td>
+<td class=\"delete\">
+</td>
+</tr>
+
+<tr>
+<td>
+<span>Course:</span>
+<select name=\"course[]\">
+<option value=\"\">- Select Course -</option>
+" . $courses . "</select>
+</td>
+<td>
+<span>Number:</span>
+<input class=\"input-small\" name=\"number[]\" type=\"text\">
+</td>
+<td>
+<span>Section:</span>
+<select class=\"input-small\" name=\"section[]\">
+<option value=\"\">-</option>
+" . $sections . "</select>
+</td>
+<td class=\"delete\">
+</td>
+</tr>
+</tbody>
+</table>
 
 </section>
 

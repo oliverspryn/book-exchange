@@ -19,7 +19,7 @@ License: MIT
 	define("FFI\BE\RESOURCE_PATH", (CDN ? "//ffistatic.appspot.com/sga" : site_url()) . "/wp-content/plugins/book-exchange/");
 	define("FFI\BE\URL_ACTIVATE", "book-exchange");
 	
-	define("FFI\BE\ACTIVE", true);
+	define("FFI\BE\ENABLED", true);
 	define("FFI\BE\NAME", "Book Exchange");
 	
 //Instantiate the Interception_Manager

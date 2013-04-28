@@ -149,7 +149,7 @@ class Sell_Book_Display {
 	
 	public function getWriting() {
 		$checkedYes = $this->data[0]->Written == "1";
-		$checkedNo = $this->data[0]->Written == "0";
+		$checkedNo = $this->data[0]->Written == "0" || !$this->data;
 	
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
@@ -173,15 +173,15 @@ class Sell_Book_Display {
 		$poor = $this->data[0]->Condition == "1";
 		$fair = $this->data[0]->Condition == "2";
 		$good = $this->data[0]->Condition == "3";
-		$veryGood = $this->data[0]->Condition == "4";
+		$veryGood = $this->data[0]->Condition == "4" || !$this->data;
 		$excellent = $this->data[0]->Condition == "5";
 	
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
-<input autocomplete=\"off\"" . ($fair ? " checked" : "") . " data-toggle=\"button\" id=\"fair\" name=\"condition\" type=\"radio\" value=\"1\">
-<label class=\"btn" . ($fair ? " active" : "") . "\" for=\"fair\" id=\"fair-label\">Fair</label>
-<input autocomplete=\"off\"" . ($poor ? " checked" : "") . " data-toggle=\"button\" id=\"poor\" name=\"condition\" type=\"radio\" value=\"2\">
+<input autocomplete=\"off\"" . ($poor ? " checked" : "") . " data-toggle=\"button\" id=\"poor\" name=\"condition\" type=\"radio\" value=\"1\">
 <label class=\"btn" . ($poor ? " active" : "") . "\" for=\"poor\" id=\"poor-label\">Poor</label>
+<input autocomplete=\"off\"" . ($fair ? " checked" : "") . " data-toggle=\"button\" id=\"fair\" name=\"condition\" type=\"radio\" value=\"2\">
+<label class=\"btn" . ($fair ? " active" : "") . "\" for=\"fair\" id=\"fair-label\">Fair</label>
 <input autocomplete=\"off\"" . ($good ? " checked" : "") . " data-toggle=\"button\" id=\"good\" name=\"condition\" type=\"radio\" value=\"3\">
 <label class=\"btn" . ($good ? " active" : "") . "\" for=\"good\" id=\"good-label\">Good</label>
 <input autocomplete=\"off\"" . ($veryGood ? " checked" : "") . " data-toggle=\"button\" id=\"very-good\" name=\"condition\" type=\"radio\" value=\"4\">

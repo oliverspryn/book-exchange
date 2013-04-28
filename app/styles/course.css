@@ -1,0 +1,10 @@
+/**
+ * Course listing container
+ * ----------------------------------
+*/
+
+article.numbers h3 {
+	color: #222222;
+	font-size: 21px;
+	font-weight: 500;
+}

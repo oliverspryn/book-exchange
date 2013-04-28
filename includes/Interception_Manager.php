@@ -198,6 +198,13 @@ class Interception_Manager {
  *  - Parse the requested URL into an address which can be used to
  *    fetch correct script from the "app" directory
  *  - Include the "pluggable" function library from Wordpress
+ *  - Register the FFI\BE\ACTIVE and FFI\PLUGIN_PAGE constants
+ *    indicating that this specific plugin is active on the current
+ *    page and that a more general ForwardFour Innovations plugin
+ *    is active on the current page, respectively. The latter is 
+ *    useful in cases where ForwardFour Innovations themes may need
+ *    to adjust page rendering in the case that the current page 
+ *    is displaying content from an active plugin.
  *  - Include requests for the appropriate application files
  *  - Utilize the Essentials class to give the page an appropriate 
  *    title and load necessary stylesheets and scripts
@@ -236,7 +243,11 @@ class Interception_Manager {
 		//We need several methods from this function library
 			require_once(ABSPATH . "wp-includes/pluggable.php");
 			
-		//Run the required script first, so if any modifications should be made to header
+		//Register several constants indicating the activated state of this plugin
+			define("FFI\BE\ACTIVE", true);
+			define("FFI\PLUGIN_PAGE", true);
+			
+		//Run the required script first, so the included file can make any modifications to the header
 			$path = PATH . "app" . $this->scriptURL;
 			
 			if (file_exists($path)) {
