@@ -24,7 +24,7 @@
 ";
 	
 //Display the welcome splash section
-	$arts = array("bookshelf.jpg", "brighton-pier.jpg", "louis-armstrong.jpg", "romeo-and-juliet.jpg");
+	$arts = array("bookshelf.jpg", "brighton-pier.jpg", "sheet-music.jpg", "romeo-and-juliet.jpg");
 	$science = array("brooklyn-bridge.jpg", "fibonacci-sequence.jpg", "php.jpg", "tuscarora-mountain-tunnel.jpg");
 	$rand = mt_rand(0, 3);
 	$background = ($info->Type == "Arts") ? $arts[$rand] : $science[$rand];
@@ -39,6 +39,16 @@
 
 ";
 
+//Display the sidebar
+	echo "<section class=\"overview\">
+<h2>" . $info->Name . " Courses and Avaliable Books</h2>
+
+<aside class=\"supplement\">
+<h2>New Books</h2>
+</aside>
+
+";
+
 //Display a listing of courses which currently have books
 	$currentNumber = 0;
 	$numbers = FFI\BE\Book_Overview::getNumbersWithBooks($course);
@@ -49,17 +59,42 @@
 	foreach($numbers as $item) {
 	//This is the beginning of a new course number, e.g. from HUMA 101 to HUMA 102
 		if ($currentNumber != $item->Number) {
-			echo ($currentNumber != 0) ? "</ul>\n\n<h3>" . $info->Code . "</h3>\n<ul>\n" : "<h3>" . $info->Code . "</h3>\n<ul>\n";
+			if ($currentNumber != 0) {
+				echo "</ul>
+</section>
+
+<section>
+<header>
+<div>
+<h3 style=\"background-color: " . $info->Color . "\">" . $info->Code . " " . $item->Number . "</h3>
+<h4 style=\"background-color: " . $info->Color . "\">1 Trazillion Books!</h4>
+</div>
+</header>
+
+<ul>
+";
+			} else {
+				echo "<section>
+<header>
+<div>
+<h3 style=\"background-color: " . $info->Color . "\">" . $info->Code . " " . $item->Number . "</h3>
+<h4 style=\"background-color: " . $info->Color . "\">1 Trazillion Books!</h4>
+</div>
+</header>
+
+<ul>
+";
+			}
 			
 			$currentNumber = $item->Number;
 		}
 		
-		echo "<li>" . $item->Section . " " . $item->SectionTotal . "</li>
+		echo "<li><a href=\"" . $essentials->friendlyURL("browse/" . $info->URL . "/" . $item->Number . "/" . $item->Section) . "\"><p>" . $item->Section . "</p><span>" . $item->SectionTotal . " " . ($item->SectionTotal == 1 ? "Book" : "Books") . "</span></a></li>
 ";
 	}
 
 	echo "</ul>
+</section>
 </article>
-
-";
+</section>";
 ?>

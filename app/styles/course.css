@@ -1,10 +1,183 @@
 /**
- * Course listing container
+ * General styles
  * ----------------------------------
 */
 
-article.numbers h3 {
+section.overview {
+	background: #F5F5F5;
+}
+
+section.overview > h2 {
+	display: none;
+}
+
+/**
+ * Course listing
+ * ----------------------------------
+*/
+
+article.numbers {
+	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
+    -o-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
+    box-shadow: 0px 4px 10px 0px #CCCCCC;
+	
+	background-color: #FFFFFF;
+	border-right: 1px solid #CCCCCC;
+	margin-right: 350px;
+}
+
+article.numbers section {
+	height: 220px;
+	padding: 30px 40px;
+}
+
+article.numbers section header {	
+	-moz-perspective: 1000;
+	-ms-perspective: 1000;
+	-o-perspective: 1000;
+	-webkit-perspective: 1000;
+	perspective: 1000;
+	
+	float: left;
+	position: relative;
+	width: 220px;
+}
+
+article.numbers section header div {
+	-moz-transform-style: preserve-3d;
+	-ms-transform-style: preserve-3d;
+	-o-transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	
+	-moz-transition: 0.5s;
+	-ms-transition: 0.5s;
+	-o-transition: 0.5s;
+	-webkit-transition: 0.5s;
+	transition: 0.5s;
+	
+	height: 220px;
+	position: relative;
+	width: 220px;
+}
+
+article.numbers section header:hover div {
+	-moz-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-webkit-transform: rotateY(180deg);
+	transform: rotate(180deg);
+}
+
+article.numbers section header div h3, article.numbers section header div h4 {
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	-o-backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	
+	border-radius: 150px;
 	color: #222222;
 	font-size: 21px;
 	font-weight: 500;
+	left: 0px;
+	padding: 90px 0px;
+	position: absolute;
+	text-align: center;
+	top: 0px;
+	width: 220px;
+}
+
+article.numbers section header div h3 {
+	line-height: 40px;
+	margin: 0px;
+	z-index: 10;
+}
+
+article.numbers section header div h4 {	
+	-moz-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-webkit-transform: rotateY(180deg);
+	transform: rotate(180deg);
+	
+	line-height: 40px;
+	margin: 0px;
+}
+
+article.numbers section header:hover div h3 {
+	z-index: 0;
+}
+
+article.numbers section ul {
+	display: inline-block;
+	float: left;
+	list-style: none;
+	margin: 0px 70px 0px 100px;
+	position: absolute;
+}
+
+article.numbers section ul li {
+	display: inline-block;
+	height: 90px;
+	margin: 5px;
+	padding: 0px;
+	width: 60px;
+}
+
+article.numbers section ul li p {
+	background: #CCCCCC;
+	border-radius: 40px;
+	color: #000000;
+	font-size: 20px;
+	font-weight: bolder;
+	line-height: 60px;
+	text-align: center;
+}
+
+article.numbers section ul li span {
+	-moz-opacity: 0;
+	-ms-opacity: 0;
+	-o-opacity: 0;
+	-webkit-opacity: 0;
+    filter: alpha(opacity=0);
+	opacity: 0;
+	
+	-moz-transition: 0.25s;
+	-ms-transition: 0.25s;
+	-o-transition: 0.25s;
+	-webkit-transition: 0.25s;
+	transition: 0.25s;
+	
+	color: #000000;
+	display: block;
+	text-align: center;
+}
+
+article.numbers section ul li:hover span {
+	-moz-opacity: 1;
+	-ms-opacity: 1;
+	-o-opacity: 1;
+	-webkit-opacity: 1;
+    filter: alpha(opacity=1);
+	opacity: 1;
+}
+
+/**
+ * Sidebar
+ * ----------------------------------
+*/
+
+aside.supplement {
+	float: right;
+	width: 350px;
+}
+
+aside.supplement h2 {
+	background: #0044CC;
+	color: #FFFFFF;
+	font-size: 17px;
+	padding-left: 7px;
 }
