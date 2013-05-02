@@ -38,13 +38,15 @@
 </section>
 
 ";
-
+	
 //Display the sidebar
 	echo "<section class=\"overview\">
 <h2>" . $info->Name . " Courses and Avaliable Books</h2>
 
 <aside class=\"supplement\">
-<h2>New Books</h2>
+<h2>What's New in " . $info->Name . "</h2>
+
+" . FFI\BE\Book_Overview::getRecentBooksInCourse($info->CourseID) . "
 </aside>
 
 ";

@@ -28,7 +28,7 @@ class General {
 	private static $cloudName = false;
 	
 /**
- * Fetch the Cloudinary API cloud name.
+ * Fetch the Cloudinary API cloud name
  * 
  * @access private
  * @return void
@@ -46,8 +46,8 @@ class General {
 	}
 	
 /**
- * Generate the URL of the large book cover background image hosted on 
- * Cloudinary based on the image key.
+ * Generate the URL of the large book cover background image for the book 
+ * details page splash image
  * 
  * @access public
  * @param  string   $imageKey The key of the image to fetch from Cloudinary
@@ -63,8 +63,25 @@ class General {
 	}
 	
 /**
- * Generate the URL of the scaled book cover image hosted on Cloudinary based
- * on the image key.
+ * Generate the URL of the small book cover background image for display
+ * in the "What's New" and "What's Hot" sections
+ * 
+ * @access public
+ * @param  string   $imageKey The key of the image to fetch from Cloudinary
+ * @return string             The URL of the image with the supplied key
+ * @static
+ * @since  3.0
+*/
+
+	public static function bookBackgroundSmall($imageKey) {
+		self::getCloudName();
+		
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_300,h_100,c_fill,g_north/" . $imageKey;
+	}
+	
+/**
+ * Generate the URL of the scaled book cover image for display in search 
+ * results and book browsing pages
  * 
  * @access public
  * @param  string   $imageKey The key of the image to fetch from Cloudinary
