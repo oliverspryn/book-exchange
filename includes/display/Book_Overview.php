@@ -19,7 +19,9 @@
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(__FILE__)) . "/display/General.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
+require_once(dirname(__FILE__) . "/General.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Isbn.php");
 
 class Book_Overview {
 	public static function getTotal() {
@@ -65,6 +67,44 @@ class Book_Overview {
 		$name = preg_replace("/[\s]/", "-", $name);          //Replace remaining spaces with a "-"
 		$name = str_replace("--", "-", $name);               //Replace "--" with "-", will occur if a something like " & " is removed
 		return strtolower($name);
+	}
+	
+	public static function getBookByISBN($ISBN) {
+		global $wpdb;
+		
+	//Validate the ISBN and fetch the associated book's information and list of courses in which it has been used
+		if (\Isbn::validate10($ISBN)) {
+			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_books` LEFT JOIN `ffi_be_new_sale` ON ffi_be_new_books.BookID = ffi_be_new_sale.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID LEFT JOIN `ffi_be_new_courses` ON ffi_be_new_courses.CourseID = ffi_be_new_bookcourses.Course WHERE `ISBN10` = %s GROUP BY ffi_be_new_courses.Name, ffi_be_new_bookcourses.Number, ffi_be_new_bookcourses.Section ORDER BY ffi_be_new_courses.Name ASC, ffi_be_new_bookcourses.Number ASC, ffi_be_new_bookcourses.Section ASC", $ISBN));
+		} else if (\Isbn::validate13($ISBN)) {
+			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_books` LEFT JOIN `ffi_be_new_sale` ON ffi_be_new_books.BookID = ffi_be_new_sale.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID LEFT JOIN `ffi_be_new_courses` ON ffi_be_new_courses.CourseID = ffi_be_new_bookcourses.Course WHERE `ISBN13` = %s GROUP BY ffi_be_new_courses.Name, ffi_be_new_bookcourses.Number, ffi_be_new_bookcourses.Section ORDER BY ffi_be_new_courses.Name ASC, ffi_be_new_bookcourses.Number ASC, ffi_be_new_bookcourses.Section ASC", $ISBN));
+		} else {
+			return false;
+		}
+		
+	//Check and see if any data was returned
+		if (!count($data)) {
+			return false;
+		}
+		
+	//Construct a JSON encoded object containing the book's information and list of courses in which it has been used
+		$return = array(
+			"ISBN10" => $data[0]->ISBN10,
+			"ISBN13" => $data[0]->ISBN13,
+			"title" => $data[0]->Title,
+			"author" => $data[0]->Author,
+			"edition" => $data[0]->Edition,
+			"courses" => array()
+		);
+		
+		foreach($data as $course) {
+			array_push($return['courses'], array(
+				"course" => $course->Name,
+				"number" => $course->Number,
+				"section" => $course->Section
+			));
+		}
+		
+		return json_encode($return);
 	}
 }
 ?>

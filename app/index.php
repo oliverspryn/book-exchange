@@ -1,7 +1,7 @@
 <?php
 //Include the system's core
 	$essentials->setTitle("Book Exchange");
-	$essentials->includeCSS("styles/explore.min.css");
+	$essentials->includeCSS("styles/explore.css");
 	$essentials->includeJS("scripts/explore.min.js");
 	$essentials->includePluginClass("display/Book_Courses");
 	$essentials->includePluginClass("display/Book_Overview");

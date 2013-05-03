@@ -2,10 +2,16 @@
 //Include the necessary scripts
 	$essentials->requireLogin();
 	$essentials->setTitle("Sell Your Books");
-	$essentials->includePluginClass("display/Book_Courses");
 	$essentials->includePluginClass("forms/display/Sell_Book_Display");
+	$essentials->includeJS("//cdnjs.cloudflare.com/ajax/libs/tinymce/3.5.8/tiny_mce.js");
+	$essentials->includeJS("scripts/ISBN.js");
+	$essentials->includeJS("scripts/FFI_BE_Sell_Books_Assistant.js");
+	$essentials->includeJS("scripts/jquery.validationEngine.js");
+	$essentials->includeJS("scripts/jquery.validationEngine-en.js");
+	$essentials->includeJS("scripts/sell.js");
 	$essentials->includeCSS("styles/sell.css");
 	$essentials->includeCSS("styles/bootleg.css");
+	$essentials->includeCSS("styles/validationEngine.jquery.css");
 	
 //Instantiate form element display class
 	$params = $essentials->params ? $essentials->params[0] : 0;
@@ -47,35 +53,37 @@
 </header>
 
 <div class=\"control-group\">
-<label class=\"control-label\" for=\"who\">ISBN-10:</label>
+<label class=\"control-label\" for=\"ISBN10\">ISBN-10:</label>
 <div class=\"controls\">
 " . $display->getISBN10() . "
+<span class=\"searching\" id=\"searching10\"></span>
 </div>
 </div>
 
 <div class=\"control-group\">
-<label class=\"control-label\" for=\"what\">ISBN-13:</label>
+<label class=\"control-label\" for=\"ISBN13\">ISBN-13:</label>
 <div class=\"controls\">
 " . $display->getISBN13() . "
+<span class=\"searching\" id=\"searching13\"></span>
 </div>
 </div>
 
 <div class=\"control-group\">
-<label class=\"control-label\" for=\"when\">Title:</label>
+<label class=\"control-label\" for=\"title\">Title:</label>
 <div class=\"controls\">
 " . $display->getTitle() . "
 </div>
 </div>
 
 <div class=\"control-group\">
-<label class=\"control-label\" for=\"where-city\">Author(s):</label>
+<label class=\"control-label\" for=\"author\">Author(s):</label>
 <div class=\"controls\">
 " . $display->getAuthors() . "
 </div>
 </div>
 
 <div class=\"control-group\">
-<label class=\"control-label\" for=\"why\">Edition:</label>
+<label class=\"control-label\" for=\"edition\">Edition:</label>
 <div class=\"controls\">
 " . $display->getEdition() . "
 </div>
@@ -85,20 +93,6 @@
 ";
 
 //Display the book classes section
-	$allCourses = FFI\BE\Book_Courses::getCourses();
-	$courses = "";
-	$sections = "";
-	
-	foreach($allCourses as $course) {
-		$courses .= "<option value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
-";
-	}
-	
-	foreach(range("A", "Z") as $letter) {
-		$sections .= "<option value=\"" . $letter . "\">" . $letter . "</option>
-";
-	}
-
 	echo "<section class=\"step dependent\">
 <header>
 <h2>Dependent Courses</h2>
@@ -106,59 +100,9 @@
 <h4 class=\"step\">2</h4>
 </header>
 
-<table>
-<thead>
-<th>Course</th>
-<th>Number</th>
-<th>Section</th>
-<th></th>
-</thead>
+<div id=\"suggestions\"></div>
 
-<tbody>
-<tr>
-<td>
-<span>Course:</span>
-<select name=\"course[]\">
-<option value=\"\">- Select Course -</option>
-" . $courses . "</select>
-</td>
-<td>
-<span>Number:</span>
-<input class=\"input-small\" name=\"number[]\" type=\"text\">
-</td>
-<td>
-<span>Section:</span>
-<select class=\"input-small\" name=\"section[]\">
-<option value=\"\">-</option>
-" . $sections . "</select>
-</td>
-<td class=\"delete\">
-</td>
-</tr>
-
-<tr>
-<td>
-<span>Course:</span>
-<select name=\"course[]\">
-<option value=\"\">- Select Course -</option>
-" . $courses . "</select>
-</td>
-<td>
-<span>Number:</span>
-<input class=\"input-small\" name=\"number[]\" type=\"text\">
-</td>
-<td>
-<span>Section:</span>
-<select class=\"input-small\" name=\"section[]\">
-<option value=\"\">-</option>
-" . $sections . "</select>
-</td>
-<td class=\"delete\">
-</td>
-</tr>
-</tbody>
-</table>
-
+" . $display->getCourses() . "
 </section>
 
 ";
@@ -210,7 +154,7 @@
 <div class=\"control-group\">
 <label class=\"control-label\">Comments:</label>
 <div class=\"controls\">
-" . "
+" . $display->getComments() . "
 </div>
 </div>
 </section>

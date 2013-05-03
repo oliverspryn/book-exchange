@@ -20,6 +20,8 @@
 
 namespace FFI\BE;
 
+require_once(dirname(dirname(dirname(__FILE__))) . "/display/Book_Courses.php");
+
 class Sell_Book_Display {	
 /**
  * Hold the results of the SQL query.
@@ -48,7 +50,7 @@ class Sell_Book_Display {
 		global $wpdb;
 		
 		if ($ID) {
-			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_sale.SaleID = ffi_be_new_bookcourses.SaleID LEFT JOIN `ffi_be_new_courses` ON ffi_be_new_bookcourses.Course = ffi_be_new_courses.CourseID WHERE ffi_be_new_sale.SaleID = %d AND ffi_be_new_sale.Merchant = %d", $ID, $userID));
+			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_sale.SaleID = ffi_be_new_bookcourses.SaleID WHERE ffi_be_new_sale.SaleID = %d AND ffi_be_new_sale.Merchant = %d", $ID, $userID));
 			
 		//SQL returned 0 tuples, "Leave me!" - http://johnnoble.net/img/photos/denethor_a.jpg
 			if (!count($this->data)) {
@@ -70,7 +72,7 @@ class Sell_Book_Display {
 */
 	
 	public function getISBN10() {
-		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"ISBN10\" name=\"ISBN10\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->ISBN10 : "") . "\">";
+		return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN10]]\" id=\"ISBN10\" name=\"ISBN10\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->ISBN10 : "") . "\">";
 	}
 	
 /**
@@ -83,7 +85,7 @@ class Sell_Book_Display {
 */
 	
 	public function getISBN13() {
-		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"ISBN13\" name=\"ISBN13\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->ISBN13 : "") . "\">";
+		return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN13]]\" id=\"ISBN13\" name=\"ISBN13\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->ISBN13 : "") . "\">";
 	}
 	
 /**
@@ -123,6 +125,75 @@ class Sell_Book_Display {
 	
 	public function getEdition() {
 		return "<input autocomplete=\"off\" id=\"edition\" name=\"edition\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->Edition : "") . "\">";
+	}
+	
+/**
+ * Output a prefilled table containing a listing of courses, numbers, and
+ * sections for which this book was used.
+ * 
+ * @access public
+ * @return string   A table prefilled with the specific classes where this book was used
+ * @since  3.0
+*/
+
+	public function getCourses() {
+		$allCourses = Book_Courses::getCourses();
+		$return = "<table>
+<thead>
+<th>Course</th>
+<th>Number</th>
+<th>Section</th>
+<th></th>
+</thead>
+
+<tbody>";
+
+	//Iterate through each of the returned tuples, to fetch each of the courses
+		foreach ($this->data as $info) {
+			$return .= "
+<tr>
+<td>
+<span>Course:</span>
+<select name=\"course[]\">
+<option value=\"\">- Select Course -</option>
+";
+
+		//Generate the drop down menu of courses
+			foreach ($allCourses as $course) {
+				$return .= "<option" . ($info->Course == $course->CourseID ? " selected" : "") . " value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
+";
+			}
+			
+			$return .= "</select>
+</td>
+<td>
+<span>Number:</span>
+<input class=\"input-small\" name=\"number[]\" type=\"text\" value=\"" . $info->Number . "\">
+</td>
+<td>
+<span>Section:</span>
+<select class=\"input-small\" name=\"section[]\">
+<option value=\"\">-</option>
+";
+			
+		//Generate the drop down menu of sections letters
+			foreach(range("A", "Z") as $letter) {
+				$return .= "<option" . ($info->Section == $letter ? " selected" : "") . " value=\"" . $letter . "\">" . $letter . "</option>
+";
+			}
+				
+			$return .= "</select>
+</td>
+<td class=\"delete\">
+</td>
+</tr>
+";
+		}
+		
+		$return .= "</tbody>
+</table>";
+
+		return $return;
 	}
 	
 /**
@@ -189,25 +260,6 @@ class Sell_Book_Display {
 <input autocomplete=\"off\"" . ($excellent ? " checked" : "") . " data-toggle=\"button\" id=\"excellent\" name=\"condition\" type=\"radio\" value=\"5\">
 <label class=\"btn" . ($excellent ? " active" : "") . "\" for=\"excellent\" id=\"excellent-label\">Excellent</label>
 </div>";
-	}
-	
-/**
- * Output a prefilled form element containing the "recurrencing until" form 
- * element for section three of this form.
- * 
- * @access public
- * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
-*/
-	
-	public function getEndDate() {
-		if ($this->recurring) {
-			$dateFormatter = new \DateTime($this->data[0]->EndDate);
-			
-			return "<input autocomplete=\"off\" class=\"validate[required,custom[date]]\" id=\"until\" name=\"until\" placeholder=\"How long can you share a ride?\" type=\"text\" value=\"" . htmlentities($dateFormatter->format("m/d/Y")) . "\">";
-		} else {
-			return "<input autocomplete=\"off\" class=\"validate[required,custom[date],past[now]]\" disabled id=\"until\" name=\"until\" placeholder=\"How long can you share a ride?\" type=\"text\" value=\"\">";
-		}
 	}
 	
 /**
