@@ -1,10 +1,14 @@
 (function($) {
 	$(function() {
 	//Initialize the Validation Engine
-		$('form').validationEngine();
+		$('form').validationEngine({
+			'autoHidePrompt' : true,
+			'autoHideDelay' : 5000,
+			'validationEventTrigger' : 'submit'
+		});
 		
 	//Initialize the Sell Books Assistant plugin
-		$('input#ISBN10').FFI_BE_Sell_Books_Assistant($('input#ISBN13'), $('input#title'), $('input#author'), $('input#edition'), $('div#suggestions'));
+		$('input#ISBN10').FFI_BE_Sell_Books_Assistant();
 		
 	//Initialize TinyMCE
 		tinyMCE.init({

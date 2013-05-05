@@ -98,9 +98,11 @@ class Book_Overview {
 		
 		foreach($data as $course) {
 			array_push($return['courses'], array(
+				"ID" => $course->CourseID,
 				"course" => $course->Name,
 				"number" => $course->Number,
-				"section" => $course->Section
+				"section" => $course->Section,
+				"color" => $course->Color
 			));
 		}
 		

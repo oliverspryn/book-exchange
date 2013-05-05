@@ -1,28 +1,44 @@
 /**
+ * General content container
+ * ----------------------------------
+*/
+
+section.details {
+	overflow: auto;
+}
+
+/**
  * Book details welcome
  * ----------------------------------
 */
 
 article.book-welcome {	
-	background-position: left center;
+	background-position: center;
 	background-repeat: no-repeat;
 	height: 350px;
-	margin: 40px 340px 55px 0px;
+	margin: 40px 350px 55px 0px;
+	position: relative;
+}
+
+article.book-welcome section.quick-info {
+	position: absolute;
+	top: 0px;
+	width: 100%;
 }
 
 article.book-welcome section.quick-info h2 {
-	background-color: rgba(24, 24, 24, 0.3);
+	background-color: rgba(255, 255, 255, 0.3);
 	color: #222222;
 	font-size: 32px;
 	font-weight: bolder;
 	letter-spacing: 1px;
-	margin: 0px 0px 0px 60px;
-	padding: 15px 15px 15px 300px;
+	margin: 0px 0px 0px 300px;
+	padding: 15px 15px 15px 60px;
 	text-transform: uppercase;
 }
 
 article.book-welcome section.quick-info h3 {
-	background-color: rgba(24, 24, 24, 0.3);
+	background-color: rgba(255, 255, 255, 0.3);
 	color: #222222;
 	font-size: 20px;
 	font-weight: lighter;
@@ -41,9 +57,10 @@ article.book-welcome section.cover {
 	background: #181818;
 	clear: both;
 	display: inline-block;
-	float: left;
 	margin: -40px 0px 0px 25px;
 	padding: 11px 10px;
+	position: relative;
+	z-index: 2;
 }
 
 article.book-welcome section.cover footer ul {
@@ -112,4 +129,88 @@ article.book-welcome section.cover footer ul li.email {
 
 article.book-welcome section.cover footer ul li.email:hover {
 	background-color: #009BAD;
+}
+
+/**
+ * Sidebar
+ * ----------------------------------
+*/
+
+aside.supplement {
+	float: right;
+	margin-top: 40px;
+	width: 350px;
+}
+
+aside.supplement h2 {
+	background: #7B9DE1;
+	color: #FFFFFF;
+	font-size: 17px;
+	padding-left: 7px;
+}
+
+aside.supplement ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px 0px 40px 0px;
+    text-align: center;
+}
+
+aside.supplement ul:last-child {
+    padding: 0px;
+}
+
+aside.supplement ul li {
+	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-webkit-box-shadow: 0px 4px 10px 0px #CCC;
+	box-shadow: 0px 4px 10px 0px #CCC;
+	
+    -moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+    -o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out;
+    
+	background: #FFFFFF no-repeat top;
+    border: 1px solid #CCCCCC;
+	color: #777777;
+    display: inline-block;
+    height: 200px;
+    margin: 7px;
+    position: relative;
+    vertical-align: top;
+    width: 300px;
+}
+
+aside.supplement ul li:hover {
+    border: 1px solid #555555;
+}
+
+aside.supplement ul li a {
+	color: #777777;
+}
+
+aside.supplement ul li h3 {
+    font-size: 18px;
+	font-weight: lighter;
+	height: 37px;
+	line-height: 1.25;
+	margin: 0px;
+	max-height: 37px;
+	overflow: hidden;
+    padding: 107px 10px 56px 10px;
+	text-align: left;
+	text-overflow: ellipsis;
+}
+
+aside.supplement ul li p.price {
+	background: url(sprites/actions.png) no-repeat;
+	bottom: 0px;
+	font-size: 11px;
+	height: 22px;
+	margin: 0px;
+	padding-left: 30px;
+	position: absolute;
 }

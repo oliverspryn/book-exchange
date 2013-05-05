@@ -80,6 +80,23 @@ class General {
 	}
 	
 /**
+ * Generate the URL of the scaled book cover image for display on the
+ * book details page
+ * 
+ * @access public
+ * @param  string   $imageKey The key of the image to fetch from Cloudinary
+ * @return string             The URL of the image with the supplied key
+ * @static
+ * @since  3.0
+*/
+
+	public static function bookCover($imageKey) {
+		self::getCloudName();
+		
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/h_355,w_275,c_pad,e_vibrance:100/" . $imageKey;
+	}
+	
+/**
  * Generate the URL of the scaled book cover image for display in search 
  * results and book browsing pages
  * 

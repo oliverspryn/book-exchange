@@ -2,6 +2,7 @@
 //Include the necessary scripts
 	$essentials->requireLogin();
 	$essentials->setTitle("Sell Your Books");
+	$essentials->includePluginClass("display/Book_Courses");
 	$essentials->includePluginClass("forms/display/Sell_Book_Display");
 	$essentials->includeJS("//cdnjs.cloudflare.com/ajax/libs/tinymce/3.5.8/tiny_mce.js");
 	$essentials->includeJS("scripts/ISBN.js");
@@ -93,6 +94,14 @@
 ";
 
 //Display the book classes section
+	$allCourses = FFI\BE\Book_Courses::getCourses();
+	$courses = "";
+	
+	foreach ($allCourses as $course) {
+		$courses .= "<option value=\"" . $course->CourseID . "\">" . $course->Name . "</option>
+";
+	}
+
 	echo "<section class=\"step dependent\">
 <header>
 <h2>Dependent Courses</h2>
@@ -100,9 +109,18 @@
 <h4 class=\"step\">2</h4>
 </header>
 
+<div id=\"course-template\">
+<select name=\"copy\">
+<option value=\"\">- Select Course -</option>
+" . $courses . "
+</select>
+</div>
+
 <div id=\"suggestions\"></div>
 
 " . $display->getCourses() . "
+
+<span class=\"add-course\">Add Course</span>
 </section>
 
 ";

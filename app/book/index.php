@@ -1,6 +1,7 @@
 <?php
 //Include the necessary scripts
 	$essentials->includePluginClass("display/Book_Details");
+	$essentials->includePluginClass("display/Book_Overview");
 	$essentials->includePluginClass("display/General");
 	$essentials->includeCSS("styles/book.css");
 
@@ -17,10 +18,20 @@
 	
 ";
 
+//Display the page sidebar
+	echo "<section class=\"details\">
+<aside class=\"supplement\">
+<h2>More in " . $book->data[0]->Name . "</h2>
+
+" . FFI\BE\Book_Overview::getRecentBooksInCourse($book->data[0]->CourseID) . "
+</aside>
+
+";
+
 //Display the page header
 	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\General::bookBackgroundLarge($book->data[0]->ImageID) . ")\">
 <section class=\"cover\">
-<img src=\"" . FFI\BE\General::bookCoverPreview($book->data[0]->ImageID) . "\">
+<img src=\"" . FFI\BE\General::bookCover($book->data[0]->ImageID) . "\">
 
 <footer class=\"social\">
 <ul>
@@ -39,11 +50,5 @@
 <button class=\"btn btn-large btn-primary\">Buy for \$" . $book->data[0]->Price . ".00</button>
 </section>
 </article>
-
-";
-
-//Display the page sidebar
-	echo "<aside class=\"sidebar\">
-<h2>More in Physics</h2>
-</aside>";
+</section>";
 ?>

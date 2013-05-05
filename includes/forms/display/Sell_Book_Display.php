@@ -138,7 +138,7 @@ class Sell_Book_Display {
 
 	public function getCourses() {
 		$allCourses = Book_Courses::getCourses();
-		$return = "<table>
+		$return = "<table id=\"dependent-courses\">
 <thead>
 <th>Course</th>
 <th>Number</th>
@@ -149,42 +149,86 @@ class Sell_Book_Display {
 <tbody>";
 
 	//Iterate through each of the returned tuples, to fetch each of the courses
-		foreach ($this->data as $info) {
+		if ($this->data) {
+			foreach ($this->data as $info) {
+				$return .= "
+<tr>
+<td>
+<span>Course:</span>
+<select class=\"validate[required]\" name=\"course[]\">
+<option value=\"\">- Select Course -</option>
+";
+	
+			//Generate the drop down menu of courses
+				foreach ($allCourses as $course) {
+					$return .= "<option" . ($info->Course == $course->CourseID ? " selected" : "") . " value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
+";
+				}
+				
+				$return .= "</select>
+</td>
+<td>
+<span>Number:</span>
+<input class=\"input-small validate[required,custom[integer],min[101],max[499]]\" max=\"499\" min=\"101\" name=\"number[]\" type=\"number\" value=\"" . $info->Number . "\">
+</td>
+<td>
+<span>Section:</span>
+<select class=\"input-small validate[required]\" name=\"section[]\">
+<option value=\"\">-</option>
+";
+				
+			//Generate the drop down menu of sections letters
+				foreach(range("A", "Z") as $letter) {
+					$return .= "<option" . ($info->Section == $letter ? " selected" : "") . " value=\"" . $letter . "\">" . $letter . "</option>
+";
+				}
+					
+				$return .= "</select>
+</td>
+<td class=\"delete\">
+<span></span>
+</td>
+</tr>
+";
+			}
+	//Print out a row with the default values
+		} else {
 			$return .= "
 <tr>
 <td>
 <span>Course:</span>
-<select name=\"course[]\">
+<select class=\"validate[required]\" name=\"course[]\">
 <option value=\"\">- Select Course -</option>
 ";
-
-		//Generate the drop down menu of courses
-			foreach ($allCourses as $course) {
-				$return .= "<option" . ($info->Course == $course->CourseID ? " selected" : "") . " value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
+	
+			//Generate the drop down menu of courses
+				foreach ($allCourses as $course) {
+					$return .= "<option value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
 ";
-			}
-			
-			$return .= "</select>
+				}
+				
+				$return .= "</select>
 </td>
 <td>
 <span>Number:</span>
-<input class=\"input-small\" name=\"number[]\" type=\"text\" value=\"" . $info->Number . "\">
+<input class=\"input-small validate[required,custom[integer],min[101],max[499]]\" max=\"499\" min=\"101\" name=\"number[]\" type=\"number\" value=\"\">
 </td>
 <td>
 <span>Section:</span>
-<select class=\"input-small\" name=\"section[]\">
+<select class=\"input-small validate[required]\" name=\"section[]\">
 <option value=\"\">-</option>
 ";
-			
-		//Generate the drop down menu of sections letters
-			foreach(range("A", "Z") as $letter) {
-				$return .= "<option" . ($info->Section == $letter ? " selected" : "") . " value=\"" . $letter . "\">" . $letter . "</option>
-";
-			}
 				
-			$return .= "</select>
+			//Generate the drop down menu of sections letters
+				foreach(range("A", "Z") as $letter) {
+					$return .= "<option value=\"" . $letter . "\">" . $letter . "</option>
+";
+				}
+					
+				$return .= "</select>
 </td>
 <td class=\"delete\">
+<span></span>
 </td>
 </tr>
 ";
@@ -225,9 +269,9 @@ class Sell_Book_Display {
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
 <input autocomplete=\"off\"" . ($checkedYes ? " checked" : "") . " data-toggle=\"button\" id=\"written-yes\" name=\"written\" type=\"radio\" value=\"1\">
-<label class=\"btn" . ($checkedYes ? " active" : "") . "\" for=\"written-yes\" id=\"written-yes-label\">Yes</label>
+<label class=\"btn\" for=\"written-yes\" id=\"written-yes-label\">Yes</label>
 <input autocomplete=\"off\"" . ($checkedNo ? " checked" : "") . " data-toggle=\"button\" id=\"written-no\" name=\"written\" type=\"radio\" value=\"0\">
-<label class=\"btn" . ($checkedNo ? " active" : "") . "\" for=\"written-no\" id=\"written-no-label\">No</label>
+<label class=\"btn\" for=\"written-no\" id=\"written-no-label\">No</label>
 </div>";
 	}
 	
@@ -250,15 +294,15 @@ class Sell_Book_Display {
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
 <input autocomplete=\"off\"" . ($poor ? " checked" : "") . " data-toggle=\"button\" id=\"poor\" name=\"condition\" type=\"radio\" value=\"1\">
-<label class=\"btn" . ($poor ? " active" : "") . "\" for=\"poor\" id=\"poor-label\">Poor</label>
+<label class=\"btn\" for=\"poor\" id=\"poor-label\">Poor</label>
 <input autocomplete=\"off\"" . ($fair ? " checked" : "") . " data-toggle=\"button\" id=\"fair\" name=\"condition\" type=\"radio\" value=\"2\">
-<label class=\"btn" . ($fair ? " active" : "") . "\" for=\"fair\" id=\"fair-label\">Fair</label>
+<label class=\"btn\" for=\"fair\" id=\"fair-label\">Fair</label>
 <input autocomplete=\"off\"" . ($good ? " checked" : "") . " data-toggle=\"button\" id=\"good\" name=\"condition\" type=\"radio\" value=\"3\">
-<label class=\"btn" . ($good ? " active" : "") . "\" for=\"good\" id=\"good-label\">Good</label>
+<label class=\"btn\" for=\"good\" id=\"good-label\">Good</label>
 <input autocomplete=\"off\"" . ($veryGood ? " checked" : "") . " data-toggle=\"button\" id=\"very-good\" name=\"condition\" type=\"radio\" value=\"4\">
-<label class=\"btn" . ($veryGood ? " active" : "") . "\" for=\"very-good\" id=\"very-good-label\">Very Good</label>
+<label class=\"btn\" for=\"very-good\" id=\"very-good-label\">Very Good</label>
 <input autocomplete=\"off\"" . ($excellent ? " checked" : "") . " data-toggle=\"button\" id=\"excellent\" name=\"condition\" type=\"radio\" value=\"5\">
-<label class=\"btn" . ($excellent ? " active" : "") . "\" for=\"excellent\" id=\"excellent-label\">Excellent</label>
+<label class=\"btn\" for=\"excellent\" id=\"excellent-label\">Excellent</label>
 </div>";
 	}
 	
