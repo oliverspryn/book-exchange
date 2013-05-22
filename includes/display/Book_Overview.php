@@ -37,28 +37,39 @@ class Book_Overview {
 		return $wpdb->get_results($wpdb->prepare("SELECT `Number`, `Section`, COUNT(*) AS `SectionTotal` FROM (SELECT ffi_be_new_bookcourses.Number, ffi_be_new_bookcourses.Section FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID LEFT JOIN ffi_be_new_courses ON ffi_be_new_courses.CourseID = ffi_be_new_bookcourses.Course WHERE `Sold` = 0 AND DATE_ADD(ffi_be_new_sale.Upload, INTERVAL(SELECT `BookExpireMonths` FROM `ffi_be_new_settings`) MONTH) > CURDATE() AND ffi_be_new_courses.URL = %s GROUP BY ffi_be_new_sale.SaleID, ffi_be_new_bookcourses.Number ORDER BY `Number` ASC, `Section` ASC) AS `CourseBooks` GROUP BY `Number`, `Section`", $courseURL));
 	}
 	
-	public static function getRecentBooksInCourse($courseID, $limit = 5) {
+	public static function getRecentBooksInCourse($courseID, $limit = 5, $exclude = 0) {
 		global $wpdb;
 		global $essentials;
 		
-	//Fetch the newest books
-		$books = $wpdb->get_results($wpdb->prepare("SELECT ffi_be_new_sale.SaleID, ffi_be_new_books.Title, ffi_be_new_sale.Price, ffi_be_new_books.ImageID, ffi_be_new_courses.Name AS CourseName, ffi_be_new_courses.URL AS CourseURL FROM ffi_be_new_sale LEFT JOIN ffi_be_new_books ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN ffi_be_new_bookcourses ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID LEFT JOIN ffi_be_new_courses ON ffi_be_new_courses.CourseID = ffi_be_new_bookcourses.Course WHERE ffi_be_new_courses.CourseID = %d AND DATE_ADD(ffi_be_new_sale.Upload, INTERVAL(SELECT `BookExpireMonths` FROM `ffi_be_new_settings`) MONTH) > CURDATE() AND ffi_be_new_sale.Sold = '0' GROUP BY ffi_be_new_sale.SaleID ORDER BY ffi_be_new_sale.Upload DESC LIMIT %d", $courseID, $limit));
-		
-	//Write out the HTML for each of the newest books
-		$return = "<ul>
-";
+	//Set an ID of a book to ignore
+		$return = "";
+		$excludeSQL = "";
 	
-		foreach($books as $book) {
-			$return .= "<li style=\"background-image: url(" . General::bookBackgroundSmall($book->ImageID) . ")\">
-<a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . self::URLPurify($book->Title)) . "\">
-<h3>" . $book->Title . "</h3>
-<p class=\"price\">\$" . $book->Price . ".00</p>
-</a>
-</li>
-";
+		if ($exclude) {
+			$excludeSQL = " AND ffi_be_new_sale.SaleID != '" . esc_sql($exclude) . "'";
 		}
 		
-		$return .= "</ul>";
+	//Fetch the newest books
+		$books = $wpdb->get_results($wpdb->prepare("SELECT ffi_be_new_sale.SaleID, ffi_be_new_books.Title, ffi_be_new_sale.Price, ffi_be_new_books.ImageID, ffi_be_new_courses.Name AS CourseName, ffi_be_new_courses.URL AS CourseURL FROM ffi_be_new_sale LEFT JOIN ffi_be_new_books ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN ffi_be_new_bookcourses ON ffi_be_new_bookcourses.SaleID = ffi_be_new_sale.SaleID LEFT JOIN ffi_be_new_courses ON ffi_be_new_courses.CourseID = ffi_be_new_bookcourses.Course WHERE ffi_be_new_courses.CourseID = %d AND DATE_ADD(ffi_be_new_sale.Upload, INTERVAL(SELECT `BookExpireMonths` FROM `ffi_be_new_settings`) MONTH) > CURDATE() AND ffi_be_new_sale.Sold = '0'" . $excludeSQL . " GROUP BY ffi_be_new_sale.SaleID ORDER BY ffi_be_new_sale.Upload DESC LIMIT %d", $courseID, $limit));
+		
+	//Write out the HTML for each of the newest books
+		if (count($books)) {
+			$return = "<ul>
+	";
+		
+			foreach($books as $book) {
+				$return .= "<li style=\"background-image: url(" . General::bookBackgroundSmall($book->ImageID) . ")\">
+	<a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . self::URLPurify($book->Title)) . "\">
+	<h3>" . $book->Title . "</h3>
+	<p class=\"price\">\$" . $book->Price . ".00</p>
+	</a>
+	</li>
+	";
+			}
+		
+			$return .= "</ul>";
+		}
+		
 		return $return;
 	}
 	

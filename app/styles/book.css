@@ -1,13 +1,4 @@
 /**
- * General content container
- * ----------------------------------
-*/
-
-section.details {
-	overflow: auto;
-}
-
-/**
  * Book details welcome
  * ----------------------------------
 */
@@ -16,8 +7,9 @@ article.book-welcome {
 	background-position: center;
 	background-repeat: no-repeat;
 	height: 350px;
-	margin: 40px 350px 55px 0px;
+	margin: 40px 0px 55px 0px;
 	position: relative;
+	z-index: 2;
 }
 
 article.book-welcome section.quick-info {
@@ -34,7 +26,6 @@ article.book-welcome section.quick-info h2 {
 	letter-spacing: 1px;
 	margin: 0px 0px 0px 300px;
 	padding: 15px 15px 15px 60px;
-	text-transform: uppercase;
 }
 
 article.book-welcome section.quick-info h3 {
@@ -44,8 +35,37 @@ article.book-welcome section.quick-info h3 {
 	font-weight: lighter;
 	margin: 0px 0px 0px 300px;
 	padding-left: 60px;
-	text-transform: none;
 }
+
+@media screen and (max-width: 650px) { 
+	article.book-welcome {
+		background-image: none !important;
+		height: auto;
+		margin: 0px;
+		padding: 0px 10% 20px 10%;
+		text-align: center;
+	}
+	
+	article.book-welcome section.quick-info {
+		position: static;
+	}
+	
+	article.book-welcome section.quick-info h2 {
+		font-size: 27px;
+		font-weight: 300;
+	}
+	
+	article.book-welcome section.quick-info h2, article.book-welcome section.quick-info h3 {
+		background-color: transparent;
+		margin: 0px;
+		padding: 0px;
+	}
+}
+
+/**
+ * Book cover
+ * ----------------------------------
+*/
 
 article.book-welcome section.cover {
 	-moz-shadow: 0px 0px 15px #000000;
@@ -58,9 +78,35 @@ article.book-welcome section.cover {
 	clear: both;
 	display: inline-block;
 	margin: -40px 0px 0px 25px;
+	min-height: 401px;
+	min-width: 275px;
 	padding: 11px 10px;
 	position: relative;
 	z-index: 2;
+}
+
+article.book-welcome section.cover span.purchase {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	background: #006DCC;
+	border: 1px solid #FFFFFF;
+	bottom: 10px;
+	color: #FFFFFF;
+	cursor: pointer;
+	display: block;
+	margin-top: 10px;
+	padding: 7px 0px 7px 0px;
+	position: absolute;
+	text-align: center;
+	width: 273px;
+}
+
+article.book-welcome section.cover span.purchase:hover {
+	background: #22AAEE;
 }
 
 article.book-welcome section.cover footer ul {
@@ -131,36 +177,164 @@ article.book-welcome section.cover footer ul li.email:hover {
 	background-color: #009BAD;
 }
 
+@media screen and (max-width: 650px) { 
+	article.book-welcome section.cover {
+		margin: 30px 0px 0px 0px;
+	}
+}
+
+/**
+ * Book details container
+ * ----------------------------------
+*/
+
+section.container {
+	background: #F5F5F5;
+	display: table;
+	margin: -60px 0px 0px 0px;
+	table-layout: auto;
+	width: 100%;
+}
+
+section.container > h2 {
+	display: none;
+}
+
+section.container div.row {
+	display: table-row;
+}
+
+@media screen and (max-width: 650px) { 
+	section.container {
+		margin: 0px;
+	}
+}
+
+/**
+ * Book details section
+ * ----------------------------------
+*/
+
+section.container div.row section.details {
+	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
+    -o-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
+    box-shadow: 0px 4px 10px 0px #CCCCCC;
+	
+	background-color: #FFFFFF;
+	border-right: 1px solid #CCCCCC;
+	display: table-cell;
+	margin-right: 350px;
+	vertical-align: top;
+	width: 100%;
+}
+
+section.container div.row section.details section.content {
+	min-height: 50px;
+	position: relative;
+}
+
+section.container div.row section.details section.content.stripe {
+	background: #EAF3FA;
+}
+
+section.container div.row section.details section.content.first {
+	border-top: none;
+}
+
+section.container div.row section.details section.content h3 {
+	display: none;
+}
+
+section.container div.row section.details section.content figure {
+	background: url(sprites/book.png) no-repeat;
+	display: inline-block;
+	height: 64px;
+	left: 50%;
+	margin-left: -32px;
+	position: absolute;
+	top: -46.5px;
+	width: 64px;
+}
+
+section.container div.row section.details section.content figure.info {
+	background-position: 0px -157px;
+}
+
+section.container div.row section.details section.content figure.courses {
+	background-position: 0px -233px;
+}
+
+section.container div.row section.details section.content figure.comments {
+	background-position: 0px -309px;
+}
+
+
+@media screen and (max-width: 980px) { 
+	section.container div.row section.details {
+		-moz-box-shadow: none;
+		-ms-box-shadow: none;
+		-o-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		
+		border-right: none;
+		margin-right: 0px;
+	}
+}
+
+@media screen and (max-width: 650px) { 
+	section.container div.row section.details section.content {
+		background: #EAF3FA;
+	}
+	
+	section.container div.row section.details section.content.stripe {
+		background: #FFFFFF;
+	}
+	
+	section.container div.row section.details section.content.first {
+		border-top: 1px solid #DDDDDD;
+	}
+}
+
 /**
  * Sidebar
  * ----------------------------------
 */
 
-aside.supplement {
+section.container div.row aside.supplement {
+	display: table-cell;
 	float: right;
-	margin-top: 40px;
+	padding-bottom: 10px;
 	width: 350px;
 }
 
-aside.supplement h2 {
-	background: #7B9DE1;
+section.container div.row aside.supplement > h3 {
+	background: #006DCC;
 	color: #FFFFFF;
 	font-size: 17px;
 	padding-left: 7px;
 }
 
-aside.supplement ul {
+section.container div.row aside.supplement p.empty {
+	padding-top: 40px;
+	text-align: center;
+	width: 100%;
+}
+
+section.container div.row aside.supplement ul {
     list-style: none;
     margin: 0px;
     padding: 0px 0px 40px 0px;
     text-align: center;
 }
 
-aside.supplement ul:last-child {
+section.container div.row aside.supplement ul:last-child {
     padding: 0px;
 }
 
-aside.supplement ul li {
+section.container div.row aside.supplement ul li {
 	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
@@ -184,15 +358,15 @@ aside.supplement ul li {
     width: 300px;
 }
 
-aside.supplement ul li:hover {
+section.container div.row aside.supplement ul li:hover {
     border: 1px solid #555555;
 }
 
-aside.supplement ul li a {
+section.container div.row aside.supplement ul li a {
 	color: #777777;
 }
 
-aside.supplement ul li h3 {
+section.container div.row aside.supplement ul li h3 {
     font-size: 18px;
 	font-weight: lighter;
 	height: 37px;
@@ -205,7 +379,7 @@ aside.supplement ul li h3 {
 	text-overflow: ellipsis;
 }
 
-aside.supplement ul li p.price {
+section.container div.row aside.supplement ul li p.price {
 	background: url(sprites/actions.png) no-repeat;
 	bottom: 0px;
 	font-size: 11px;
@@ -213,4 +387,10 @@ aside.supplement ul li p.price {
 	margin: 0px;
 	padding-left: 30px;
 	position: absolute;
+}
+
+@media screen and (max-width: 980px) {   
+	section.container div.row aside.supplement {
+		display: none;
+	}
 }

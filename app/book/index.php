@@ -18,37 +18,75 @@
 	
 ";
 
-//Display the page sidebar
-	echo "<section class=\"details\">
-<aside class=\"supplement\">
-<h2>More in " . $book->data[0]->Name . "</h2>
-
-" . FFI\BE\Book_Overview::getRecentBooksInCourse($book->data[0]->CourseID) . "
-</aside>
-
-";
-
 //Display the page header
 	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\General::bookBackgroundLarge($book->data[0]->ImageID) . ")\">
-<section class=\"cover\">
-<img src=\"" . FFI\BE\General::bookCover($book->data[0]->ImageID) . "\">
-
-<footer class=\"social\">
-<ul>
-<li class=\"facebook\"></li>
-<li class=\"twitter\"></li>
-<li class=\"google-plus\"></li>
-<li class=\"pinterest\"></li>
-<li class=\"email\"></li>
-</ul>
-</footer>
-</section>
-
 <section class=\"quick-info\">
 <h2>" . $book->data[0]->Title . "</h2>
 <h3>by " . $book->data[0]->Author . "</h3>
-<button class=\"btn btn-large btn-primary\">Buy for \$" . $book->data[0]->Price . ".00</button>
+</section>
+
+<section class=\"cover\">
+<img src=\"" . FFI\BE\General::bookCover($book->data[0]->ImageID) . "\">
+
+<span class=\"purchase\">Buy for \$" . $book->data[0]->Price . ".00</span>
 </section>
 </article>
+
+";
+
+//Display the book condition and whether or not it has been written in
+	echo "<section class=\"container\">
+<h2>" . $book->data[0]->Title . " Book Details</h2>
+
+<div class=\"row\">
+<section class=\"details\">
+<section class=\"content first\">
+<h3>Condition and Markings</h3>
+
+</section>
+
+";
+
+//Display the book information
+	echo "<section class=\"content stripe\">
+<h3>Book Information</h3>
+<figure class=\"info\"></figure>
+
+</section>
+
+";
+
+//Display the book's associated courses
+	echo "<section class=\"content\">
+<h3>Dependent Courses</h3>
+<figure class=\"courses\"></figure>
+
+</section>
+
+";
+
+//Display the user's comments
+	echo "<section class=\"content stripe\">
+<h3>User Comments</h3>
+<figure class=\"comments\"></figure>
+
+</section>
+</section>
+
+";
+
+//Display the sidebar
+	$additional = FFI\BE\Book_Overview::getRecentBooksInCourse($book->data[0]->CourseID, 5, $book->data[0]->SaleID);
+	
+	if ($additional != "") {
+		echo "<aside class=\"supplement\">
+<h3>More in " . $book->data[0]->Name . "</h3>
+
+" . $additional . "
+</aside>
+";
+	}
+	
+	echo "</div>
 </section>";
 ?>

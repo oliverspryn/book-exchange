@@ -13,7 +13,7 @@ body.show {
 }
 
 /**
- * Body header
+ * Body header and footer
  * ----------------------------------
 */
 
@@ -23,11 +23,15 @@ header#main {
 }
 
 header#main a.logo {
-	background-position: 0px -200px !important;
+	background-position: 0px -330px !important;
 }
 
 header#main a.logo:hover {
-	background-position: 0px -85px !important;
+	background-position: 0px -444px !important;
+}
+
+footer#bottom {
+	position: relative;
 }
 
 /**
