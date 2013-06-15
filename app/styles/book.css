@@ -243,6 +243,10 @@ section.container div.row section.details section.content.first {
 	border-top: none;
 }
 
+section.container div.row section.details section.content.comments {
+	text-align: center;
+}
+
 section.container div.row section.details section.content h3 {
 	display: none;
 }
@@ -270,6 +274,23 @@ section.container div.row section.details section.content figure.comments {
 	background-position: 0px -309px;
 }
 
+section.container div.row section.details section.content ul.course-list {
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+section.container div.row section.details section.content ul.course-list li {
+	background-position: center top;
+	background-repeat: no-repeat;
+	display: inline-block;
+	padding: 14px 7px;
+}
+
+section.container div.row section.details section.content ul.course-list li p {
+	margin-bottom: 0px;
+	padding-top: 40px;
+}
 
 @media screen and (max-width: 980px) { 
 	section.container div.row section.details {
@@ -287,6 +308,8 @@ section.container div.row section.details section.content figure.comments {
 @media screen and (max-width: 650px) { 
 	section.container div.row section.details section.content {
 		background: #EAF3FA;
+		padding-bottom: 50px;
+		padding-top: 50px;
 	}
 	
 	section.container div.row section.details section.content.stripe {

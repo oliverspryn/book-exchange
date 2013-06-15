@@ -52,6 +52,39 @@
 <h3>Book Information</h3>
 <figure class=\"info\"></figure>
 
+<ul class=\"columns\">
+<li>
+<dl>
+<dt>ISBN-10</td>
+<dd>" . $book->data[0]->ISBN10 . "</dd>
+<dt>ISBN-13</td>
+<dd>" . $book->data[0]->ISBN13 . "</dd>
+</dl>
+</li>
+
+<li>
+<dt>Author</dt>
+<dd>" . $book->data[0]->Author . "</dd>
+";
+
+	if ($book->data[0]->Edition != "") {
+		echo "<dt>Edition</dt>
+<dd>" . $book->data[0]->Edition . "</dd>
+";
+	}
+	
+	if (is_user_logged_in()) {
+		echo "<dt>Merchant</dt>
+<dd>" . $book->data[0]->Merchant . "</dd>
+";
+	} else {
+		echo "<dt>Merchant</dt>
+<dd><a href=\"\"" . $book->data[0]->Merchant . "</dd>
+";
+	}
+	
+	echo "</li>
+</ul>
 </section>
 
 ";
@@ -61,17 +94,33 @@
 <h3>Dependent Courses</h3>
 <figure class=\"courses\"></figure>
 
+<ul class=\"course-list\">";
+
+	foreach($book->data as $course) {
+		echo "
+<li style=\"background-image: url(//localhost/SGA-Template/images/tiles/" . $course->CourseID . "/icon_048.png)\">
+<p>" . $course->Name . " " . $course->Number . " " . $course->Section . "</p>
+</li>
+";
+	}
+
+	echo "</ul>
 </section>
 
 ";
 
 //Display the user's comments
-	echo "<section class=\"content stripe\">
+	if ($book->data[0]->Comments != "") {
+		echo "<section class=\"content stripe comments\">
 <h3>User Comments</h3>
 <figure class=\"comments\"></figure>
 
+" . $book->data[0]->Comments . "
 </section>
-</section>
+";
+	}
+	
+	echo "</section>
 
 ";
 
