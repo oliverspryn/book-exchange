@@ -55,16 +55,16 @@ class Book_Overview {
 	//Write out the HTML for each of the newest books
 		if (count($books)) {
 			$return = "<ul>
-	";
+";
 		
 			foreach($books as $book) {
 				$return .= "<li style=\"background-image: url(" . General::bookBackgroundSmall($book->ImageID) . ")\">
-	<a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . self::URLPurify($book->Title)) . "\">
-	<h3>" . $book->Title . "</h3>
-	<p class=\"price\">\$" . $book->Price . ".00</p>
-	</a>
-	</li>
-	";
+<a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . self::URLPurify($book->Title)) . "\">
+<h3>" . $book->Title . "</h3>
+<p class=\"price\">\$" . $book->Price . ".00</p>
+</a>
+</li>
+";
 			}
 		
 			$return .= "</ul>";

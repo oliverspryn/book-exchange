@@ -367,7 +367,7 @@ class Essentials {
 */
 	
 	public function normalizeURL($address) {
-		return (CDN ? RESOURCE_PATH : REAL_ADDR) . "app/" . $address;
+		 return (CDN ? RESOURCE_PATH : REAL_ADDR) . "app/" . $address;
 	}
 	
 /**
@@ -385,6 +385,22 @@ class Essentials {
 
 	public function friendlyURL($address) {
 		return FAKE_ADDR . $address;
+	}
+
+/**
+ * This method will take a URL relative to the plugin's "data"
+ * folder and append the actual physical address to this file.
+ * So a request such as "info/images/bkg.jpg" would rewrite
+ * the URL like so: .../<plugin-name>/data/info/images/bkg.jpg.
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "data" folder
+ * @return string   $address The normalized version of the given URL
+ * @since  3.0
+*/
+
+	public function dataURL($address) {
+		return REAL_ADDR . "data/" . $address;
 	}
 }
 ?>

@@ -3,12 +3,68 @@
  * ----------------------------------
 */
 
-section.overview {
+section.content.even {
+	background: #EAF3FA;
+	border-bottom: none;
+}
+/**
+ * Course details container
+ * ----------------------------------
+*/
+
+section.container {
 	background: #F5F5F5;
+	display: table;
+	margin: -3px 0px 0px 0px;
+	table-layout: auto;
+	width: 100%;
 }
 
-section.overview > h2 {
+section.container > h2 {
 	display: none;
+}
+
+section.container div.row {
+	display: table-row;
+}
+
+@media screen and (max-width: 650px) { 
+	section.container {
+		margin: 0px;
+	}
+}
+
+/**
+ * Course details section
+ * ----------------------------------
+*/
+
+section.container div.row section.details {
+	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	box-shadow: 0px 4px 10px 0px #CCCCCC;
+	
+	background-color: #FFFFFF;
+	border-right: 1px solid #CCCCCC;
+	display: table-cell;
+	margin-right: 350px;
+	vertical-align: top;
+	width: 100%;
+}
+
+@media screen and (max-width: 980px) { 
+	section.container div.row section.details {
+		-moz-box-shadow: none;
+		-ms-box-shadow: none;
+		-o-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		
+		border-right: none;
+		margin-right: 0px;
+	}
 }
 
 /**
@@ -16,110 +72,13 @@ section.overview > h2 {
  * ----------------------------------
 */
 
-article.numbers {
-	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-    -o-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
-    box-shadow: 0px 4px 10px 0px #CCCCCC;
-	
-	background-color: #FFFFFF;
-	border-right: 1px solid #CCCCCC;
-	margin-right: 350px;
-}
-
-article.numbers section {
-	height: 220px;
-	padding: 30px 40px;
-}
-
-article.numbers section header {	
-	-moz-perspective: 1000;
-	-ms-perspective: 1000;
-	-o-perspective: 1000;
-	-webkit-perspective: 1000;
-	perspective: 1000;
-	
-	float: left;
-	position: relative;
-	width: 220px;
-}
-
-article.numbers section header div {
-	-moz-transform-style: preserve-3d;
-	-ms-transform-style: preserve-3d;
-	-o-transform-style: preserve-3d;
-	-webkit-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	
-	-moz-transition: 0.5s;
-	-ms-transition: 0.5s;
-	-o-transition: 0.5s;
-	-webkit-transition: 0.5s;
-	transition: 0.5s;
-	
-	height: 220px;
-	position: relative;
-	width: 220px;
-}
-
-article.numbers section header:hover div {
-	-moz-transform: rotateY(180deg);
-	-ms-transform: rotateY(180deg);
-	-o-transform: rotateY(180deg);
-	-webkit-transform: rotateY(180deg);
-	transform: rotate(180deg);
-}
-
-article.numbers section header div h3, article.numbers section header div h4 {
-	-moz-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
-	-o-backface-visibility: hidden;
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
-	
-	border-radius: 150px;
-	color: #222222;
-	font-size: 21px;
-	font-weight: 500;
-	left: 0px;
-	padding: 90px 0px;
-	position: absolute;
-	text-align: center;
-	top: 0px;
-	width: 220px;
-}
-
-article.numbers section header div h3 {
-	line-height: 40px;
-	margin: 0px;
-	z-index: 10;
-}
-
-article.numbers section header div h4 {	
-	-moz-transform: rotateY(180deg);
-	-ms-transform: rotateY(180deg);
-	-o-transform: rotateY(180deg);
-	-webkit-transform: rotateY(180deg);
-	transform: rotate(180deg);
-	
-	line-height: 40px;
-	margin: 0px;
-}
-
-article.numbers section header:hover div h3 {
-	z-index: 0;
-}
-
-article.numbers section ul {
-	display: inline-block;
-	float: left;
+section.container div.row section.details section.content ul {
 	list-style: none;
-	margin: 0px 70px 0px 100px;
-	position: absolute;
+	margin: 0px;
+	text-align: center;
 }
 
-article.numbers section ul li {
+section.container div.row section.details section.content ul li {
 	display: inline-block;
 	height: 90px;
 	margin: 5px;
@@ -127,7 +86,7 @@ article.numbers section ul li {
 	width: 60px;
 }
 
-article.numbers section ul li p {
+section.container div.row section.details section.content ul li p {
 	background: #CCCCCC;
 	border-radius: 40px;
 	color: #000000;
@@ -137,7 +96,7 @@ article.numbers section ul li p {
 	text-align: center;
 }
 
-article.numbers section ul li span {
+section.container div.row section.details section.content ul li span {
 	-moz-opacity: 0;
 	-ms-opacity: 0;
 	-o-opacity: 0;
@@ -156,7 +115,7 @@ article.numbers section ul li span {
 	text-align: center;
 }
 
-article.numbers section ul li:hover span {
+section.container div.row section.details section.content ul li:hover span {
 	-moz-opacity: 1;
 	-ms-opacity: 1;
 	-o-opacity: 1;
@@ -170,80 +129,222 @@ article.numbers section ul li:hover span {
  * ----------------------------------
 */
 
-aside.supplement {
+section.container div.row aside.supplement {
+	display: table-cell;
 	float: right;
+	padding-bottom: 10px;
 	width: 350px;
 }
 
-aside.supplement h2 {
-	background: #7B9DE1;
+section.container div.row aside.supplement > h3 {
+	background: #006DCC;
 	color: #FFFFFF;
 	font-size: 17px;
 	padding-left: 7px;
 }
 
-aside.supplement ul {
-    list-style: none;
-    margin: 0px;
-    padding: 0px 0px 40px 0px;
-    text-align: center;
+section.container div.row aside.supplement p.empty {
+	padding-top: 40px;
+	text-align: center;
+	width: 100%;
+}
+section.container div.row aside.supplement ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px 0px 40px 0px;
+	text-align: center;
 }
 
-aside.supplement ul:last-child {
-    padding: 0px;
+section.container div.row aside.supplement ul:last-child {
+	padding: 0px;
 }
 
-aside.supplement ul li {
+section.container div.row aside.supplement ul li {
 	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-webkit-box-shadow: 0px 4px 10px 0px #CCC;
 	box-shadow: 0px 4px 10px 0px #CCC;
 	
-    -moz-transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
-    -o-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
-    transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
     
 	background: #FFFFFF no-repeat top;
-    border: 1px solid #CCCCCC;
+	border: 1px solid #CCCCCC;
 	color: #777777;
-    display: inline-block;
-    height: 200px;
-    margin: 7px;
-    position: relative;
-    vertical-align: top;
-    width: 300px;
+	display: inline-block;
+	height: 200px;
+	margin: 7px;
+	position: relative;
+	vertical-align: top;
+	width: 300px;
 }
 
-aside.supplement ul li:hover {
-    border: 1px solid #555555;
+section.container div.row aside.supplement ul li:hover {
+	border: 1px solid #555555;
 }
 
-aside.supplement ul li a {
+section.container div.row aside.supplement ul li a {
 	color: #777777;
 }
 
-aside.supplement ul li h3 {
-    font-size: 18px;
+section.container div.row aside.supplement ul li h3 {
+	font-size: 18px;
 	font-weight: lighter;
-	height: 37px;
+	height: 70px;
 	line-height: 1.25;
 	margin: 0px;
-	max-height: 37px;
+	max-height: 70px;
 	overflow: hidden;
-    padding: 107px 10px 56px 10px;
+	padding: 107px 10px 0px 10px;
 	text-align: left;
 	text-overflow: ellipsis;
 }
 
-aside.supplement ul li p.price {
-	background: url(sprites/actions.png) no-repeat;
+section.container div.row aside.supplement ul li p.price {
+	background: url(sprites/actions.png) no-repeat 0px 1px;
 	bottom: 0px;
 	font-size: 11px;
 	height: 22px;
 	margin: 0px;
-	padding-left: 30px;
+	padding: 1px 0px 0px 30px;
 	position: absolute;
+	text-align: left;
+	width: 270px;
+}
+
+@media screen and (max-width: 980px) {   
+	section.container div.row aside.supplement {
+		display: none;
+	}
+}
+
+/**
+ * Sidebar and book list
+ * ----------------------------------
+*/
+
+ul.books {
+	background-color: #FFFFFF;
+	margin: 20px 10% 20px 10%;
+	width: 80%;
+}
+
+ul.books li {
+	border-bottom: 1px solid #DDDDDD;
+	clear: both;
+	list-style: none;
+	padding: 50px 40px;
+	position: relative;
+	overflow: auto;
+	vertical-align: top;
+}
+
+ul.books li:last-child {
+	border-bottom: none;
+}
+
+ul.books li img {
+	float: left;
+}
+
+ul.books li h3 {
+	font-size: 15px;
+	letter-spacing: 1px;
+	line-height: 20px;
+	margin: 0px;
+	margin-left: 135px;
+	vertical-align: top;
+}
+
+ul.books li h3 a {
+	color: #222222;
+	font-weight: bolder;
+	text-transform: uppercase;
+}
+
+ul.books li h3 span {
+	color: #999999;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+ul.books li p {
+	color: #777777;
+	font-size: 15px;
+	margin: 0px 0px 5px 135px;
+}
+
+ul.books li p.merchant {
+	margin-top: 15px;
+}
+
+ul.books li p.condition {
+	background: url(sprites/ratings.png) no-repeat;
+}
+
+ul.books li p.condition.excellent {
+	background-position: 90px 1px;
+}
+
+ul.books li p.condition.very-good {
+	background-position: 90px -29px;
+}
+
+ul.books li p.condition.good {
+	background-position: 90px -59px;
+}
+
+ul.books li p.condition.fair {
+	background-position: 90px -89px;
+}
+
+ul.books li p.condition.poor {
+	background-position: 90px -119px;
+}
+
+ul.books li button {
+	bottom: 50px;
+	position: absolute;
+	left: 175px;
+}
+
+ul.books li.none h3 {
+	margin-left: 0px;
+	text-align: center;
+}
+
+ul.books li.none p {
+	margin: 15px 0px 0px 0px;
+}
+
+@media screen and (max-width: 650px) {	
+	ul.books li {
+		padding: 20px 15px 50px 15px;
+	}
+	
+	ul.books li img {
+		max-width: 60px;
+	}
+	
+	ul.books li h3 {
+		margin-left: 75px;
+	}
+	
+	ul.books li p.merchant {
+		display: none;
+	}
+	
+	ul.books li p.condition {
+		margin: 10px 0px 0px 75px;
+	}
+	
+	ul.books li button {
+		bottom: 13px;
+		left: auto;
+		right: 15px;
+	}
 }

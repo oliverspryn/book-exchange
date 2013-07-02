@@ -46,20 +46,19 @@ class IndexDen {
 		
 		$handle = curl_init();
 		curl_setopt($handle, CURLOPT_URL, $URL);
-		curl_setopt($handle, CURLOPT_PROXY, "proxy.gcc.edu:8080"); //Grrr.... GCC proxy
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 5);
 		$search = json_decode(curl_exec($handle));
 		curl_close($handle);
 		
-	//Use the aabove information to build a local query
+	//Use the above information to build a local query
 		$IDs = "";
 		
 		foreach($search->results as $item) {
-			$IDs .= "`SaleID` = '" . esc_sql($item->docid) . "' OR ";
+			$IDs .= "'" . esc_sql($item->docid) . "', ";
 		}
 		
-		$SQL = "SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN (SELECT wp_usermeta.user_id AS `ID`, CONCAT(wp_usermeta.meta_value, ' ', last.meta_value) AS `Name` FROM `wp_usermeta` LEFT JOIN (SELECT `meta_value`, `user_id` FROM `wp_usermeta` WHERE `meta_key` = 'last_name') AS `last` ON wp_usermeta.user_id = last.user_id WHERE `meta_key` = 'first_name') AS `users` ON ffi_be_new_sale.Merchant = users.ID WHERE " . rtrim($IDs, " OR ");
+		$SQL = "SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN (SELECT wp_usermeta.user_id AS `ID`, CONCAT(wp_usermeta.meta_value, ' ', last.meta_value) AS `Name` FROM `wp_usermeta` LEFT JOIN (SELECT `meta_value`, `user_id` FROM `wp_usermeta` WHERE `meta_key` = 'last_name') AS `last` ON wp_usermeta.user_id = last.user_id WHERE `meta_key` = 'first_name') AS `users` ON ffi_be_new_sale.Merchant = users.ID WHERE `SaleID` IN(" . rtrim($IDs, ", ") . ") ORDER BY FIELD(`SaleID`, " . rtrim($IDs, ", ") . ")";
 		$results = $wpdb->get_results($SQL);
 		
 	//Build the return output

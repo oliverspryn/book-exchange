@@ -28,6 +28,7 @@ License: MIT
 		$intercept = new Interception_Manager();
 		$intercept->registerException("book", "book/index.php", 2);
 		$intercept->registerException("browse", "browse/index.php", 2);
+		$intercept->registerException("browse", "browse/index.php", 2, 3, 4);
 		$intercept->registerException("sell-books", "sell-books/index.php", 2);
 		$intercept->highlightNavLink(URL_ACTIVATE);
 		$intercept->go();

@@ -52,15 +52,15 @@ body section.loader {
 body.show section.loader {
 	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
-    -o-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
-    transition: all .25s ease-in;
+	transition: all .25s ease-in;
 	
 	-moz-opacity: 0;
 	-ms-opacity: 0;
 	-o-opacity: 0;
 	-webkit-opacity: 0;
-    filter: alpha(opacity=0);
+	filter: alpha(opacity=0);
 	opacity: 0;
 }
 
@@ -118,13 +118,13 @@ section.welcome div ul {
 section.welcome div ul li {
 	background: #1F1F1F url(sprites/welcome-icons.png) no-repeat;
 	cursor: pointer;
-    display: inline-block;
-    height: 292px;
-    margin: 7px;
+	display: inline-block;
+	height: 292px;
+	margin: 7px;
 	padding: 0px;
-    position: relative;
-    vertical-align: top;
-    width: 305px;
+	position: relative;
+	vertical-align: top;
+	width: 305px;
 }
 
 section.welcome div ul li.sell {
@@ -177,7 +177,7 @@ section.welcome div ul li.search:hover {
 
 section.welcome div ul li h3 {
 	color: #FFFFFF;
-    font-size: 18px;
+	font-size: 18px;
 	font-weight: 600;
 	letter-spacing: 8px;
 	padding: 46px 0px 197px 0px;
@@ -278,7 +278,7 @@ section.explore {
 	background: #FFFFFF;
 	color: #828282;
 	min-height: 602px;
-    padding-bottom: 1px;
+	padding-bottom: 1px;
 	position: relative;
 	width: 100%;
 }
@@ -302,9 +302,9 @@ section.explore header {
 section.explore.fixed header {
 	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-    -o-box-shadow: 0px 4px 10px 0px #CCCCCC;
+	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
 	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
-    box-shadow: 0px 4px 10px 0px #CCCCCC;
+	box-shadow: 0px 4px 10px 0px #CCCCCC;
 	
 	left: 0px;
 	position: fixed;
@@ -319,7 +319,7 @@ section.explore header h2 {
 
 section.explore header div.wrapper {
 	background: url(sprites/search-bar.png) no-repeat right bottom;
-    padding: 35px 0px 30px 0px;
+	padding: 35px 0px 30px 0px;
 }
 
 section.explore header div.wrapper div.input {
@@ -329,9 +329,9 @@ section.explore header div.wrapper div.input {
 section.explore header div.wrapper div.input input#search-main {
 	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
-    -o-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
-    transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
 	
 	float: left;
 	font-size: 14px;
@@ -342,15 +342,15 @@ section.explore header div.wrapper div.input input#search-main {
 section.explore header div.wrapper div.options {
 	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
-    -o-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
-    transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
 	
 	-moz-opacity: 0;
 	-ms-opacity: 0;
 	-o-opacity: 0;
 	-webkit-opacity: 0;
-    filter: alpha(opacity=0);
+	filter: alpha(opacity=0);
 	opacity: 0;
 	
 	display: inline-block;
@@ -383,15 +383,15 @@ section.explore header div.wrapper div.options div select.sort {
 section.explore header button.close-search {
 	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
-    -o-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
-    transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
 	
 	-moz-opacity: 0;
 	-ms-opacity: 0;
 	-o-opacity: 0;
 	-webkit-opacity: 0;
-    filter: alpha(opacity=0);
+	filter: alpha(opacity=0);
 	opacity: 0;
 	
 	margin-top: 10px;
@@ -466,15 +466,15 @@ section.explore header button.close-search span.small {
 section.explore section.courses {	
 	-moz-transition: all .5s ease-in-out;
 	-ms-transition: all .5s ease-in-out;
-    -o-transition: all .5s ease-in-out;
+	-o-transition: all .5s ease-in-out;
 	-webkit-transition: all .5s ease-in-out;
-    transition: all .5s ease-in-out;
+	transition: all .5s ease-in-out;
 	
 	-moz-opacity: 1;
 	-ms-opacity: 1;
 	-o-opacity: 1;
 	-webkit-opacity: 1;
-    filter: alpha(opacity=1);
+	filter: alpha(opacity=1);
 	opacity: 1;
 }
 
@@ -564,7 +564,7 @@ section.explore section.courses ul li a:hover h3, section.explore section.course
 */
 
 section.explore.active-search {
-	 background: #FFFFFF url(sprites/searching.gif) no-repeat center 250px;
+	 background: #FFFFFF url(sprites/searching-large.gif) no-repeat center 250px;
 }
 
 section.explore.show-controls header div.wrapper div.input input#search-main {
@@ -577,7 +577,7 @@ section.explore.show-controls header div.wrapper div.options {
 	-ms-opacity: 1;
 	-o-opacity: 1;
 	-webkit-opacity: 1;
-    filter: alpha(opacity=1);
+	filter: alpha(opacity=1);
 	opacity: 1;
 	
 	max-width: 595px;
@@ -596,7 +596,7 @@ section.explore.show-controls header button.close-search {
 	-ms-opacity: 1;
 	-o-opacity: 1;
 	-webkit-opacity: 1;
-    filter: alpha(opacity=1);
+	filter: alpha(opacity=1);
 	opacity: 1;
 }
 
@@ -614,7 +614,7 @@ section.explore.active-search section.courses {
 	-ms-opacity: 0;
 	-o-opacity: 0;
 	-webkit-opacity: 0;
-    filter: alpha(opacity=0);
+	filter: alpha(opacity=0);
 	opacity: 0;
 }
 
@@ -672,7 +672,7 @@ section.explore.active-search section.search-hotspot ul li {
 	padding: 50px 40px;
 	position: relative;
 	overflow: auto;
-    vertical-align: top;
+	vertical-align: top;
 }
 
 section.explore.active-search section.search-hotspot ul li:last-child {

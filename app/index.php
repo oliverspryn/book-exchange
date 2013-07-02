@@ -92,7 +92,7 @@
 	$artsListing = "";
 	
 	foreach($arts as $art) {
-		$artsListing .= "<li style=\"background-image: url(../../SGA-Template/images/tiles/" . $art->CourseID . "/icon_048.png)\">
+		$artsListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $art->CourseID . "/icon_048.png") . ")\">
 <a href=\"" . $essentials->friendlyURL("browse/". $art->URL) . "\">
 <h3>" . $art->Name . "</h3>
 <p>" . $art->Total . " " . ($art->Total == 1 ? "Book" : "Books") . " Avaliable</p>
@@ -115,7 +115,7 @@
 	$sciencesListing = "";
 	
 	foreach($sciences as $science) {
-		$sciencesListing .= "<li style=\"background-image: url(../../SGA-Template/images/tiles/" . $science->CourseID . "/icon_048.png)\">
+		$sciencesListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $science->CourseID . "/icon_048.png") . ")\">
 <a href=\"" . $essentials->friendlyURL("browse/". $science->URL) . "\">
 <h3>" . $science->Name . "</h3>
 <p>" . $science->Total . " " . ($science->Total == 1 ? "Book" : "Books") . " Avaliable</p>

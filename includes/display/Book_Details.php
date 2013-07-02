@@ -45,7 +45,7 @@ class Book_Details {
 		global $wpdb;
 		
 		if ($ID) {
-			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_sale.SaleID = ffi_be_new_bookcourses.SaleID LEFT JOIN `ffi_be_new_courses` ON ffi_be_new_bookcourses.Course = ffi_be_new_courses.CourseID WHERE ffi_be_new_sale.SaleID = %d", $ID));
+			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_new_sale` LEFT JOIN `ffi_be_new_books` ON ffi_be_new_sale.BookID = ffi_be_new_books.BookID LEFT JOIN `ffi_be_new_bookcourses` ON ffi_be_new_sale.SaleID = ffi_be_new_bookcourses.SaleID LEFT JOIN `ffi_be_new_courses` ON ffi_be_new_bookcourses.Course = ffi_be_new_courses.CourseID LEFT JOIN (SELECT wp_usermeta.user_id AS `ID`, CONCAT(wp_usermeta.meta_value, ' ', last.meta_value) AS `Merchant` FROM `wp_usermeta` LEFT JOIN (SELECT `meta_value`, `user_id` FROM `wp_usermeta` WHERE `meta_key` = 'last_name') AS `last` ON wp_usermeta.user_id = last.user_id WHERE `meta_key` = 'first_name') AS `users` ON ffi_be_new_sale.Merchant = users.ID WHERE ffi_be_new_sale.SaleID = %d ORDER BY `Number` ASC, `Section` ASC", $ID));
 			
 		//SQL returned 0 tuples, "Leave me!" - http://johnnoble.net/img/photos/denethor_a.jpg
 			if (!count($this->data)) {
