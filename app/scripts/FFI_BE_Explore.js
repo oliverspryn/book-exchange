@@ -11,9 +11,10 @@
  * This plugin will manage the search aspect of the page, by
  * gracefully replacing the course list with search results in
  * real-time without refreshing the page as search results
- * are loaded or as a new search is queried. The course list 
- * will then gracefully transition back into place as the user
- * closes the search.
+ * are loaded or as a new search is queried. The listing of 
+ * search results is loaded into an infinite list. The course 
+ * list will then gracefully transition back into place as the
+ * user closes the search.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -47,7 +48,11 @@
 			$.fn.FFI_BE_Explore.sortMenu = $.fn.FFI_BE_Explore.searchOptions.find('select.sort');
 			
 		//Plugin utilities
-			$.fn.FFI_BE_Explore.timer;
+			$.fn.FFI_BE_Explore.allowPageFetch = false;
+			$.fn.FFI_BE_Explore.currentPage = 1;
+			$.fn.FFI_BE_Explore.reachedEnd = false;
+			$.fn.FFI_BE_Explore.scrollTimer;
+			$.fn.FFI_BE_Explore.typeTimer;
 			
 		//Bootstrap this plugin by calling its instance methods
 			$.fn.FFI_BE_Explore.removeMask();
@@ -56,7 +61,7 @@
 			$.fn.FFI_BE_Explore.updateInputsFromHash();
 			
 		//Listen for a cancel search button click
-			$('button.close-search').click(function() {
+			$.fn.FFI_BE_Explore.document.on('click', 'button.close-search', function() {
 				$.fn.FFI_BE_Explore.resetSearch();
 			});
 		});
@@ -73,9 +78,23 @@
 */
 						 
 	$.fn.FFI_BE_Explore.searchBar = function() {
-		$.fn.FFI_BE_Explore.placeSearchBar();
-		$.fn.FFI_BE_Explore.updateSearchBarPositionOnScroll();
-		$.fn.FFI_BE_Explore.updateSearchBarPositionOnWindowResize();
+	//Place the search bar a given number of pixels from the bottom of the screen
+		$.fn.FFI_BE_Explore.section.css('margin-top', $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height());
+
+	//Anchor the search bar to the top of the screen as the user scrolls down the page
+		$.fn.FFI_BE_Explore.window.scroll(function() {
+			if ($.fn.FFI_BE_Explore.window.scrollTop() > $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height()) {
+				$.fn.FFI_BE_Explore.section.addClass('fixed');
+			} else {
+				$.fn.FFI_BE_Explore.section.removeClass('fixed');
+
+			}
+		});
+		
+	//Maintain the search bar's distance from the top of the screen as the browser window is resized
+		$.fn.FFI_BE_Explore.window.resize(function() {
+			$.fn.FFI_BE_Explore.section.css('margin-top', $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height());
+		});
 	};
 								   
 /**
@@ -112,20 +131,20 @@
 			
 		//Did the user press "Enter"?
 			if (code == 13) {
-				clearTimeout($.fn.FFI_BE_Explore.timer);
+				clearTimeout($.fn.FFI_BE_Explore.typeTimer);
 				$.fn.FFI_BE_Explore.updateHash();
 				return;
 			}
 			
 		//Focus on the input, if the user presses an alphanumeric key
-			if (!$.fn.FFI_BE_Explore.input.is(':focus') && /[a-z0-9]/i.test(val)) {
+			if (!$('input:focus, textarea:focus').length && /[a-z0-9]/i.test(val)) {
 				$.fn.FFI_BE_Explore.input.focus();
 			}
 			
 		//Reset the URL hash timer
-			clearTimeout($.fn.FFI_BE_Explore.timer);
+			clearTimeout($.fn.FFI_BE_Explore.typeTimer);
 			
-			$.fn.FFI_BE_Explore.timer = setTimeout(function() {
+			$.fn.FFI_BE_Explore.typeTimer = setTimeout(function() {
 				$.fn.FFI_BE_Explore.updateHash();
 			}, $.fn.FFI_BE_Explore.defaults.hashUpdateDelay);
 		});
@@ -150,7 +169,7 @@
 			}
 		});
 		
-	//Repspond the forward and back button clicks
+	//Repspond to the forward and back button clicks
 		$.fn.FFI_BE_Explore.window.bind('hashchange', function() {
 			$.fn.FFI_BE_Explore.updateInputsFromHash();
 		});
@@ -166,6 +185,11 @@
 		
 		$.fn.FFI_BE_Explore.sortMenu.change(function() {
 			$.fn.FFI_BE_Explore.updateHash();
+		});
+
+	//Prepare events for an infinite scroll of search results
+		$.fn.FFI_BE_Explore.window.scroll(function() {
+			$.fn.FFI_BE_Explore.nextPage();
 		});
 	};
 	
@@ -186,6 +210,30 @@
 			}, $.fn.FFI_BE_Explore.defaults.maskRemoveFadeDuration);
 		}, $.fn.FFI_BE_Explore.defaults.maskRemoveDelay);
 	};
+
+/**
+ * Determine whether the end of search results trigger object
+ * is within view of the user's viewport
+ *
+ * @access public
+ * @return bool   Whether or not the trigger object is within view
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Explore.endVisible = function() {
+		var end = $('span#end');
+
+		if ($.fn.FFI_BE_Explore.searchActive() && end.length) {
+			var top = $.fn.FFI_BE_Explore.window.scrollTop();
+			var bottom = top + $.fn.FFI_BE_Explore.window.height();
+			var itemTop = end.offset().top;
+			var itemBottom = itemTop + end.height();
+
+			return ((itemBottom <= bottom) && (itemTop >= top));
+		}
+
+		return false;
+	};
 	
 /**
  * Determine whether or not the explore section is in search
@@ -198,53 +246,6 @@
 	
 	$.fn.FFI_BE_Explore.searchActive = function() {
 		return $.fn.FFI_BE_Explore.section.hasClass('active-search');
-	};
-	
-/**
- * Place the search bar a given number of pixels from the bottom
- * of the screen
- *
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	$.fn.FFI_BE_Explore.placeSearchBar = function() {
-		$.fn.FFI_BE_Explore.section.css('margin-top', $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height());
-	};
-	
-/**
- * Anchor the search bar to the top of the screen as the user
- * scrolls down the page
- *
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	$.fn.FFI_BE_Explore.updateSearchBarPositionOnScroll = function() {
-		$.fn.FFI_BE_Explore.window.scroll(function() {
-			if ($.fn.FFI_BE_Explore.window.scrollTop() > $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height()) {
-				$.fn.FFI_BE_Explore.section.addClass('fixed');
-			} else {
-				$.fn.FFI_BE_Explore.section.removeClass('fixed');
-			}
-		});
-	};
-	
-/**
- * Maintain the search bar's distance from the top of the screen
- * as the browser window is resized
- *
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	$.fn.FFI_BE_Explore.updateSearchBarPositionOnWindowResize = function() {
-		$.fn.FFI_BE_Explore.window.resize(function() {
-			$.fn.FFI_BE_Explore.section.css('margin-top', $.fn.FFI_BE_Explore.window.height() - $.fn.FFI_BE_Explore.container.height());
-		});
 	};
 	
 /**
@@ -283,55 +284,96 @@
 	
 	$.fn.FFI_BE_Explore.search = function() {
 		var query = $.fn.FFI_BE_Explore.input.val(), by = $.fn.FFI_BE_Explore.by.val();
+
+	//Reset the search page data
+		$.fn.FFI_BE_Explore.allowPageFetch = false;
+		$.fn.FFI_BE_Explore.currentPage = 1;
+		$.fn.FFI_BE_Explore.reachedEnd = false;
 		
+	//Send the search 
 		$.ajax({
 			'data' : {
 				'q' : query,
 				'by' : by,
 				'in' : $.fn.FFI_BE_Explore.inMenu.val(),
 				'sort' : $.fn.FFI_BE_Explore.sortMenu.val(),
-				'page' : '1',
+				'page' : $.fn.FFI_BE_Explore.currentPage,
 				'limit' : $.fn.FFI_BE_Explore.defaults.searchResultsLimit
 			}, 
 			'type' : 'GET',
 			'url' : $.fn.FFI_BE_Explore.defaults.searchURL,
 			'success' : function(data) {
-			//Searching may have been canceled by the time the request was returned
+			//Searching may have been cancelled by the time the request was returned
 				if ($.fn.FFI_BE_Explore.searchActive()) {
-					var JSON = $.parseJSON(data);
-					var HTML = '<ul class="search-list">';
-					var condition = ['poor', 'fair', 'good', 'very-good', 'excellent'];
-					
-				//Build the listing of search results
-					if (JSON.length) {
-						for (var i = 0; i < JSON.length; ++i) {
-							HTML += '<li>';
-							HTML += '<a href="#"><img src="' + JSON[i].imageURL + '"></a>';
-							HTML += '<h3><a href="#">' + JSON[i].title + '</a> <span>by ' + JSON[i].author + '</span></h3>';
-							HTML += '<p class="merchant"><strong>Merchant:</strong> ' + JSON[i].merchant + '</p>';
-							HTML += '<p class="condition ' + condition[JSON[i].condition - 1] + '"><strong>Condition:</strong></p>';
-							HTML += '<button class="btn btn-primary purchase" data-id=\"' + JSON[i].ID + '\">Buy for $' + JSON[i].price + '.00</button>';
-							HTML += '</li>';
+				//Validate the incoming JSON
+					try {
+						var JSON = $.parseJSON(data);
+					} catch(e) {
+						if (data == '') {
+							$.fn.FFI_BE_Explore.reachedEnd = true;
+						} else if (data.substring(0, 10) == 'USER_ERROR') {
+							alert(data.substring(10));
+						} else {
+							alert('An error was encountered while processing your search request.\n\nIf this is the first time you have seen this error, wait one minute and try reloading this page before performing another search. If this error continues to occur, contact the site administrator for assistance and include the details listed below.\n\n-----------------------\n\nQuery string:\n' + window.location.hash.substring(1) + '\n\nResponse from server:\n' + data);
 						}
+						
+						return;
+					}
+					
+				//Build the search results container
+					var HTML = '<ul class="book-list search-list">';
+				
+					if (JSON.length) {
+						HTML += '</ul>';
+						HTML += '<span id="end"></span>';
 					} else {
 						HTML += '<li class="none">';
 						HTML += '<h3>No Results Found</h3>';
 						HTML += '<p>We looked hard, but we couldn\'t find anything related to <strong>' + query + '</strong> when searching by <strong>' + by + '</strong>. Try adjusting your search criteria. However, it\'s possible that we just don\'t have anything on <strong>' + query + '</strong>. Bummer. :-(</p>';
+						HTML += '<button class="btn btn-primary close-search">Close Search</button>';
+						HTML += '</li>';
+						HTML += '</ul>';
 					}
 					
-					HTML += '</ul>';
 					
-				//Push the results into the search container
+				//Push the search results container into the search content area
 					var hotspot = $('section.search-hotspot');
 					
 					if (!hotspot.length) {
-						hotspot = $('<section class="search-hotspot"/>').appendTo($.fn.FFI_BE_Explore.section);
+						hotspot = $('<section class="content search-hotspot"/>').appendTo($.fn.FFI_BE_Explore.section);
 					}
 					
 					hotspot.empty().html(HTML);
+
+				//Add each of the search results to the search results container
+					if (JSON.length) {
+						for (var i = 0; i < JSON.length; ++i) {
+							$.fn.FFI_BE_Explore.addSearchResult(
+								JSON[i].ID,
+								JSON[i].title,
+								JSON[i].author,
+								JSON[i].condition,
+								JSON[i].price,
+								JSON[i].imageURL
+							);
+						}
+					}
 					
 				//Remove the loading mask, if any
 					$('div.loader-mask').remove();
+
+				//Have we maxxed out the search results?
+					if (JSON.length < $.fn.FFI_BE_Explore.defaults.searchResultsLimit) {
+						$.fn.FFI_BE_Explore.reachedEnd = true;
+				//Set a time delay before the next page of results is allowed to fetch
+					} else {
+						setTimeout(function() {
+							$.fn.FFI_BE_Explore.allowPageFetch = true;
+
+						//Just in case the user can already see the end of the results...
+							$.fn.FFI_BE_Explore.nextPage();
+						}, $.fn.FFI_BE_Explore.defaults.nextPageFetchDelay);
+					}
 				}
 			}
 		});
@@ -364,6 +406,144 @@
 		}
 		
 		return ret;
+	};
+
+/**
+ * Generate the URL to a particular book when given the ID and
+ * title of the book
+ *
+ * @access public
+ * @param  int    ID    The ID of the book
+ * @param  string title The title of the book
+ * @return void
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Explore.generateURL = function(ID, title) {
+		var URL = document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'book-exchange/book/';
+		URL += ID + '/';
+		URL += title.replace(/[^A-Za-z0-9\s]/g, '').replace(/[\s]/g, '-').toLowerCase() + '/';
+
+		return URL;
+	};
+
+/**
+ * Create a quick view object for each of the search results. This
+ * is the JavaScript analog to the PHP function 
+ * FFI\BE\includes.display.Book::quickView().
+ *
+ * @access public
+ * @param  int    ID        The ID of the book
+ * @param  string title     The title of the book
+ * @param  string author    The author of the book
+ * @param  int    condition A numerical value (1 - 5) indicating the book's condition, 5 being excellent
+ * @param  int    price     The price of the book, rounded to the dollar
+ * @param  string imageID   The ID of the image of the book
+ * @return void
+ * @see                     FFI\BE\includes.display.Book::quickView()
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Explore.addSearchResult = function(ID, title, author, condition, price, imageURL) {
+		var conditionClasses = ['poor', 'fair', 'good', 'very-good', 'excellent'];
+		var URL = $.fn.FFI_BE_Explore.generateURL(ID, title);
+
+		var HTML = '<li>';
+		HTML += '<a href="' + URL + '"><img src="' + imageURL + '"></a>';
+		HTML += '<div>';
+		HTML += '<a href="' + URL + '"><h3>' + title + '</h3></a>';
+		HTML += '<a href="' + URL + '"><h4>by ' + author + '</h4></a>';
+		HTML += '<p class="condition ' + conditionClasses[condition - 1] + '"><strong>Condition:</strong></p>';
+		HTML += '<p class="price">$' + price + '.00</p>';
+		HTML += '<button class="btn btn-primary purchase" data-id="' + ID + '" data-title="' + $.fn.FFI_BE_Explore.htmlEntities(title) + '" data-author="' + $.fn.FFI_BE_Explore.htmlEntities(author) + '" data-image="' + $.fn.FFI_BE_Explore.htmlEntities(imageURL) + '" data-price="' + price + '"><span class="large">Buy for </span>$' + price + '.00</button>';
+		HTML += '</div>';
+		HTML += '</li>';
+
+		$('ul.search-list').append(HTML);
+	};
+
+/**
+ * Convert all applicable characters to HTML entities
+ *
+ * @access public
+ * @param  string input The string to be encoded to HTML entities
+ * @return string       The input string encoded to HTML entities
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Explore.htmlEntities = function(input) {
+		return $('<div/>').text(input).html();
+	};
+
+/**
+ * Send the request for the next page of search results and
+ * build the next set of search results from the fetched data
+ *
+ * @access public
+ * @return void
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Explore.nextPage = function() {
+		if ($.fn.FFI_BE_Explore.endVisible() && $.fn.FFI_BE_Explore.allowPageFetch && !$.fn.FFI_BE_Explore.reachedEnd) {
+			$.fn.FFI_BE_Explore.allowPageFetch = false;
+			
+			$.ajax({
+				'data' : {
+					'q' : $.fn.FFI_BE_Explore.input.val(),
+					'by' : $.fn.FFI_BE_Explore.by.val(),
+					'in' : $.fn.FFI_BE_Explore.inMenu.val(),
+					'sort' : $.fn.FFI_BE_Explore.sortMenu.val(),
+					'page' : ++$.fn.FFI_BE_Explore.currentPage,
+					'limit' : $.fn.FFI_BE_Explore.defaults.searchResultsLimit
+				}, 
+				'type' : 'GET',
+				'url' : $.fn.FFI_BE_Explore.defaults.searchURL,
+				'success' : function(data) {
+				//Searching may have been cancelled by the time the request was returned
+					if ($.fn.FFI_BE_Explore.searchActive()) {
+					//Validate the incoming JSON
+						try {
+							var JSON = $.parseJSON(data);
+						} catch(e) {
+							if (data == '') {
+								$.fn.FFI_BE_Explore.reachedEnd = true;
+							} else if (data.substring(0, 10) == 'USER_ERROR') {
+								alert(data.substring(10));
+							} else {
+								alert('An error was encountered while processing your search request.\n\nIf this is the first time you have seen this error, wait one minute and try reloading this page before performing another search. If this error continues to occur, contact the site administrator for assistance and include the details listed below.\n\n-----------------------\n\nQuery string:\n' + window.location.hash.substring(1) + '\n\nResponse from server:\n' + data);
+							}
+						
+							return;
+						}
+
+					//Add each of the search results to the search results container
+						if (JSON.length) {
+							for (var i = 0; i < JSON.length; ++i) {
+								$.fn.FFI_BE_Explore.addSearchResult(
+									JSON[i].ID,
+									JSON[i].title,
+									JSON[i].author,
+									JSON[i].condition,
+									JSON[i].price,
+									JSON[i].imageURL
+								);
+							}
+						}
+					
+					//Have we maxxed out the search results?
+						if (JSON.length < $.fn.FFI_BE_Explore.defaults.searchResultsLimit) {
+							$.fn.FFI_BE_Explore.reachedEnd = true;
+					//Set a time delay before the next page of results is allowed to fetch
+						} else {
+							setTimeout(function() {
+								$.fn.FFI_BE_Explore.allowPageFetch = true;
+							}, $.fn.FFI_BE_Explore.defaults.nextPageFetchDelay);
+						}
+					}
+				}
+			});
+		}
 	};
 	
 /**
@@ -440,7 +620,7 @@
 /**
  * Prepare the UI for searches by hiding the course listing sections, 
  * or, if the page is already in search mode, apply a light visual
- * mask overtop of the existing search results while new results are
+ * mask over top of the existing search results while new results are
  * fetched
  *
  * @access public
@@ -457,12 +637,14 @@
 				$('section.liberal-arts, section.science-mathematics').hide();
 			}, $.fn.FFI_BE_Explore.adjacentContainersFadeDuration);
 		} else {
-			$('<div class="loader-mask"/>').appendTo($.fn.FFI_BE_Explore.section);
+			if (!$('div.loader-mask').length) {
+				$('<div class="loader-mask"/>').appendTo($.fn.FFI_BE_Explore.section);
+			}
 		}
 	};
 	
 /**
- * Reset the UI back to explore mode, where the listing of avaliable 
+ * Reset the UI back to explore mode, where the listing of available 
  * courses are displayed, instead of search results. Also, the URL
  * hash is cleared of its search query parameters, and the search
  * tools are collapsed.
@@ -479,14 +661,22 @@
 		$('section.liberal-arts, section.science-mathematics').show();
 		$('section.search-hotspot').remove();
 		$('div.loader-mask').remove();
-		clearTimeout($.fn.FFI_BE_Explore.timer);
+		clearTimeout($.fn.FFI_BE_Explore.typeTimer);
 	};
+	
+/**
+ * Plugin default settings
+ *
+ * @access public
+ * @type   object<int|string>
+*/
 	
 	$.fn.FFI_BE_Explore.defaults = {
 		adjacentContainersFadeDuration : 500,  //The amount of time required for CSS to fade out the course containers
 		hashUpdateDelay : 1000,                //The amount of time to wait after the user finishes typing updating the hash
 		maskRemoveDelay : 1500,                //The delay before removing the page initialization hash
 		maskRemoveFadeDuration : 250,          //The amount of time required for CSS to fade out the page initialization hash
+		nextPageFetchDelay : 1000,             //The amount of time to wait before fetching the next page of results
 		searchResultsLimit : 10,               //The maximum number of search results to retrieve at a time
 		searchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/search.php',
 		windowScrollTime : 500                 //The amount of time required to scroll the search/explore section into view
@@ -496,18 +686,18 @@
 (function($) {
 	$(function() {
 	//Initialize the explore plugin with default settings
-		$('input#search-main').FFI_BE_Explore();
+		var explore = $('input#search-main').FFI_BE_Explore();
 		
 	//Scroll the explore section into view when a user clicks on the big "Browse" tile
 		$('li.browse').click(function() {
-			$("html, body").animate({
-				'scrollTop' : $('section.explore').offset().top + 1
-			}, 500);
+			explore.FFI_BE_Explore.resetSearch();
+			explore.FFI_BE_Explore.scrollToSearch(true);
 		});
 		
 	//When the user clicks on the "Search" tile, focus on the search element
 		$('li.search').click(function() {
 			$('input#search-main').focus();
-		})
-	})
+			explore.FFI_BE_Explore.scrollToSearch(true);
+		});
+	});
 })(jQuery);

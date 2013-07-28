@@ -20,7 +20,7 @@
 namespace FFI\BE;
 
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(__FILE__) . "/General.php");
+require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
 require_once(dirname(dirname(__FILE__)) . "/third-party/Isbn.php");
 
 class Book_Overview {
@@ -58,7 +58,7 @@ class Book_Overview {
 ";
 		
 			foreach($books as $book) {
-				$return .= "<li style=\"background-image: url(" . General::bookBackgroundSmall($book->ImageID) . ")\">
+				$return .= "<li style=\"background-image: url(" . Cloudinary::backgroundSmall($book->ImageID) . ")\">
 <a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . self::URLPurify($book->Title)) . "\">
 <h3>" . $book->Title . "</h3>
 <p class=\"price\">\$" . $book->Price . ".00</p>

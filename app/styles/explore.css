@@ -161,10 +161,11 @@ section.welcome div ul li.browse span.count {
 section.welcome div ul li.browse span.count span {
 	left: 0px;
 	letter-spacing: 4px;
+	margin: 0px 7%;
 	position: absolute;
 	text-align: center;
 	top: 27px;
-	width: 100%;
+	width: 86%;
 }
 
 section.welcome div ul li.search {
@@ -277,10 +278,11 @@ section.welcome div ul li h3::after {
 section.explore {
 	background: #FFFFFF;
 	color: #828282;
-	min-height: 602px;
+	min-height: 502px;
 	padding-bottom: 1px;
 	position: relative;
 	width: 100%;
+	z-index: 40;
 }
 
 section.explore.fixed {
@@ -310,7 +312,7 @@ section.explore.fixed header {
 	position: fixed;
 	right: 0px;
 	top: 0px;
-	z-index: 20;
+	z-index: 35;
 }
 
 section.explore header h2 {
@@ -397,7 +399,7 @@ section.explore header button.close-search {
 	margin-top: 10px;
 	position: absolute;
 	right: 10px;
-	z-index: 5;
+	z-index: 35;
 }
 
 section.explore header button.close-search span.small {
@@ -408,11 +410,19 @@ section.explore header button.close-search span.small {
 	section.explore header div.wrapper div.options div span.sortText, section.explore header div.wrapper div.options div select.sort {
 		display: none;
 	}
+	
+	section.explore header button.close-search span.large {
+		display: none;
+	}
+	
+	section.explore header button.close-search span.small {
+		display: inline;
+	}
 }
 
 @media screen and (max-width: 750px) {
 	section.explore.fixed {
-		padding-top: 50px;
+		padding-top: 100px;
 	}
 	
 	section.explore header div.wrapper div.input input#search-main {
@@ -425,6 +435,10 @@ section.explore header button.close-search span.small {
 }
 
 @media screen and (max-width: 650px) {	
+	section.explore.fixed {
+		padding-top: 50px;
+	}
+
 	section.explore header {
 		background-image: none;
 		height: 50px;
@@ -439,16 +453,6 @@ section.explore header button.close-search span.small {
 	
 	section.explore header div.wrapper div.input input#search-main {
 		width: 200px;
-	}
-}
-
-@media screen and (max-width: 550px) {		
-	section.explore header button.close-search span.large {
-		display: none;
-	}
-	
-	section.explore header button.close-search span.small {
-		display: inline;
 	}
 }
 
@@ -481,10 +485,6 @@ section.explore section.courses {
 section.explore section.courses.liberal-arts {
 	background: #FFFFFF;
 	border-top: none !important;
-}
-
-section.explore section.courses.science-mathematics {
-	background: #F5F5F5;
 }
 
 section.explore section.courses ul {
@@ -606,7 +606,7 @@ section.explore.active-search div.loader-mask {
 	position: absolute;
 	top: 145px;
 	width: 100%;
-	z-index: 15;
+	z-index: 20;
 }
 
 section.explore.active-search section.courses {
@@ -619,10 +619,10 @@ section.explore.active-search section.courses {
 }
 
 section.explore.active-search section.search-hotspot {
-	min-height: 500px;
+	border-top: none;
+	min-height: 400px;
 	position: relative;
 	top: 0px;
-	width: 100%;
 }
 
 @media screen and (max-width: 980px) {
@@ -638,6 +638,12 @@ section.explore.active-search section.search-hotspot {
 		max-width: 120px;
 		min-width: 120px;
 		width: 120px;
+	}
+}
+
+@media screen and (max-width: 650px) {
+	section.explore.active-search div.loader-mask {
+		top: 60px;
 	}
 }
 
@@ -659,124 +665,26 @@ section.explore.active-search section.search-hotspot {
  * ----------------------------------
 */
 
-section.explore.active-search section.search-hotspot ul {
-	background-color: #FFFFFF;
-	margin: 20px 10% 20px 10%;
-	width: 80%;
+section.explore.active-search section.search-hotspot ul.book-list li.none {
+	width: 60%;
+}
+section.explore.active-search section.search-hotspot ul.book-list li.none:hover {
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
-section.explore.active-search section.search-hotspot ul li {
-	border-bottom: 1px solid #DDDDDD;
-	clear: both;
-	list-style: none;
-	padding: 50px 40px;
-	position: relative;
-	overflow: auto;
-	vertical-align: top;
-}
-
-section.explore.active-search section.search-hotspot ul li:last-child {
-	border-bottom: none;
-}
-
-section.explore.active-search section.search-hotspot ul li img {
-	float: left;
-}
-
-section.explore.active-search section.search-hotspot ul li h3 {
-	font-size: 15px;
-	letter-spacing: 1px;
-	line-height: 20px;
-	margin: 0px;
-	margin-left: 135px;
-	vertical-align: top;
-}
-
-section.explore.active-search section.search-hotspot ul li h3 a {
-	color: #222222;
-	font-weight: bolder;
-	text-transform: uppercase;
-}
-
-section.explore.active-search section.search-hotspot ul li h3 span {
-	color: #999999;
-	font-size: 11px;
-	font-weight: normal;
-}
-
-section.explore.active-search section.search-hotspot ul li p {
-	color: #777777;
-	font-size: 15px;
-	margin: 0px 0px 5px 135px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.merchant {
-	margin-top: 15px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition {
-	background: url(sprites/ratings.png) no-repeat;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition.excellent {
-	background-position: 90px 1px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition.very-good {
-	background-position: 90px -29px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition.good {
-	background-position: 90px -59px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition.fair {
-	background-position: 90px -89px;
-}
-
-section.explore.active-search section.search-hotspot ul li p.condition.poor {
-	background-position: 90px -119px;
-}
-
-section.explore.active-search section.search-hotspot ul li button {
-	bottom: 50px;
-	position: absolute;
-	left: 175px;
-}
-
-section.explore.active-search section.search-hotspot ul li.none h3 {
+section.explore.active-search section.search-hotspot ul.book-list li.none h3 {
 	margin-left: 0px;
 	text-align: center;
 }
 
-section.explore.active-search section.search-hotspot ul li.none p {
+section.explore.active-search section.search-hotspot ul.book-list li.none p {
 	margin: 15px 0px 0px 0px;
 }
 
-@media screen and (max-width: 650px) {	
-	section.explore.active-search section.search-hotspot ul li {
-		padding: 20px 15px 50px 15px;
-	}
-	
-	section.explore.active-search section.search-hotspot ul li img {
-		max-width: 60px;
-	}
-	
-	section.explore.active-search section.search-hotspot ul li h3 {
-		margin-left: 75px;
-	}
-	
-	section.explore.active-search section.search-hotspot ul li p.merchant {
-		display: none;
-	}
-	
-	section.explore.active-search section.search-hotspot ul li p.condition {
-		margin: 10px 0px 0px 75px;
-	}
-	
-	section.explore.active-search section.search-hotspot ul li button {
-		bottom: 13px;
-		left: auto;
-		right: 15px;
-	}
+section.explore.active-search section.search-hotspot ul.book-list li.none button {
+	margin-top: 15px;
 }

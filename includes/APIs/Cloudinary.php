@@ -1,10 +1,13 @@
 <?php
 /**
- * General display class
+ * Cloudinary API class
  *
- * This class is used to fetch or generate data which is commonly used
- * through out this plugin, such images for books from the Cloudinary
- * service.
+ * This class is designed to interact with the Cloudinary
+ * content delivery service. Some of this classes abilities
+ * include:
+ *  - obtain the name of the Cloudinary cloud name from the 
+ *    API table in the database
+ *  - generate links to various styles of book covers
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -16,33 +19,51 @@
 
 namespace FFI\BE;
 
-class General {
+class Cloudinary {
 /**
  * Hold the Cloudinary API cloud name.
  *
- * @access private
+ * @access protected
  * @static
  * @type   boolean|string
 */
 
-	private static $cloudName = false;
+	protected static $cloudName = false;
 	
 /**
  * Fetch the Cloudinary API cloud name
  * 
- * @access private
+ * @access protected
  * @return void
  * @static
  * @since  3.0
 */
 
-	private static function getCloudName() {
+	protected static function getCloudName() {
 		global $wpdb;
 		
 		if (!self::$cloudName) {
 			$APIs = $wpdb->get_results("SELECT `Cloudinary` FROM `ffi_be_new_apis`");
 			self::$cloudName = $APIs[0]->Cloudinary;
 		}
+	}
+	
+/**
+ * Generate the URL of the small book cover background image for display
+ * in the quick link boxes, which are used in the sidebars
+ * 
+ * @access public
+ * @param  string   $imageKey The key of the image to fetch from Cloudinary
+ * @return string             The URL of the image with the supplied key
+ * @see                       includes.display.Book.quickLink()
+ * @static
+ * @since  3.0
+*/
+
+	public static function backgroundSmall($imageKey) {
+		self::getCloudName();
+		
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_300,h_100,c_fill,g_north,e_vibrance:100/" . $imageKey;
 	}
 	
 /**
@@ -56,27 +77,10 @@ class General {
  * @since  3.0
 */
 
-	public static function bookBackgroundLarge($imageKey) {
+	public static function backgroundLarge($imageKey) {
 		self::getCloudName();
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_1500,h_350,c_fill,e_blur:800/e_vibrance:100/" . $imageKey;
-	}
-	
-/**
- * Generate the URL of the small book cover background image for display
- * in the "What's New" and "What's Hot" sections
- * 
- * @access public
- * @param  string   $imageKey The key of the image to fetch from Cloudinary
- * @return string             The URL of the image with the supplied key
- * @static
- * @since  3.0
-*/
-
-	public static function bookBackgroundSmall($imageKey) {
-		self::getCloudName();
-		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_300,h_100,c_fill,g_north/" . $imageKey;
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_1500,h_350,c_fill,g_north,e_blur:800/e_vibrance:100/" . $imageKey;
 	}
 	
 /**
@@ -90,10 +94,10 @@ class General {
  * @since  3.0
 */
 
-	public static function bookCover($imageKey) {
+	public static function cover($imageKey) {
 		self::getCloudName();
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/h_355,w_275,c_pad,e_vibrance:100/" . $imageKey;
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_275,h_355,c_pad,e_vibrance:100/" . $imageKey;
 	}
 	
 /**
@@ -103,14 +107,15 @@ class General {
  * @access public
  * @param  string   $imageKey The key of the image to fetch from Cloudinary
  * @return string             The URL of the image with the supplied key
+ * @see                       includes.display.Book.quickView()
  * @static
  * @since  3.0
 */
 
-	public static function bookCoverPreview($imageKey) {
+	public static function coverPreview($imageKey) {
 		self::getCloudName();
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_125,c_pad,e_vibrance:100/" . $imageKey;
+		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_200,h_300,c_pad,e_vibrance:100/" . $imageKey;
 	}
 }
 ?>

@@ -3,6 +3,8 @@
 	$essentials->setTitle("Book Exchange");
 	$essentials->includeCSS("styles/explore.css");
 	$essentials->includeJS("scripts/explore.min.js");
+	$essentials->includeJS("scripts/FFI_BE_Buy.js");
+	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includePluginClass("display/Book_Courses");
 	$essentials->includePluginClass("display/Book_Overview");
 	
@@ -71,6 +73,7 @@
 
 <span class=\"sortText\">and sort by</span>
 <select name=\"sort\" class=\"input-medium sort\">
+<option value=\"relevance\">Relevance</option>
 <option value=\"title-asc\">Title A-Z</option>
 <option value=\"title-desc\">Title Z-A</option>
 <option value=\"price-asc\">Price Low to High</option>
@@ -124,7 +127,7 @@
 ";
 	}
 
-	echo "<section class=\"content courses science-mathematics\">
+	echo "<section class=\"content even courses science-mathematics\">
 <h2>Science, Engineering &amp; Mathematics</h2>
 
 <ul>

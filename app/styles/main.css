@@ -7,6 +7,31 @@ h1 {
 	display: none;
 }
 
+span.success{
+	-moz-box-shadow: 0px 0px 15px #003300;
+	-ms-box-shadow: 0px 0px 15px #003300;
+	-o-box-shadow: 0px 0px 15px #003300;
+	-webkit-box-shadow: 0px 0px 15px #003300;
+	box-shadow: 0px 0px 15px #003300;
+	
+	background: #00FF66;
+	border: 1px solid #003300;
+	border-radius: 5px;
+	color: #000000;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: bolder;
+	left: 50%;
+	margin: 0px 0px 0px -150px;
+	padding: 5px 25px 5px 25px;
+	position: fixed;
+	right: 50%;
+	text-align: center;
+	top: 45px;
+	width: 250px;
+	z-index: 45;
+}
+
 /**
  * Splash display
  * ----------------------------------
@@ -59,6 +84,533 @@ section#splash div.ad-container div.ad-contents > h2::before {
 
 @media screen and (max-width: 650px) {    
 	section#splash {
+		display: none;
+	}
+}
+
+/**
+ * Content area styles
+ * ----------------------------------
+*/
+
+article.content, section.content {
+	background: #FFFFFF;
+	border-top: 1px solid #DDDDDD;
+	padding: 65px 10% 65px 10%;
+}
+
+article.content.even, section.content.even, article.content.no-splash, section.content.no-splash {
+	background: #EAF3FA;
+	border-bottom: 1px solid #DDDDDD;
+}
+
+article.content > h1, section.content > h1, article.content > h2, section.content > h2, article.content header h1, section.content header h1, article.content header h2, section.content header h2 {
+	color: #303030;
+	font-size: 24px !important;
+	font-weight: lighter;
+	line-height: normal !important;
+	margin: 0px 0px 20px 0px;
+    padding-bottom: 10px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+article.content > h1::after, section.content > h1::after, article.content > h2::after, section.content > h2::after, article.content header h1::after, section.content header h1::after, article.content header h2::after, section.content header h2::after {
+	border-top: 2px solid #303030;
+	content: ' ';
+	display: block;
+	margin: 7px auto 0px auto;
+	padding: 0px;
+	text-align: center;
+	width: 300px;
+}
+
+article.content p, section.content p {
+	color: #777777;
+	font-size: 15px;
+	margin: 10px 0px 10px 0px;
+}
+
+article.content > h3, section.content > h3 {
+	padding-top: 40px;
+}
+
+article.content.center p, section.content.center p {
+	margin: 15px auto 15px auto;
+	max-width: 850px;
+	text-align: center;
+}
+
+@media screen and (max-width: 650px) {
+	article.content, section.content {
+		padding: 15px 10% 15px 10%;
+	}
+    
+	article.content > h1::after, section.content > h1::after, article.content > h2::after, section.content > h2::after, article.content header h1::after, section.content header h1::after, article.content header h2::after, section.content header h2::after {
+		content: none;
+    	}
+}
+
+/**
+ * Listing of books
+ * ----------------------------------
+*/
+
+ul.book-list {
+	background-color: #FFFFFF;
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+	vertical-align: top;
+}
+
+ul.book-list li {
+	display: inline-block;
+	height: 365px;
+	list-style: none;
+	margin: 20px;
+	overflow: hidden;
+	padding: 0px;
+	position: relative;
+	vertical-align: top;
+	width: 275px;
+	z-index: inherit;
+}
+
+ul.book-list li:hover {
+	-moz-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-ms-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+    
+	background-color: #FFFFFF;
+	height: 303px;
+	margin-bottom: 82px;
+	overflow: visible;
+	z-index: 10;
+}
+
+ul.book-list li.purchased {
+	-moz-opacity: 0.5;
+	-ms-opacity: 0.5;
+	-o-opacity: 0.5;
+	-webkit-opacity: 0.5;
+	opacity: 0.5;
+}
+
+ul.book-list li a img {
+	height: 300px;
+	max-height: 300px;
+	max-width: 200px;
+	min-height: 300px;
+	min-width: 200px;
+	width: 200px;
+}
+
+ul.book-list li div {
+	background-color: #FFFFFF;
+	margin-top: 3px;
+	padding: 10px 15px 15px 15px;
+	position: relative;
+	text-align: center;
+}
+
+ul.book-list li:hover div {
+	-moz-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-ms-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+    
+	z-index: 10;    
+}
+
+ul.book-list li div a h3 {
+	color: #222222;
+	font-size: 15px;
+	font-weight: bolder;
+	height: 20px;
+	letter-spacing: 1px;
+	line-height: normal;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+ul.book-list li:hover div a h3 {
+	height: auto;
+	line-height: 20px;
+	white-space: normal;
+}
+
+ul.book-list li div a h4 {
+	color: #999999;
+	font-size: 11px;
+	font-weight: normal;
+	margin: 0px 0px 20px 0px;
+	padding-top: 5px;
+}
+
+ul.book-list li div p {
+	color: #777777;
+	font-size: 15px;
+	margin: 0px 0px 5px 0px;
+}
+
+ul.book-list li p.condition {
+	background: url(sprites/ratings.png) no-repeat;
+	padding-right: 95px;
+}
+
+ul.book-list li p.condition.excellent {
+	background-position: 120px 2px;
+}
+
+ul.book-list li p.condition.very-good {
+	background-position: 120px -28px;
+}
+
+ul.book-list li p.condition.good {
+	background-position: 120px -58px;
+}
+
+ul.book-list li p.condition.fair {
+	background-position: 120px -88px;
+}
+
+ul.book-list li p.condition.poor {
+	background-position: 120px -118px;
+}
+
+ul.book-list li div p.price {
+	background-color: #FFFFFF;
+	font-size: 20px;
+	font-weight: lighter;
+	left: 0px;
+	padding-top: 5px;
+	position: absolute;
+	right: 0px;
+	text-align: center;
+	top: 40px;
+}
+
+ul.book-list li:hover div p.price {
+	display: none;
+}
+
+ul.book-list li button {
+	margin-top: 5px;
+}
+
+@media screen and (max-width: 805px) {
+	ul.book-list li {
+		border-bottom: 1px solid #DDDDDD;
+		height: auto;
+		margin: 0px;
+		overflow: visible;
+		padding: 20px 0px;
+		vertical-align: top;
+		width: 100%;
+	}
+
+	ul.book-list li:hover {
+		margin-bottom: 0px;
+	}
+	
+	ul.book-list li:last-child {
+		border-bottom: none;
+	}
+	
+	ul.book-list li:hover, ul.book-list li:hover div {
+		-moz-box-shadow: none;
+		-ms-box-shadow: none;
+		-o-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		
+		background-color: transparent;
+		height: auto;
+	}
+	
+	ul.book-list li a {
+		position: relative;
+		z-index: 15;
+	}
+
+	ul.book-list li a img {
+		float: left;
+		height: 150px;
+		max-height: 150px;
+		max-width: 100px;
+		min-height: 150px;
+		min-width: 100px;
+		position: relative;
+		width: 100px;
+	}
+	
+	ul.book-list li div {
+		background-color: transparent;
+		height: auto;
+		min-height: 150px;
+		padding: 0px 0px 0px 125px;
+	}
+	
+	ul.book-list li div a h3 {
+		height: auto;
+		margin: 0px;
+		overflow: visible;
+		text-align: left;
+		white-space: normal;
+	}
+	
+	ul.book-list li div a h4 {
+		text-align: left;
+	}
+	
+	ul.book-list li p.condition {
+		text-align: left;
+	}
+	
+	ul.book-list li p.condition.excellent {
+		background-position: 90px 2px;
+	}
+
+	ul.book-list li p.condition.very-good {
+		background-position: 90px -28px;
+	}
+
+	ul.book-list li p.condition.good {
+		background-position: 90px -58px;
+	}
+
+	ul.book-list li p.condition.fair {
+		background-position: 90px -88px;
+	}
+
+	ul.book-list li p.condition.poor {
+		background-position: 90px -118px;
+	}
+	
+	ul.book-list li div p.price {
+		display: none;
+	}
+	
+	ul.book-list li div button {
+		bottom: 0px;
+		position: absolute;
+		right: 0px;
+	}
+}
+@media screen and (max-width: 565px) {
+	ul.book-list li div button span.large {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	ul.book-list li p.condition {
+		height: 20px;
+	}
+	
+	ul.book-list li p.condition.excellent {
+		background-position: 0px 2px;
+	}
+
+	ul.book-list li p.condition.very-good {
+		background-position: 0px -28px;
+	}
+
+	ul.book-list li p.condition.good {
+		background-position: 0px -58px;
+	}
+
+	ul.book-list li p.condition.fair {
+		background-position: 0px -88px;
+	}
+
+	ul.book-list li p.condition.poor {
+		background-position: 0px -118px;
+	}
+
+	ul.book-list li p.condition strong {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	ul.book-list li p.condition {
+		background-image: none;
+	}
+}
+
+/**
+ * Purchase book dialog
+ * ----------------------------------
+*/
+
+div.purchase-dialog div.modal-header h3 {
+	font-weight: lighter;
+}
+
+div.purchase-dialog div.book-purchase-details {
+	padding: 15px 45px;
+}
+
+div.purchase-dialog div.book-purchase-details img {
+	float: left;
+	height: 150px;
+	width: 100px;
+}
+
+div.purchase-dialog div.book-purchase-details h4 {
+	color: #222222;
+	font-size: 15px;
+	font-weight: bolder;
+	letter-spacing: 1px;
+	line-height: normal;
+	margin: 0px 0px 0px 120px;
+	padding: 0px;
+	text-transform: uppercase;
+}
+
+div.purchase-dialog div.book-purchase-details h5 {
+	color: #999999;
+	font-size: 11px;
+	font-weight: normal;
+	margin: 0px 0px 20px 120px;
+	padding-top: 5px;
+}
+
+div.purchase-dialog div.book-purchase-details p.price {
+	color: #006DCC;
+	font-size: 20px;
+	margin-left: 120px;
+}
+
+div.purchase-dialog div.book-purchase-details ol {
+	color: #006DCC;
+	font-size: 25px;
+	margin: 15px 0px 0px 170px;
+}
+
+div.purchase-dialog div.book-purchase-details ol li {
+	padding: 5px 0px;
+}
+
+div.purchase-dialog div.book-purchase-details ol li span {
+	color: #000000;
+	font-size: 14px;
+	vertical-align: top;
+}
+
+div.purchase-dialog div.comments {
+	height: 135px;
+	max-height: 135px;
+	overflow: hidden;
+	padding: 0px;
+}
+
+div.purchase-dialog div.comments h4 {
+	font-size: 15px;
+	font-weight: lighter;
+	margin: 7px 15px;
+	text-transform: none;
+}
+
+div.purchase-dialog div.comments > div { /* Remove the TinyMCE editor border */
+	border: none !important;
+}
+
+div.purchase-dialog div.comments textarea {
+	width: 100%;
+}
+
+div.purchase-dialog div.login {
+	height: 30px;
+	text-align: center;
+}
+
+div.purchase-dialog div.login input.username {
+	margin-right: 5px;
+}
+
+div.purchase-dialog div.login input.password {
+	margin-left: 5px;
+}
+
+div.purchase-dialog div.modal-footer {
+	position: relative;
+}
+
+div.purchase-dialog div.modal-footer span.validate {
+	color: #FF0000;
+	left: 15px;
+	position: absolute;
+	top: 19px;
+}
+
+@media screen and (max-width: 650px) {
+	div.purchase-dialog div.book-purchase-details img {
+		display: none;
+	}
+	
+	div.purchase-dialog div.book-purchase-details h4 {
+		margin-left: 0px;
+	}
+	
+	div.purchase-dialog div.book-purchase-details h5 {
+		display: none;
+	}
+	
+	div.purchase-dialog div.book-purchase-details p.price {
+		margin: 15px 0px 0px 0px;
+		text-align: center;
+	}
+	
+	div.purchase-dialog div.comments {
+		display: none;
+	}
+	
+	div.purchase-dialog div.login {
+		height: 60px;
+		padding: 0px;
+	}
+	
+	div.purchase-dialog div.login input {
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	
+		border-radius: 0px;
+		display: block;
+		height: 30px;
+		margin: 0px !important;
+		width: 100%;		
+	}
+	
+	div.purchase-dialog div.login input.password {
+		border-top: none;
+	}
+	
+	div.purchase-dialog div.modal-footer {
+		border-top: none;
+		padding: 0px;
+	}
+	
+	div.purchase-dialog div.modal-footer span.validate {
+		display: none;
+	}
+	
+	div.purchase-dialog div.modal-footer button.confirm {
+		border-radius: 0px 0px 5px 5px;
+		width: 100%;
+	}
+	
+	div.purchase-dialog div.modal-footer button.close-dialog {
 		display: none;
 	}
 }

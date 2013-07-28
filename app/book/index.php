@@ -2,7 +2,7 @@
 //Include the necessary scripts
 	$essentials->includePluginClass("display/Book_Details");
 	$essentials->includePluginClass("display/Book_Overview");
-	$essentials->includePluginClass("display/General");
+	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includeCSS("styles/book.css");
 	$essentials->includeHeadHTML("<script>\$(function() {\$('h3.haha').tooltip()})</script>");
 
@@ -20,14 +20,14 @@
 ";
 
 //Display the page header
-	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\General::bookBackgroundLarge($book->data[0]->ImageID) . ")\">
+	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\Cloudinary::backgroundLarge($book->data[0]->ImageID) . ")\">
 <section class=\"quick-info\">
 <h2>" . $book->data[0]->Title . "</h2>
 <h3>by " . $book->data[0]->Author . "</h3>
 </section>
 
 <section class=\"cover\">
-<img src=\"" . FFI\BE\General::bookCover($book->data[0]->ImageID) . "\">
+<img src=\"" . FFI\BE\Cloudinary::cover($book->data[0]->ImageID) . "\">
 
 <span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
 </section>
