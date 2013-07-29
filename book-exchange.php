@@ -23,7 +23,7 @@ License: MIT
 	define("FFI\BE\NAME", "Book Exchange");
 	
 //Instantiate the Interception_Manager
-	if(!is_admin()) {
+	if (!is_admin()) {
 		require_once(PATH . "includes/Interception_Manager.php");
 		$intercept = new Interception_Manager();
 		$intercept->registerException("book", "book/index.php", 2);
@@ -32,5 +32,19 @@ License: MIT
 		$intercept->registerException("sell-books", "sell-books/index.php", 2);
 		$intercept->highlightNavLink(URL_ACTIVATE);
 		$intercept->go();
+	} else {
+		function addMenuItems() {
+   			global $submenu;
+			
+		//Add the desired pages to the Wordpress Administration menu
+			add_menu_page("Approve Covers", "Book Exchange", "update_core", "book-exchange/admin/approve.php");
+			add_submenu_page("book-exchange/admin/approve.php", "API Management", "API Management", "update_core", "book-exchange/admin/api.php");
+			add_submenu_page("book-exchange/admin/approve.php", "Settings", "Settings", "update_core", "book-exchange/admin/settings.php");
+			
+		//Modify the name of the first sub-menu item
+			$submenu['book-exchange/admin/approve.php'][0][0] = "Approve Covers";
+		}
+
+		add_action("admin_menu", "FFI\\BE\\addMenuItems");
 	}
 ?>
