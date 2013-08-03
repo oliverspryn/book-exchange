@@ -69,11 +69,6 @@
 		HTML += '<h4>' + $.fn.FFI_BE_Buy.title + '</h4>';
 		HTML += '<h5>by ' + $.fn.FFI_BE_Buy.author + '</h5>';
 		HTML += '<p class="price">$' + $.fn.FFI_BE_Buy.price + '.00</p>';
-		//HTML += '<ol>';
-		//HTML += '<li><span>The merchant will recieve an email containing your purchase request</span></li>';
-		//HTML += '<li><span>He or she will will be prompted to send you an email with a time an location to meet in person to exchange the book and funds</span></li>';
-		//HTML += '<li><span>You and the merchant meet at the agreed upon location where you will recieve your book</span></li>';
-		//HTML += '</ol>';
 		HTML += '</div>';
 		
 		if ($.fn.FFI_BE_Buy.defaults.showComments) {
@@ -84,7 +79,13 @@
 		}
 		
 		if ($.fn.FFI_BE_Buy.defaults.showLogin) {
-			HTML += '<div class="modal-footer login">';
+			if ($.fn.FFI_BE_Buy.placeholderSupported()) {
+				HTML += '<div class="modal-footer login">';
+			} else {
+				HTML += '<div class="modal-footer login fallback">';
+				HTML += '<h4 class="placeholder">Username &amp; password:</h4>';
+			}
+		
 			HTML += '<input class="username" placeholder="Username" type="text">';
 			HTML += '<input class="password" placeholder="Password" type="password">';
 			HTML += '</div>';
@@ -97,8 +98,28 @@
 		HTML += '</div>';
 		HTML += '</div>';
 		
-	//Create the Twitter Bootstrap dialog
-		$.fn.FFI_BE_Buy.modal = $(HTML).modal();
+	//Create the Twitter Bootstrap dialog and initialize TinyMCE
+		$.fn.FFI_BE_Buy.modal = $(HTML);
+		
+		$.fn.FFI_BE_Buy.modal.on('shown', function() {
+			if ($.fn.FFI_BE_Buy.defaults.showComments) {
+				$.fn.FFI_BE_Buy.comments = $.fn.FFI_BE_Buy.modal.find('textarea');
+
+				if ($.fn.FFI_BE_Buy.comments.parent().is(':visible')) {
+					tinymce.init({
+						selector: 'textarea',
+						plugins: [
+						     'autolink contextmenu image link table'
+					    ],
+						menubar: false,
+						statusbar: false,
+						toolbar: false
+					});
+			
+					tinymce.activeEditor.focus();
+				}
+			}
+		}).modal();
 		
 	//Share a few components of the dialog with the plugin
 		if ($.fn.FFI_BE_Buy.defaults.showComments) {
@@ -112,26 +133,21 @@
 		
 		$.fn.FFI_BE_Buy.submit = $.fn.FFI_BE_Buy.modal.find('button.confirm');
 		$.fn.FFI_BE_Buy.validationPrompt = $.fn.FFI_BE_Buy.modal.find('span.validate');
-		
-	//Initialize the TinyMCE editor
-		if ($.fn.FFI_BE_Buy.defaults.showComments) {
-			$.fn.FFI_BE_Buy.modal.on('shown', function() {
-				if ($.fn.FFI_BE_Buy.comments.parent().is(':visible')) {
-					tinymce.init({
-						selector: 'textarea',
-						plugins: [
-						     'autolink contextmenu image link table'
-					    ],
-						menubar: false,
-						statusbar: false,
-						toolbar: false
-					});
-					
-					tinymce.activeEditor.focus();
-				}
-			});
-		}
 	};
+
+/**
+ * Determine whether or not the user's browser supports 
+ * the "placeholder" attribute on input elements.
+ *
+ * @access public
+ * @return bool   Whether the user's browser supports placeholders
+ * @since  3.0
+*/
+
+	$.fn.FFI_BE_Buy.placeholderSupported = function () {
+		var test = document.createElement('input');
+		return ('placeholder' in test);
+	}
 	
 /**
  * Validate the user's input (if any) and submit the request to 
@@ -287,10 +303,4 @@
 		showLogin    : true,                                     //Whether or not to show the login section
 		targetObject : 'button.purchase'                         //The target object which will trigger a purchase
 	};
-})(jQuery);
-
-(function($) {
-	$(function() {
-		$(document).FFI_BE_Buy();
-	});
 })(jQuery);

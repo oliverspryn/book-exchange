@@ -1,12 +1,13 @@
 <?php
-//Include the system's core
+//Include the necessary scripts
 	$essentials->setTitle("Book Exchange");
-	$essentials->includeCSS("styles/explore.css");
+	$essentials->includeCSS("styles/explore.min.css");
 	$essentials->includeJS("scripts/explore.min.js");
-	$essentials->includeJS("scripts/FFI_BE_Buy.js");
+	$essentials->includeJS("scripts/buy.min.js");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
-	$essentials->includePluginClass("display/Book_Courses");
-	$essentials->includePluginClass("display/Book_Overview");
+	$essentials->includePluginClass("display/Book");
+	$essentials->includePluginClass("display/Course");
+	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
 	
 //Display the loader mask
 	echo "<section class=\"loader\"></section>
@@ -14,7 +15,7 @@
 ";
 
 //Display the welcome section
-	$total = FFI\BE\Book_Overview::getTotal();
+	$total = FFI\BE\Book::total();
 
 	echo "<section class=\"welcome\">
 <div>
@@ -42,7 +43,7 @@
 ";
 
 //Display the explore section header
-	$allCourses = FFI\BE\Book_Courses::getCourses();
+	$allCourses = FFI\BE\Course::getCourses();
 	$menu = "";
 	
 	foreach($allCourses as $course) {
@@ -91,11 +92,11 @@
 ";
 
 //Display the Arts and Letter section
-	$arts = FFI\BE\Book_Courses::getAL();
+	$arts = FFI\BE\Course::getAL();
 	$artsListing = "";
 	
 	foreach($arts as $art) {
-		$artsListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $art->CourseID . "/icon_048.png") . ")\">
+		$artsListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $art->CourseID . "/small.png") . ")\">
 <a href=\"" . $essentials->friendlyURL("browse/". $art->URL) . "\">
 <h3>" . $art->Name . "</h3>
 <p>" . $art->Total . " " . ($art->Total == 1 ? "Book" : "Books") . " Avaliable</p>
@@ -113,12 +114,12 @@
 
 ";
 
-//Display the Science, Engineering, and Mathematics
-	$sciences = FFI\BE\Book_Courses::getSEM();
+//Display the Science, Engineering & Mathematics section
+	$sciences = FFI\BE\Course::getSEM();
 	$sciencesListing = "";
 	
 	foreach($sciences as $science) {
-		$sciencesListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $science->CourseID . "/icon_048.png") . ")\">
+		$sciencesListing .= "<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $science->CourseID . "/small.png") . ")\">
 <a href=\"" . $essentials->friendlyURL("browse/". $science->URL) . "\">
 <h3>" . $science->Name . "</h3>
 <p>" . $science->Total . " " . ($science->Total == 1 ? "Book" : "Books") . " Avaliable</p>

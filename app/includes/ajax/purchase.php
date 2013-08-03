@@ -1,11 +1,11 @@
 <?php
 //Include the necessary scripts
-	require_once("../../../includes/forms/processing/Purchase_Process.php");
-	require_once("../../../includes/exceptions/Login_Failed.php");
-	require_once("../../../includes/exceptions/Validation_Failed.php");
-	require_once("../../../includes/third-party/Indextank/Exception/HttpException.php");
-	require_once("../../../includes/exceptions/Network_Connection_Error.php");
-	require_once("../../../includes/exceptions/Mandrill_Send_Failed.php");
+	require_once("../../../lib/processing/Purchase_Process.php");
+	require_once("../../../lib/exceptions/Login_Failed.php");
+	require_once("../../../lib/exceptions/Validation_Failed.php");
+	require_once("../../../lib/third-party/Indextank/Exception/HttpException.php");
+	require_once("../../../lib/exceptions/Network_Connection_Error.php");
+	require_once("../../../lib/exceptions/Mandrill_Send_Failed.php");
 
 //Perform the purchase operation
 	try {

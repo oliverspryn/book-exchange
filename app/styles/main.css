@@ -166,7 +166,7 @@ ul.book-list {
 
 ul.book-list li {
 	display: inline-block;
-	height: 365px;
+	height: 370px;
 	list-style: none;
 	margin: 20px;
 	overflow: hidden;
@@ -186,7 +186,7 @@ ul.book-list li:hover {
     
 	background-color: #FFFFFF;
 	height: 303px;
-	margin-bottom: 82px;
+	margin-bottom: 87px;
 	overflow: visible;
 	z-index: 10;
 }
@@ -258,12 +258,12 @@ ul.book-list li div a h4 {
 ul.book-list li div p {
 	color: #777777;
 	font-size: 15px;
-	margin: 0px 0px 5px 0px;
+	margin: 0px;
 }
 
 ul.book-list li p.condition {
 	background: url(sprites/ratings.png) no-repeat;
-	padding-right: 95px;
+	padding: 0px 95px 5px 0px;
 }
 
 ul.book-list li p.condition.excellent {
@@ -291,7 +291,7 @@ ul.book-list li div p.price {
 	font-size: 20px;
 	font-weight: lighter;
 	left: 0px;
-	padding-top: 5px;
+	padding: 5px 0px;
 	position: absolute;
 	right: 0px;
 	text-align: center;
@@ -534,6 +534,15 @@ div.purchase-dialog div.login {
 	text-align: center;
 }
 
+div.purchase-dialog div.login.fallback {
+	height: auto;
+}
+
+div.purchase-dialog div.login.fallback h4.placeholder {
+	font-size: 15px;
+	margin: 0px 0px 10px 0px;
+}
+
 div.purchase-dialog div.login input.username {
 	margin-right: 5px;
 }
@@ -560,6 +569,7 @@ div.purchase-dialog div.modal-footer span.validate {
 	
 	div.purchase-dialog div.book-purchase-details h4 {
 		margin-left: 0px;
+		text-align: center;
 	}
 	
 	div.purchase-dialog div.book-purchase-details h5 {
@@ -578,6 +588,10 @@ div.purchase-dialog div.modal-footer span.validate {
 	div.purchase-dialog div.login {
 		height: 60px;
 		padding: 0px;
+	}
+
+	div.purchase-dialog div.login.fallback h4.placeholder {
+		margin: 5px 0px;
 	}
 	
 	div.purchase-dialog div.login input {

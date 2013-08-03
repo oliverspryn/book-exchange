@@ -252,7 +252,7 @@ class Interception_Manager {
 			
 			if (file_exists($path)) {
 			//Plugin essentials
-				require_once(PATH . "/includes/Essentials.php");
+				require_once(PATH . "lib/Essentials.php");
 				$construct = count($this->params) ? $this->params : false;
 				$essentials = new Essentials($construct);
 				

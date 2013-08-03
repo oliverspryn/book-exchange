@@ -133,6 +133,10 @@
 			if (code == 13) {
 				clearTimeout($.fn.FFI_BE_Explore.typeTimer);
 				$.fn.FFI_BE_Explore.updateHash();
+
+			//Prevents Internet Explorer bug where pressing "Enter" has the same effect as "Escape" (Huh???)
+				e.preventDefault();
+				e.stopPropigation();
 				return;
 			}
 			
@@ -677,7 +681,7 @@
 		maskRemoveDelay : 1500,                //The delay before removing the page initialization hash
 		maskRemoveFadeDuration : 250,          //The amount of time required for CSS to fade out the page initialization hash
 		nextPageFetchDelay : 1000,             //The amount of time to wait before fetching the next page of results
-		searchResultsLimit : 10,               //The maximum number of search results to retrieve at a time
+		searchResultsLimit : 12,               //The maximum number of search results to retrieve at a time
 		searchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/search.php',
 		windowScrollTime : 500                 //The amount of time required to scroll the search/explore section into view
 	};

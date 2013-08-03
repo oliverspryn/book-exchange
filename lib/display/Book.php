@@ -1,13 +1,12 @@
 <?php
 /**
- * Book information class
+ * Book Information class
  *
  * This class is used to fetch all available information regarding
  * books. Some of this classes abilities include:
- *  - fetch the details of a book by its ID
  *  - fetch the total number of available books
+ *  - fetch the details of a book by its ID
  *  - generate a book quick view object
- *  - generate links to various styles of book covers
  * 
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -20,6 +19,22 @@
 namespace FFI\BE;
 
 class Book {
+/**
+ * Count the number of available books
+ *
+ * @access public
+ * @return int    The number of available books
+ * @since  3.0
+ * @static
+*/
+
+	public static function total() {
+		global $wpdb;
+		$total = $wpdb->get_results("SELECT COUNT(*) AS `Total` FROM `ffi_be_sale` WHERE DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND `Sold` = '0'");
+		
+		return $total[0]->Total;
+	}
+
 /**
  * Fetch the details of a book by its ID
  *

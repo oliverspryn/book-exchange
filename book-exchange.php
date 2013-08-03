@@ -24,7 +24,7 @@ License: MIT
 	
 //Instantiate the Interception_Manager
 	if (!is_admin()) {
-		require_once(PATH . "includes/Interception_Manager.php");
+		require_once(PATH . "lib/Interception_Manager.php");
 		$intercept = new Interception_Manager();
 		$intercept->registerException("book", "book/index.php", 2);
 		$intercept->registerException("browse", "browse/index.php", 2);

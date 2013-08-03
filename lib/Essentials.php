@@ -237,7 +237,7 @@ class Essentials {
 */
 
 	public function includePluginClass($class) {
-		require_once(PATH . "includes/" . $class . ".php");
+		require_once(PATH . "lib/" . $class . ".php");
 	}
 	
 /**
