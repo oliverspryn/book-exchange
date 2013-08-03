@@ -43,8 +43,8 @@ class Cloudinary {
 		global $wpdb;
 		
 		if (!self::$cloudName) {
-			$APIs = $wpdb->get_results("SELECT `Cloudinary` FROM `ffi_be_new_apis`");
-			self::$cloudName = $APIs[0]->Cloudinary;
+			$APIs = $wpdb->get_results("SELECT `CloudinaryCloudName` FROM `ffi_be_apis`");
+			self::$cloudName = $APIs[0]->CloudinaryCloudName;
 		}
 	}
 	
