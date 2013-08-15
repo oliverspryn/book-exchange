@@ -3,10 +3,10 @@
  * Purchase Request Processing class
  *
  * This class is used to:
- *  - Determine whether or not a user has submitted a purchase request
- *  - Validate all incoming data
+ *  - Determine whether or not a user has submitted a purchase request.
+ *  - Validate all incoming data.
  *  - Take the desired book off the market, log it as a purchase, and 
- *    remove the entry from IndexDen
+ *    remove the entry from IndexDen.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -97,10 +97,10 @@ class Purchase_Process {
  * CONSTRUCTOR
  *
  * This method will call helper methods to:
- *  - Determine whether or not a user has submitted a purchase request
- *  - Validate all incoming data
- *  - Either take the desired book off the market, log it as a purchase,
- *    and remove the entry from IndexDen
+ *  - Determine whether or not a user has submitted a purchase request.
+ *  - Validate all incoming data.
+ *  - Take the desired book off the market, log it as a purchase, and
+ *    remove the entry from IndexDen.
  * 
  * @access public
  * @return void
@@ -127,7 +127,7 @@ class Purchase_Process {
  * necessarily valid).
  *
  * @access private
- * @return boolean  Whether or not the user has submitted the form
+ * @return bool     Whether or not the user has submitted the form
  * @since  3.0
 */
 	
@@ -147,8 +147,8 @@ class Purchase_Process {
  *
  * @access private
  * @return void
- * @throws Login_Failed Thrown if a user's login credentials are invalid
  * @since  3.0
+ * @throws Login_Failed Thrown if a user's login credentials are invalid
 */
 	
 	private function login() {
@@ -173,7 +173,7 @@ class Purchase_Process {
 
 /**
  * Fetch the plugin settings from the database and make the data
- * available to the rest of the class
+ * available to the rest of the class.
  *
  * @access private
  * @return void
@@ -183,7 +183,7 @@ class Purchase_Process {
 	private function fetchSettings() {
 		global $wpdb;
 
-		$this->info = $wpdb->get_results("SELECT * FROM `ffi_be_new_settings` WHERE `ID` = '1'");
+		$this->info = $wpdb->get_results("SELECT * FROM `ffi_be_new_settings`");
 	}
 	
 /**
@@ -193,8 +193,8 @@ class Purchase_Process {
  *
  * @access private
  * @return void
- * @throws Validation_Failed Thrown when ANY portion of the validation process fails
  * @since  3.0
+ * @throws Validation_Failed Thrown when ANY portion of the validation process fails
 */
 
 	private function validateAndRetain() {
@@ -237,7 +237,7 @@ class Purchase_Process {
 
 /**
  * Send an email to the merchant notifying them of the purchase
- * and another email to the buyer, with their receipt
+ * and another email to the buyer, with their receipt.
  *
  * @access private
  * @return void
@@ -280,6 +280,15 @@ class Purchase_Process {
 		$emailMerchant->buildBody();
 		$emailMerchant->send();
 	}
+
+/**
+ * Update the local database to mark the book as "Sold" and log
+ * the purchase.
+ *
+ * @access private
+ * @return void
+ * @since  3.0
+*/
 
 	private function updateLocal() {
 		global $wpdb;

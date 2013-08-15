@@ -5,47 +5,89 @@
  * This class is designed to interact with the Cloudinary
  * content delivery service. Some of this classes abilities
  * include:
- *  - obtain the name of the Cloudinary cloud name from the 
- *    API table in the database
- *  - generate links to various styles of book covers
+ *  - Obtain the name of the Cloudinary cloud name from the 
+ *    API table in the database.
+ *  - Check the status of the image in the database, and 
+ *    provide a placeholder image, if necessary.
+ *  - Generate links to various styles of book covers.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.display
+ * @package   lib.APIs
  * @since     3.0
 */
 
 namespace FFI\BE;
 
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
+
 class Cloudinary {
 /**
  * Hold the Cloudinary API cloud name.
  *
- * @access protected
+ * @access private
  * @static
- * @type   boolean|string
+ * @type   bool|string
 */
 
-	protected static $cloudName = false;
+	private static $cloudName = false;
 	
 /**
- * Fetch the Cloudinary API cloud name
+ * Fetch the Cloudinary API cloud name.
  * 
- * @access protected
+ * @access private
  * @return void
  * @static
  * @since  3.0
 */
 
-	protected static function getCloudName() {
+	private static function getCloudName() {
 		global $wpdb;
 		
 		if (!self::$cloudName) {
 			$APIs = $wpdb->get_results("SELECT `CloudinaryCloudName` FROM `ffi_be_apis`");
 			self::$cloudName = $APIs[0]->CloudinaryCloudName;
 		}
+	}
+
+/**
+ * Check the status of the image in the database. If a temporary
+ * book cover is necessary, then the beginning of the URL of the
+ * correct cover will be returned depending on the state, like so:
+ *  - Pending approval: <url to images folder>/pending-
+ *  - Inappropriate:    <url to images folder>/inappropriate-
+ *  - Unavailable:      <url to images folder>/unavailable-
+ * 
+ * Each of the functions calling this method can concatenate the 
+ * end of the URL onto the return string, as each calling function
+ * needs.
+ *
+ * If the function returns false, then the cover has been approved,
+ * and no temporary image is necessary.
+ *
+ * @access private
+ * @param  string      $image The unique ID or URL of the image in the "ffi_be_books" table
+ * @return bool|string        A string with the beginning of the URL to the temporary cover, or "false" if one is not necessary
+ * @static
+ * @since  3.0
+*/
+
+	private static function checkStatus($image) {
+		global $wpdb;
+		
+		$baseURL = get_site_url();
+		$state = $wpdb->get_results($wpdb->prepare("SELECT `ImageState` FROM `ffi_be_books` WHERE `ImageID` = %s", $image));
+		$images = array(
+			"APPROVED"         => false,
+			"PENDING_APPROVAL" => $baseURL . "/wp-content/plugins/book-exchange/app/images/book-covers/pending-",
+			"INAPPROPRIATE"    => $baseURL . "/wp-content/plugins/book-exchange/app/images/book-covers/inappropriate-",
+			"UNAVAILABLE"      => $baseURL . "/wp-content/plugins/book-exchange/app/images/book-covers/unavailable-"
+		);
+
+		return $images[$state[0]->ImageState];
 	}
 	
 /**
@@ -62,8 +104,9 @@ class Cloudinary {
 
 	public static function backgroundSmall($imageKey) {
 		self::getCloudName();
-		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_300,h_100,c_fill,g_north,e_vibrance:100/" . $imageKey;
+		$cover = self::checkStatus($imageKey);
+
+		return $cover ? ($cover . "background-small.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_fill,e_vibrance:100,g_north,h_100,w_300/" . $imageKey);
 	}
 	
 /**
@@ -79,8 +122,9 @@ class Cloudinary {
 
 	public static function backgroundLarge($imageKey) {
 		self::getCloudName();
+		$cover = self::checkStatus($imageKey);
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_1500,h_350,c_fill,g_north,e_blur:800/e_vibrance:100/" . $imageKey;
+		return $cover ? ($cover . "background-large.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/,c_fill,e_blur:800,g_north,h_350,w_1500/e_vibrance:100/" . $imageKey);
 	}
 	
 /**
@@ -96,8 +140,9 @@ class Cloudinary {
 
 	public static function cover($imageKey) {
 		self::getCloudName();
+		$cover = self::checkStatus($imageKey);
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_275,h_355,c_pad,e_vibrance:100/" . $imageKey;
+		return $cover ? ($cover . "cover.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,h_355,w_275/" . $imageKey);
 	}
 	
 /**
@@ -114,8 +159,9 @@ class Cloudinary {
 
 	public static function coverPreview($imageKey) {
 		self::getCloudName();
+		$cover = self::checkStatus($imageKey);
 		
-		return "//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/w_200,h_300,c_pad,e_vibrance:100/" . $imageKey;
+		return $cover ? ($cover . "preview.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,h_300,w_200/" . $imageKey);
 	}
 }
 ?>

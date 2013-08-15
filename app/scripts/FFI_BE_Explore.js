@@ -1,5 +1,5 @@
 /**
- * Book Exchange search and explore plugin
+ * Book Exchange Search and Explore plugin
  *
  * This plugin is used on the Book Exchange home page to add
  * an interesting UI to the exploration and searching capabilities
@@ -98,7 +98,7 @@
 	};
 								   
 /**
- * This function initializes several events which persist for the
+ * This method initializes several events which persist for the
  * duration of the plugin. These events include:
  *  - Focus on the search input when a user beings typing, if it
  *    does not already have focus
@@ -434,7 +434,7 @@
 /**
  * Create a quick view object for each of the search results. This
  * is the JavaScript analog to the PHP function 
- * FFI\BE\includes.display.Book::quickView().
+ * FFI\BE\lib.display.Book::quickView().
  *
  * @access public
  * @param  int    ID        The ID of the book
@@ -444,7 +444,7 @@
  * @param  int    price     The price of the book, rounded to the dollar
  * @param  string imageID   The ID of the image of the book
  * @return void
- * @see                     FFI\BE\includes.display.Book::quickView()
+ * @see                     FFI\BE\lib.display.Book::quickView()
  * @since  3.0
 */
 

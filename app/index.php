@@ -62,18 +62,18 @@
 <div class=\"options\">
 <div>
 <span class=\"byText\">by</span>
-<select name=\"by\" class=\"input-small by\">
+<select class=\"input-small by\" name=\"by\">
 <option value=\"title\">Title</option>
 <option value=\"author\">Author</option>
 </select>
 
 <span class=\"inText\">in</span>
-<select name=\"in\" class=\"in\">
+<select class=\"in\" name=\"in\">
 <option value=\"0\">All Courses</option>
 " . $menu . "</select>
 
 <span class=\"sortText\">and sort by</span>
-<select name=\"sort\" class=\"input-medium sort\">
+<select class=\"input-medium sort\" name=\"sort\">
 <option value=\"relevance\">Relevance</option>
 <option value=\"title-asc\">Title A-Z</option>
 <option value=\"title-desc\">Title Z-A</option>

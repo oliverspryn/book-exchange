@@ -4,27 +4,26 @@
 		$('form').validationEngine({
 			'autoHidePrompt' : true,
 			'autoHideDelay' : 5000,
-			'validationEventTrigger' : 'submit'
+			'validationEventTrigger' : 'submit',
+			'custom_error_messages' : {
+				'.cover-input' : {
+					'required' : {
+						'message' : 'Please select a book cover'
+					}
+
+				}
+			}
 		});
 		
 	//Initialize the Sell Books Assistant plugin
 		$('input#ISBN10').FFI_BE_Sell_Books_Assistant();
 		
 	//Initialize TinyMCE
-		tinyMCE.init({
-			mode : 'textareas',
-			skin : 'o2k7',
-			skin_variant : 'silver',
-			theme : 'advanced',
-			
-			plugins :'inlinepopups,spellchecker,tabfocus,autosave,autolink',
-			theme_advanced_buttons1 : 'bold,italic,underline,separator,strikethrough,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,separator,undo,redo',
-			theme_advanced_buttons2 : '',
-			theme_advanced_buttons3 : '',
-			theme_advanced_resizing : true,
-			theme_advanced_statusbar_location : 'bottom',
-			theme_advanced_toolbar_location : 'top',
-			theme_advanced_toolbar_align : 'left'
+		tinymce.init({
+			menubar  : false,
+			plugins  : [ 'autolink contextmenu image link lists table textcolor' ],
+			selector : 'textarea',
+			toolbar  : 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | undo redo | forecolor backcolor'
 		});
 		
 	//Enable the cancel button to leave the form

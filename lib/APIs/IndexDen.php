@@ -5,11 +5,11 @@
  * This class is designed to interact with the IndexDen
  * indexing service in every way that that application
  * will require. Some of its functionality includes:
- *  - adding entries to the index
- *  - updating index entries
- *  - remove index entries
- *  - refresh the entire index
- *  - search the index
+ *  - Adding entries to the index.
+ *  - Updating index entries.
+ *  - Remove index entries.
+ *  - Refresh the entire index.
+ *  - Search the index.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -33,12 +33,126 @@ require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/TooM
 
 class IndexDen {
 /**
- * Delete a document from the IndexDen index by its document ID. The
- * document ID is the same as the ID of a book in the ffi_be_sale 
- * table.
+ * Add a book to the IndexDen index.
  * 
  * @access public
- * @param  int                               $ID The ID of the document to remove from the IndexDen index
+ * @param  int                               $ID     The sale ID of the book to add to the index
+ * @param  string                            $title  The title of the book
+ * @param  string                            $author The author of the book
+ * @return void
+ * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
+ * @since  3.0
+ * @static
+*/
+	
+	public static function add($ID, $title, $author) {
+		global $wpdb;
+
+	//Gather data about the index
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
+		$indexName = $APIData[0]->IndexDenIndex;
+		
+	//Use a third-party library to send the add request
+		$API = new \Indextank_Api($URL);
+		$index = $API->get_index($indexName);
+		$index->add_document($ID, array("title" => $title, "author" => $author));
+	}
+
+/**
+ * Update all of the titles and authors for books matching a
+ * particular ISBN13 in the index.
+ * 
+ * @access public
+ * @param  int                               $ISBN13 The ISBN13 of existing books to update
+ * @param  string                            $title  The updated title of the book
+ * @param  string                            $author The updated author of the book
+ * @return void
+ * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
+ * @since  3.0
+ * @static
+*/
+	
+	public static function updateByISBN($ISBN13, $title, $author) {
+		global $wpdb;
+
+	//Get all books matching the ISBN
+		$IDs = $wpdb->get_col($wpdb->prepare("SELECT ffi_be_sale.SaleID FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID WHERE DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND `Sold` = '0' AND `ISBN13` = %s", $ISBN13));
+
+	//Gather data about the index
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
+		$indexName = $APIData[0]->IndexDenIndex;
+		
+	//Use a third-party library to send the delete request
+		$API = new \Indextank_Api($URL);
+		$index = $API->get_index($indexName);
+		$index->delete_document($IDs);
+
+	//Now add each of them back in with the new titles and authors
+		$indexData = array();
+
+		foreach($IDs as $ID) {
+			array_push($indexData, array("docid" => $ID, "fields" => array(
+				"title"  => $title,
+				"author" => $author
+			)));
+		}
+
+		try {
+			$response = $index->add_documents($indexData);
+		} catch (InvalidArgumentException $e) {
+			echo "Internal processing error: <br>" . $e->getMessage();
+			exit;
+		}
+		
+	//Check to see if any errors occurred during indexing
+		if ($response) {
+			foreach($response as $check) {
+				if (!$check->added) {
+					throw new Indexing_Error("IndexDen could not index the batch of books. Indexing stopped at: " . $check);
+				}
+			}
+		}
+	}
+
+/**
+ * Update the title and author of a book matching a particular
+ * sale ID.
+ * 
+ * @access public
+ * @param  int                               $saleID The sale ID of an existing book to update
+ * @param  string                            $title  The updated title of the book
+ * @param  string                            $author The updated author of the book
+ * @return void
+ * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
+ * @since  3.0
+ * @static
+*/
+	
+	public static function updateByID($saleID, $title, $author) {
+		global $wpdb;
+
+	//Gather data about the index
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
+		$indexName = $APIData[0]->IndexDenIndex;
+		
+	//Use a third-party library to send the delete request
+		$API = new \Indextank_Api($URL);
+		$index = $API->get_index($indexName);
+		$index->delete_document($saleID);
+
+	//Now add the book back in with the new title and author
+		$index->add_document($ID, array("title" => $title, "author" => $author));
+	}
+
+/**
+ * Delete a book from the IndexDen index by its sale ID. The
+ * ID is the same as the ID of a book in the ffi_be_sale table.
+ * 
+ * @access public
+ * @param  int                               $ID The sale ID of the book to remove from the IndexDen index
  * @return void
  * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
  * @since  3.0
@@ -61,12 +175,12 @@ class IndexDen {
 
 /**
  * Reload the contents of an IndexDen index by deleting the index
- * entirelly, creating the index again, and pushing all available
+ * entirely, creating the index again, and pushing all available
  * data from the local database to the index.
  * 
  * @access public
  * @return void
- * @throws Indexing_Error                         Thrown in the event that IndexDen cannot index the batch of documents
+ * @throws Indexing_Error                         Thrown in the event that IndexDen cannot index the batch of books
  * @throws Indextank_Exception_HttpException      [Bubbled up] Thrown in the event of an IndexDen communication error
  * @throws Indextank_Exception_IndexAlreadyExists [BUbbled up] Thrown if an index with the same name already exists
  * @throws Indextank_Exception_TooManyIndexes     [Bubbled up] Thrown if the IndexDen account has too many existing indexes
@@ -106,7 +220,7 @@ class IndexDen {
 				"author" => $item->Author
 			)));
 		}
-
+	
 	//Send the new data set to the index
 		try {
 			$response = $newIndex->add_documents($indexData);
@@ -115,10 +229,12 @@ class IndexDen {
 			exit;
 		}
 		
-	//Check to see if any errors occured during indexing
-		foreach($response as $check) {
-			if (!$check->added) {
-				throw new Indexing_Error("IndexDen could not index the batch of documents. Indexing stopped at: " . $check);
+	//Check to see if any errors occurred during indexing
+		if ($response) {
+			foreach($response as $check) {
+				if (!$check->added) {
+					throw new Indexing_Error("IndexDen could not index the batch of books. Indexing stopped at: " . $check);
+				}
 			}
 		}
 	}
@@ -145,7 +261,7 @@ class IndexDen {
  * @param  int                               $limit The maximum number of results to return
  * @return string                                   A JSON encoded array of search results, containing the title, author, etc...
  * @throws Indextank_Exception_HttpException        [Bubbled up] Thrown in the event of an IndexDen communication error
- * @throws Validation_Failed                        Thrown when a parameter does not pass validation or has an IndexDen sytax error
+ * @throws Validation_Failed                        Thrown when a parameter does not pass validation or has an IndexDen syntax error
  * @since  3.0
  * @static
 */

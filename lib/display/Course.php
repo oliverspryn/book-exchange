@@ -48,7 +48,7 @@ class Course {
 	public static function getCourses() {
 		global $wpdb;
 		
-		return $wpdb->get_results("SELECT * FROM `ffi_be_new_courses` ORDER BY `Name` ASC");
+		return $wpdb->get_results("SELECT * FROM `ffi_be_courses` ORDER BY `Name` ASC");
 	}
 
 /**
