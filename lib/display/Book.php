@@ -128,7 +128,7 @@ class Book {
 		
 		//Parse the JSON response from the Google Shopping API and return only the book cover images
 			$counter = 1;
-			$items = $response->items;			
+			$items = $response->items;		
 			$return = array();
 			$URL = "";
 
@@ -167,18 +167,20 @@ class Book {
  *     |         Here           |
  *     |                        |
  *     |                        |
- *     |   |----------------|   |
- *     |---|  <Book Title>  |---|
- *         |----------------|
+ *     |                        |
+ *     |------------------------|
+ *            <Book Title>
+ *
+ *              <Price>
  *
  * The object will transition into an expanded view when the user
  * rolls his or her mouse over it to show the author, merchant, 
  * condition, and price.
  *
  * @access public
+ * @param  int    $ID        The sale ID of the book
  * @param  string $title     The title of the book
  * @param  string $author    The author of the book
- * @param  string $merchant  The name of the merchant selling this book
  * @param  int    $condition A numerical value (1 - 5) indicating the book's condition, 5 being excellent
  * @param  int    $price     The price of the book, rounded to the dollar
  * @param  string $imageID   The ID of the image of the book
@@ -187,8 +189,28 @@ class Book {
  * @static
 */
 
-	public static function quickView($title, $author, $merchant, $condition, $price, $imageID) {
-		
+	public static function quickView($ID, $title, $author, $condition, $price, $imageID) {
+		global $essentials;
+
+		$classes = array("poor", "fair", "good", "very-good", "excellent");
+		$image = Cloudinary::coverPreview($imageID);
+		$link = $essentials->friendlyURL("book/" . $ID . "/" . self::URLPurify($title));
+
+		return "
+<li>
+<a href=\"" . $link . "\">
+<img src=\"" . $image . "\">
+</a>
+
+<div>
+<a href=\"" . $link . "\"><h3>" . $title . "</h3></a>
+<a href=\"" . $link . "\"><h4>" . $author . "</h4></a>
+<p class=\"condition " . $classes[$condition - 1] . "\"><strong>Condition:</strong></p>
+<p class=\"price\">\$" . $price . ".00</p>
+<button class=\"btn btn-primary purchase\" data-id=\"" . $ID . "\" data-title=\"" . htmlentities($title) . "\" data-author=\"" . htmlentities($author) . "\" data-image=\"" . $image . "\" data-price=\"" . $price . "\"><span class=\"large\">Buy for </span>$" . $price . ".00</button>
+</div>
+</li>
+";
 	}
 
 /**

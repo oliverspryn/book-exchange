@@ -44,11 +44,11 @@ section#splash {
 }
 
 section#splash > h2 {
-    display: none;
+	display: none;
 }
 
 section#splash div.ad-container {
-	background-position: top center;
+	background-position: center center;
 	background-repeat: no-repeat;
 	border-top: 1px solid #DDDDDD;
 	height: 500px;
@@ -59,9 +59,9 @@ section#splash div.ad-container {
 section#splash div.ad-container div.ad-contents {
 	background-color: rgba(34, 34, 34, 0.5);
 	height: 100%;
-	padding: 0px 10% 0px 10%;
+	padding: 0px 5% 0px 5%;
 	text-align: center;
-	width: 80%;
+	width: 90%;
 }
 
 section#splash div.ad-container div.ad-contents > h2 {
@@ -69,7 +69,7 @@ section#splash div.ad-container div.ad-contents > h2 {
 	font-size: 60px;
 	font-weight: lighter;
 	margin: 0px;
-	padding-top: 190px;
+	padding-top: 200px;
 	text-transform: uppercase;
 }
 
@@ -104,13 +104,18 @@ article.content.even, section.content.even, article.content.no-splash, section.c
 	border-bottom: 1px solid #DDDDDD;
 }
 
+article.content.no-border, section.content.no-border, article.content.no-border, section.content.no-border {
+	border-bottom: none;
+	border-top: none;
+}
+
 article.content > h1, section.content > h1, article.content > h2, section.content > h2, article.content header h1, section.content header h1, article.content header h2, section.content header h2 {
 	color: #303030;
 	font-size: 24px !important;
 	font-weight: lighter;
 	line-height: normal !important;
 	margin: 0px 0px 20px 0px;
-    padding-bottom: 10px;
+	padding-bottom: 10px;
 	text-align: center;
 	text-transform: uppercase;
 }

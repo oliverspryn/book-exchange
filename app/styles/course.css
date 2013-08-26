@@ -7,15 +7,56 @@ section.content.even {
 	background: #EAF3FA;
 	border-bottom: none;
 }
+
 /**
- * Course details container
+ * Course welcome section
+ * ----------------------------------
+*/
+
+section#splash div.ad-container {
+	height: 280px;
+	max-height: 280px;
+	min-height: 280px;
+}
+section#splash div.ad-container div.ad-contents > h2 {
+	display: none;
+	padding-top: 110px;
+}
+
+section#splash div.course-welcome {
+	background-color: rgba(51, 51, 51, 0.9);
+	height: 280px;
+	padding-bottom: 1px;
+	position: absolute;
+	text-align: center;
+	top: 1px;
+	width: 350px;
+}
+
+section#splash div.course-welcome img {
+	padding-top: 20px;
+}
+
+@media screen and (max-width: 980px) {   
+	section#splash div.ad-container div.ad-contents h2 {
+		display: block;
+	}
+
+	section#splash div.course-welcome {
+		display: none;
+	}
+}
+
+/**
+ * Parent content container
  * ----------------------------------
 */
 
 section.container {
-	background: #F5F5F5;
 	display: table;
 	margin: -3px 0px 0px 0px;
+	max-width: 100%;
+	overflow: hidden;
 	table-layout: auto;
 	width: 100%;
 }
@@ -25,12 +66,17 @@ section.container > h2 {
 }
 
 section.container div.row {
+	background-color: rgba(51, 51, 51, 0.9);
 	display: table-row;
 }
 
-@media screen and (max-width: 650px) { 
+@media screen and (max-width: 980px) { 
 	section.container {
 		margin: 0px;
+	}
+
+	section.container div.row {
+		background: #FFFFFF;
 	}
 }
 
@@ -40,88 +86,58 @@ section.container div.row {
 */
 
 section.container div.row section.details {
-	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	box-shadow: 0px 4px 10px 0px #CCCCCC;
-	
 	background-color: #FFFFFF;
-	border-right: 1px solid #CCCCCC;
 	display: table-cell;
 	margin-right: 350px;
 	vertical-align: top;
 	width: 100%;
 }
 
+section.container div.row section.details section.content h2 {
+	display: none;
+}
+
+section.container div.row section.details section.content p span.mobile {
+	display: none;
+}
+
+section.container div.row section.details canvas#explorer {
+	display: block;
+}
+
+section.container div.row section.details canvas#explorer.link {
+	cursor: pointer;
+}
+
+section.container div.row section.details section.content.book-list {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 @media screen and (max-width: 980px) { 
 	section.container div.row section.details {
-		-moz-box-shadow: none;
-		-ms-box-shadow: none;
-		-o-box-shadow: none;
-		-webkit-box-shadow: none;
-		box-shadow: none;
-		
 		border-right: none;
 		margin-right: 0px;
 	}
+
+	section.container div.row section.details section.content p span.desktop {
+		display: none;
+	}
+
+	section.container div.row section.details section.content p span.mobile {
+		display: inline;
+	}
 }
 
-/**
- * Course listing
- * ----------------------------------
-*/
+@media screen and (max-width: 650px) {
+	section.container div.row section.details section.content.book-list {
+		padding-left: 10%;
+		padding-right: 10%;
+	}
 
-section.container div.row section.details section.content ul {
-	list-style: none;
-	margin: 0px;
-	text-align: center;
-}
-
-section.container div.row section.details section.content ul li {
-	display: inline-block;
-	height: 90px;
-	margin: 5px;
-	padding: 0px;
-	width: 60px;
-}
-
-section.container div.row section.details section.content ul li p {
-	background: #CCCCCC;
-	border-radius: 40px;
-	color: #000000;
-	font-size: 20px;
-	font-weight: bolder;
-	line-height: 60px;
-	text-align: center;
-}
-
-section.container div.row section.details section.content ul li span {
-	-moz-opacity: 0;
-	-ms-opacity: 0;
-	-o-opacity: 0;
-	-webkit-opacity: 0;
-    filter: alpha(opacity=0);
-	opacity: 0;
-	
-	-moz-transition: 0.25s;
-	-ms-transition: 0.25s;
-	-o-transition: 0.25s;
-	-webkit-transition: 0.25s;
-	transition: 0.25s;
-	
-	color: #000000;
-	display: block;
-	text-align: center;
-}
-
-section.container div.row section.details section.content ul li:hover span {
-	-moz-opacity: 1;
-	-ms-opacity: 1;
-	-o-opacity: 1;
-	-webkit-opacity: 1;
-    filter: alpha(opacity=1);
-	opacity: 1;
+	section.container div.row section.details section.content h2 {
+		display: block;
+	}
 }
 
 /**
@@ -136,11 +152,69 @@ section.container div.row aside.supplement {
 	width: 350px;
 }
 
+section.container div.row aside.supplement > h2 {
+	color: #FFFFFF;
+	font-weight: 300;
+	margin: 20px 0px 5px 0px;
+	text-align: center;
+}
+
 section.container div.row aside.supplement > h3 {
-	background: #006DCC;
 	color: #FFFFFF;
 	font-size: 17px;
-	padding-left: 7px;
+	font-weight: 300;
+	margin: 0px;
+	text-align: center;
+}
+
+section.container div.row aside.supplement hr {
+	background: #FFFFFF;
+	border: none;
+	height: 1px;
+	margin-left: 5%;
+	text-align: center;
+	width: 90%;
+}
+
+section.container div.row aside.supplement ul.navigation {
+	list-style: none;
+	margin: 25px 0px 25px 0px;
+	padding-left: 0px;
+}
+
+section.container div.row aside.supplement ul.navigation li {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	background: url(sprites/browse.png) no-repeat;
+	color: #FFFFFF;
+	font-size: 13px;
+	text-transform: uppercase;
+}
+
+section.container div.row aside.supplement ul.navigation li.total {
+	background-position: 30px -26px;
+}
+
+section.container div.row aside.supplement ul.navigation li.more {
+	background-position: 30px -64px;
+}
+
+section.container div.row aside.supplement ul.navigation li.sell {
+	background-position: 30px -101px;
+}
+
+section.container div.row aside.supplement ul.navigation li a, section.container div.row aside.supplement ul.navigation li span {
+	color: #FFFFFF;
+	display: block;
+	padding: 10px 0px 10px 75px;
+}
+
+section.container div.row aside.supplement ul.navigation li:hover {
+	background-color: #666666;
 }
 
 section.container div.row aside.supplement p.empty {
@@ -148,203 +222,87 @@ section.container div.row aside.supplement p.empty {
 	text-align: center;
 	width: 100%;
 }
-section.container div.row aside.supplement ul {
+
+section.container div.row aside.supplement ul.new {
 	list-style: none;
 	margin: 0px;
 	padding: 0px 0px 40px 0px;
-	text-align: center;
 }
 
-section.container div.row aside.supplement ul:last-child {
+section.container div.row aside.supplement ul.new:last-child {
 	padding: 0px;
 }
 
-section.container div.row aside.supplement ul li {
-	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-webkit-box-shadow: 0px 4px 10px 0px #CCC;
-	box-shadow: 0px 4px 10px 0px #CCC;
-	
+section.container div.row aside.supplement ul.new li {
 	-moz-transition: all .25s ease-in-out;
 	-ms-transition: all .25s ease-in-out;
 	-o-transition: all .25s ease-in-out;
 	-webkit-transition: all .25s ease-in-out;
 	transition: all .25s ease-in-out;
-    
-	background: #FFFFFF no-repeat top;
-	border: 1px solid #CCCCCC;
-	color: #777777;
-	display: inline-block;
-	height: 200px;
-	margin: 7px;
+	
+	color: #FFFFFF;
+	display: block;
+	height: 120px;
+	margin: 7px 0px;
+	padding: 12px 17px;
 	position: relative;
 	vertical-align: top;
-	width: 300px;
 }
 
-section.container div.row aside.supplement ul li:hover {
-	border: 1px solid #555555;
+section.container div.row aside.supplement ul.new li:hover {
+	background-color: #666666;
 }
 
-section.container div.row aside.supplement ul li a {
-	color: #777777;
+section.container div.row aside.supplement ul.new li a {
+	color: #FFFFFF;
 }
 
-section.container div.row aside.supplement ul li h3 {
-	font-size: 18px;
-	font-weight: lighter;
-	height: 70px;
-	line-height: 1.25;
+section.container div.row aside.supplement ul.new li a img {
+	float: left;
+	height: 120px;
+	max-height: 120px;
+	max-width: 80px;
+	min-height: 120px;
+	min-width: 80px;
+	width: 80px;
+}
+
+section.container div.row aside.supplement ul.new li h3 {
+	color: #FFFFFF;
+	font-size: 15px;
+	font-weight: bolder;
+	letter-spacing: 1px;
+	line-height: normal;
 	margin: 0px;
-	max-height: 70px;
+	max-height: 60px;
 	overflow: hidden;
-	padding: 107px 10px 0px 10px;
-	text-align: left;
+	padding: 3px 0px 0px 20px;
+	text-align: left;	
 	text-overflow: ellipsis;
+	text-transform: uppercase;
 }
 
-section.container div.row aside.supplement ul li p.price {
-	background: url(sprites/actions.png) no-repeat 0px 1px;
-	bottom: 0px;
+section.container div.row aside.supplement ul.new li h4 {
+	color: #999999;
 	font-size: 11px;
-	height: 22px;
-	margin: 0px;
-	padding: 1px 0px 0px 30px;
+	font-weight: normal;
+	margin: 0px 0px 20px 0px;
+	padding: 5px 0px 0px 100px;
+}
+
+section.container div.row aside.supplement ul.new li p.price {
+	bottom: 3px;
+	color: #FFFFFF;
+	font-size: 15px;
+	font-weight: lighter;
+	left: 100px;
+	padding: 100px 0px 0px 15px;
 	position: absolute;
-	text-align: left;
-	width: 270px;
+	right: 15px;
 }
 
 @media screen and (max-width: 980px) {   
 	section.container div.row aside.supplement {
 		display: none;
-	}
-}
-
-/**
- * Sidebar and book list
- * ----------------------------------
-*/
-
-ul.books {
-	background-color: #FFFFFF;
-	margin: 20px 10% 20px 10%;
-	width: 80%;
-}
-
-ul.books li {
-	border-bottom: 1px solid #DDDDDD;
-	clear: both;
-	list-style: none;
-	padding: 50px 40px;
-	position: relative;
-	overflow: auto;
-	vertical-align: top;
-}
-
-ul.books li:last-child {
-	border-bottom: none;
-}
-
-ul.books li img {
-	float: left;
-}
-
-ul.books li h3 {
-	font-size: 15px;
-	letter-spacing: 1px;
-	line-height: 20px;
-	margin: 0px;
-	margin-left: 135px;
-	vertical-align: top;
-}
-
-ul.books li h3 a {
-	color: #222222;
-	font-weight: bolder;
-	text-transform: uppercase;
-}
-
-ul.books li h3 span {
-	color: #999999;
-	font-size: 11px;
-	font-weight: normal;
-}
-
-ul.books li p {
-	color: #777777;
-	font-size: 15px;
-	margin: 0px 0px 5px 135px;
-}
-
-ul.books li p.merchant {
-	margin-top: 15px;
-}
-
-ul.books li p.condition {
-	background: url(sprites/ratings.png) no-repeat;
-}
-
-ul.books li p.condition.excellent {
-	background-position: 90px 1px;
-}
-
-ul.books li p.condition.very-good {
-	background-position: 90px -29px;
-}
-
-ul.books li p.condition.good {
-	background-position: 90px -59px;
-}
-
-ul.books li p.condition.fair {
-	background-position: 90px -89px;
-}
-
-ul.books li p.condition.poor {
-	background-position: 90px -119px;
-}
-
-ul.books li button {
-	bottom: 50px;
-	position: absolute;
-	left: 175px;
-}
-
-ul.books li.none h3 {
-	margin-left: 0px;
-	text-align: center;
-}
-
-ul.books li.none p {
-	margin: 15px 0px 0px 0px;
-}
-
-@media screen and (max-width: 650px) {	
-	ul.books li {
-		padding: 20px 15px 50px 15px;
-	}
-	
-	ul.books li img {
-		max-width: 60px;
-	}
-	
-	ul.books li h3 {
-		margin-left: 75px;
-	}
-	
-	ul.books li p.merchant {
-		display: none;
-	}
-	
-	ul.books li p.condition {
-		margin: 10px 0px 0px 75px;
-	}
-	
-	ul.books li button {
-		bottom: 13px;
-		left: auto;
-		right: 15px;
 	}
 }

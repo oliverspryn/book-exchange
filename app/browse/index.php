@@ -15,16 +15,73 @@
 	}
 	
 //Include the necessary scripts
+	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includeCSS("styles/course.css");
-	$essentials->includePluginClass("display/Book_Courses");
-	$essentials->includePluginClass("display/Book_Overview");
-	$essentials->includePluginClass("display/General");
-	$essentials->includeHeadHTML("<script>\$(function() {\$('h3.haha').tooltip()})</script>");
+	$essentials->includePluginClass("APIs/Cloudinary");
+	$essentials->includePluginClass("display/Book");
+	$essentials->includePluginClass("display/Course");
+
+	if (FFI\BE\DISPLAY_MODE == "courses") {
+		$essentials->includeJS("scripts/arbor/arbor.js");
+	} else {
+		$essentials->includeJS("scripts/buy.min.js");
+		$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
+		$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
+	}
 
 //Get information regarding the current course
 	$course = $essentials->params[0];
 	$failRedirect = $essentials->friendlyURL("");
-	$info = FFI\BE\Book_Courses::getCourseInfo($course, $failRedirect);
+	$info = FFI\BE\Course::getCourseInfo($course, $failRedirect);
+
+//Generate the arbor.js initialization script
+	if (FFI\BE\DISPLAY_MODE == "courses") {
+		$completedNum = array();
+		$courseListing = FFI\BE\Course::getNumbersWithBooks($course);
+		$JS = "\$(function(){var graph={nodes:{'" . $info->Name . "':{alpha:1,color:'#0044CC',shape:'dot'}";
+
+	//List the course numbers, without duplicates
+		foreach($courseListing as $courseInfo) {
+			if (!in_array($courseInfo->Number, $completedNum)) {
+				$JS .= ",'" . $courseInfo->Number . "':{alpha:1,color:'#A7AF00',shape:'dot'}";
+				array_push($completedNum, $courseInfo->Number);
+			}
+		}
+
+	//List the course sections
+		foreach($courseListing as $courseInfo) {
+			$JS .= ",'" . $courseInfo->Number . " " . $courseInfo->Section . "':{alpha:0,color:'orange',link:'" . $essentials->friendlyURL("browse/" . $course . "/" . $courseInfo->Number . "/" . $courseInfo->Section) . "'}";
+		}
+
+		$JS .= "},edges:{'" . $info->Name . "':{";
+
+	//Connect the course numbers to the primary node
+		foreach($courseListing as $courseInfo) {
+			$JS .= "'" . $courseInfo->Number . "':{length:0.8},";
+		}
+
+		$JS = rtrim($JS, ",");
+
+		$JS .= "},";
+
+	//Connect the course sections to the course numbers
+		foreach($completedNum as $courseNum) {
+			$JS .= "'" . $courseNum . "':{";
+
+			foreach($courseListing as $courseInfo) {
+				$JS .= $courseInfo->Number == $courseNum ? ("'" . $courseInfo->Number . " " . $courseInfo->Section . "':{},") : "";
+			}
+
+			$JS = rtrim($JS, ",");
+			$JS .= "},";
+		}
+
+		$JS = rtrim($JS, ",");
+
+		$JS .= "}};var sys=arbor.ParticleSystem();sys.parameters({dt:0.015,gravity:true,repulsion:2000,stiffness:900});sys.renderer=Renderer('#explorer');sys.graft(graph);})";
+
+		$essentials->includeHeadHTML("\n<script>" . $JS . "</script>");
+	}
 	
 //Set the page title
 	$title = FFI\BE\DISPLAY_MODE == "courses" ? $info->Name : $info->Name . " " . $essentials->params[2] . " " . strtoupper($essentials->params[3]);
@@ -48,101 +105,67 @@
 <h2>" . $title . "</h2>
 </div>
 </div>
+
+<div class=\"course-welcome\">
+<img alt=\"" . $title . " Icon\" src=\"" . $essentials->dataURL("tiles/" . $info->CourseID . "/large.png") . "\">
+</div>
 </section>
 
+<section class=\"container\">
+<h2>" . $info->Name . " Courses and Avaliable Books</h2>
+
+<div class=\"row\">
+";
+
+	//Display the sidebar
+	echo "<aside class=\"supplement\">
+<h2>" . $title . "</h2>
+<h3>5 Books Available</h3>
+
+<hr>
+
+<ul class=\"navigation\">
+<li class=\"more\"><a href=\"" . $essentials->friendlyURL("") . "\">See More Courses</a></li>
+<li class=\"sell\"><a href=\"" . $essentials->friendlyURL("sell-books") . "\">Sell a Book</a></li>
+</ul>
+
+" . FFI\BE\Course::getRecentBooksInCourse($info->CourseID) . "
+</aside>
+
+<section class=\"details\">
 ";
 
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "courses"
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-	//Display a listing of courses which currently have books
-		$currentNumber = 0;
-		$sectionIteration = 1;
-		$numbers = FFI\BE\Book_Overview::getNumbersWithBooks($course);
-
-		echo "<section class=\"container\">
-<h2>" . $info->Name . " Courses and Avaliable Books</h2>
-
-<div class=\"row\">
-<section class=\"details\">
-";
-		
-		foreach($numbers as $item) {
-		//This is the beginning of a new course number, e.g. from HUMA 101 to HUMA 102
-			if ($currentNumber != $item->Number) {
-				if ($currentNumber != 0) {
-					echo "</ul>
+		echo "<section class=\"content\">
+<h2>" . $title . "</h2>
+<p>A listing of all available books within the " . $title . " course can be explored by course section in the graph below. Each of the green atoms represents a course number. <span class=\"desktop\">Move your mouse near</span><span class=\"mobile\">Touch</span> one of the green atoms to see a pop out of course sections with available books.</p>
 </section>
 
-<section class=\"content" . ($sectionIteration % 2 == 1 ? "" : " even") . "\">
-<h2>" . $info->Code . " " . $item->Number . "</h2>
-<ul>
-";
-				} else {
-					echo "<section class=\"content\">
-<h2>" . $info->Code . " " . $item->Number . "</h2>
-<ul>
-";
-				}
-				
-				$currentNumber = $item->Number;
-				$sectionIteration++;
-			}
-			
-			echo "<li>
-<a href=\"" . $essentials->friendlyURL("browse/" . $info->URL . "/" . $item->Number . "/" . strtolower($item->Section)) . "\">
-<p style=\"background-color: " . $info->Color . "\">" . $item->Section . "</p>
-<span>" . $item->SectionTotal . " " . ($item->SectionTotal == 1 ? "Book" : "Books") . "</span>
-</a>
-</li>
-";
-		}
-
-		echo "</ul>
-</section>
-</section>
-
-";
-	//Display the sidebar
-		$easterEgg = array(
-			"Chemistry" => "ν = c/ƛ",
-			"English" => "What's new... it's already English",
-			"French" => "Quoi de neuf",
-			"German" => "Was gibt es neues",
-			"Greek" => "Τι νέα",
-			"Hebrew" => "מה חדש",
-			"Physics" => "ν = c/ƛ",
-			"Spanish" => "¿Qué hay de nuevo"
-		);
-
-		echo "<aside class=\"supplement\">
-<h3" . (array_key_exists($info->Name, $easterEgg) ? " class=\"haha\" data-toggle=\"tooltip\" title=\"" . htmlentities($easterEgg[$info->Name]) . "\"" : "") . ">What's New in " . $info->Name . "</h3>
-
-" . FFI\BE\Book_Overview::getRecentBooksInCourse($info->CourseID) . "
-</aside>
-</div>
-</section>";
+<canvas id=\"explorer\" height=\"640\" width=\"950\"></canvas>";
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "books"
 	} else {
-	//Display a listing of books within this course section
-		$condition = array("poor", "fair", "good", "very-good", "excellent");
 		$failRedirect = $essentials->friendlyURL("browse/" . $essentials->params[0]);
-		$books = FFI\BE\Book_Courses::getBooksInCourseSection($course, $essentials->params[2], strtolower($essentials->params[3]), $failRedirect);
+		$books = FFI\BE\Course::getBooksInCourseSection($course, $essentials->params[2], strtolower($essentials->params[3]), $failRedirect);
 		
-		echo "<ul class=\"books\">
-";
+		echo "<section class=\"content\">
+<h2>" . $title . "</h2>
+<p>A listing of all available books for " . $title . " can be seen below. <span class=\"desktop\">Move your mouse over top each of the books to see more details.</span> Clicking the blue &quot;Buy&quot; button will initiate a purchase request.</p>
+</section>
+
+<section class=\"book-list content no-border\">
+<ul class=\"book-list\">";
 	
 		foreach($books as $book) {
-			echo "<li>
-<a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . FFI\BE\Book_Overview::URLPurify($book->Title)) . "\"><img alt=\"" . htmlentities($book->Title . " Book Cover Preview") . "\" src=\"" . FFI\BE\General::bookCoverPreview($book->ImageID) . "\" /></a>
-<h3><a href=\"" . $essentials->friendlyURL("book/" . $book->SaleID . "/" . FFI\BE\Book_Overview::URLPurify($book->Title)) . "\">" . $book->Title . "</a> <span>by " . $book->Author . "</span></h3>
-<p class=\"merchant\"><strong>Merchant:</strong> " . $book->Name . "</p>
-<p class=\"condition " . $condition[$book->Condition - 1] . "\"><strong>Condition:</strong></p>
-<button class=\"btn btn-primary purchase\" data-id=\"" . $book->BookID . "\">Buy for \$" . $book->Price . ".00</button>
-</a>
-</li>
-";
+			echo FFI\BE\Book::quickView($book->SaleID, $book->Title, $book->Author, $book->Condition, $book->Price, $book->ImageID);
 		}
 	
-		echo "</ul>";
+		echo "</ul>
+</section>";
 	}
+
+	echo "
+</section>
+</div>
+</section>";
 ?>

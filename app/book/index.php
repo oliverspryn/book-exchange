@@ -1,10 +1,10 @@
 <?php
 //Include the necessary scripts
 	$essentials->includePluginClass("display/Book_Details");
-	$essentials->includePluginClass("display/Book_Overview");
+	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includeCSS("styles/book.css");
-	$essentials->includeHeadHTML("<script>\$(function() {\$('h3.haha').tooltip()})</script>");
+	$essentials->includeJS("scripts/buy.min.js");
 
 //Fetch the book information
 	$params = $essentials->params ? $essentials->params[0] : 0;
@@ -29,7 +29,7 @@
 <section class=\"cover\">
 <img src=\"" . FFI\BE\Cloudinary::cover($book->data[0]->ImageID) . "\">
 
-<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
+<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
 </section>
 </article>
 
@@ -100,7 +100,7 @@
 
 	foreach($book->data as $course) {
 		echo "
-<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $course->CourseID . "/icon_048.png") . ")\">
+<li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $course->CourseID . "/small.png") . ")\">
 <p>" . $course->Name . " " . $course->Number . " " . $course->Section . "</p>
 </li>
 ";
@@ -127,7 +127,7 @@
 ";
 
 //Display the sidebar
-	$additional = FFI\BE\Book_Overview::getRecentBooksInCourse($book->data[0]->CourseID, 5, $book->data[0]->SaleID);
+	$additional = FFI\BE\Course::getRecentBooksInCourse($book->data[0]->CourseID, 5, $book->data[0]->SaleID);
 	
 	if ($additional != "") {
 		echo "<aside class=\"supplement\">
