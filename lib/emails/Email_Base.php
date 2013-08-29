@@ -102,7 +102,7 @@ abstract class Email_Base implements IEmail {
 		global $wpdb;
 	
 	//Fetch the Mandrill API key
-		$key = $wpdb->get_results("SELECT `MandrillKey` FROM `ffi_be_new_apis`");
+		$key = $wpdb->get_results("SELECT `MandrillKey` FROM `ffi_be_apis`");
 	
 	//Assemble the API call
 		$args = array(

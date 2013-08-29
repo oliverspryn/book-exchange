@@ -183,7 +183,7 @@ class Purchase_Process {
 	private function fetchSettings() {
 		global $wpdb;
 
-		$this->info = $wpdb->get_results("SELECT * FROM `ffi_be_new_settings`");
+		$this->info = $wpdb->get_results("SELECT * FROM `ffi_be_settings`");
 	}
 	
 /**
@@ -221,7 +221,7 @@ class Purchase_Process {
 		}
 		
 	//Fetch, validate, and retain the merchant data
-		$this->merchant = get_userdata($this->book[0]->Merchant);
+		$this->merchant = get_userdata($this->book[0]->MerchantID);
 		
 		if (!$this->merchant) {
 			throw new Validation_Failed("This book's merchant does not exist");
@@ -294,7 +294,7 @@ class Purchase_Process {
 		global $wpdb;
 
 	//Mark the book as "Sold"
-		$wpdb->update("ffi_be_new_sale", array (
+		$wpdb->update("ffi_be_sale", array (
 			"Sold" => "1"
 		), array (
 			"SaleID" => $this->ID
@@ -304,16 +304,19 @@ class Purchase_Process {
 	//Log the purchase
 		$timezone = new \DateTimeZone($this->info[0]->TimeZone);
 		$timestamp = new \DateTime("now", $timezone);
-
-		$wpdb->insert("ffi_be_new_purchases", array (
-			"BookID"   => $this->ID,
-			"Price"    => $this->book[0]->Price,
-			"Buyer"    => $this->buyer->ID,
-			"Merchant" => $this->merchant->ID,
-			"Time"     => $timestamp->format("Y-m-d H:i:s")
+		
+		$wpdb->insert("ffi_be_purchases", array(
+			"PurchaseID" => NULL,
+			"BookID"     => $this->ID,
+			"Price"      => $this->book[0]->Price,
+			"BuyerID"    => $this->buyer->ID,
+			"MerchantID" => $this->merchant->ID,
+			"Time"       => $timestamp->format("Y-m-d H:i:s")
 		), array (
-			"%d", "%d", "%d", "%d", "%s"
+			"%d", "%d", "%d", "%d", "%d", "%s"
 		));
+		
+		exit;
 	}
 }
 ?>

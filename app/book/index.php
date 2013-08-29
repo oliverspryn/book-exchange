@@ -4,7 +4,9 @@
 	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includeCSS("styles/book.css");
+	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includeJS("scripts/buy.min.js");
+	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
 
 //Fetch the book information
 	$params = $essentials->params ? $essentials->params[0] : 0;
@@ -29,7 +31,7 @@
 <section class=\"cover\">
 <img src=\"" . FFI\BE\Cloudinary::cover($book->data[0]->ImageID) . "\">
 
-<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
+<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-price=\"" . htmlentities($book->data[0]->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
 </section>
 </article>
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Book Exchange in-place book purchasing plugin
  *
  * This plugin is designed to allow a user to click a button
@@ -301,6 +301,6 @@
 		processURL   : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/purchase.php',
 		showComments : true,                                     //Whether or not to show the comments section
 		showLogin    : true,                                     //Whether or not to show the login section
-		targetObject : 'button.purchase'                         //The target object which will trigger a purchase
+		targetObject : 'button.purchase, span.purchase'          //The target object which will trigger a purchase
 	};
 })(jQuery);
