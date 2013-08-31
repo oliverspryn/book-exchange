@@ -307,7 +307,7 @@ class Purchase_Process {
 		
 		$wpdb->insert("ffi_be_purchases", array(
 			"PurchaseID" => NULL,
-			"BookID"     => $this->ID,
+			"BookID"     => $this->book[0]->BookID,
 			"Price"      => $this->book[0]->Price,
 			"BuyerID"    => $this->buyer->ID,
 			"MerchantID" => $this->merchant->ID,
