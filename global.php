@@ -3,7 +3,7 @@
 	$essentials->includeCSS("styles/main.min.css");
 	
 //Include jQuery
-	$essentials->includeJS("//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js");
+	$essentials->includeJS("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js");
 
 //Include the Twitter Bootstrap library
 	$essentials->includeCSS("//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css");

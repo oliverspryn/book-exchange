@@ -190,7 +190,6 @@ class Book {
 */
 
 	public static function quickView($ID, $title, $author, $condition, $price, $imageID) {
-
 		global $essentials;
 
 		$classes = array("poor", "fair", "good", "very-good", "excellent");
@@ -205,7 +204,7 @@ class Book {
 
 <div>
 <a href=\"" . $link . "\"><h3>" . $title . "</h3></a>
-<a href=\"" . $link . "\"><h4>" . $author . "</h4></a>
+<a href=\"" . $link . "\"><h4>by " . $author . "</h4></a>
 <p class=\"condition " . $classes[$condition - 1] . "\"><strong>Condition:</strong></p>
 <p class=\"price\">\$" . $price . ".00</p>
 <button class=\"btn btn-primary purchase\" data-id=\"" . $ID . "\" data-title=\"" . htmlentities($title) . "\" data-author=\"" . htmlentities($author) . "\" data-image=\"" . $image . "\" data-price=\"" . $price . "\"><span class=\"large\">Buy for </span>$" . $price . ".00</button>

@@ -51,7 +51,7 @@ class Sell_Book_Display {
 		global $wpdb;
 		
 		if ($ID) {
-			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID LEFT JOIN `ffi_be_bookcourses` ON ffi_be_sale.SaleID = ffi_be_bookcourses.SaleID WHERE ffi_be_sale.SaleID = %d AND ffi_be_sale.MerchantID = %d", $ID, $userID));
+			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID LEFT JOIN `ffi_be_bookcourses` ON ffi_be_sale.SaleID = ffi_be_bookcourses.SaleID WHERE ffi_be_sale.SaleID = %d AND ffi_be_sale.MerchantID = %d AND `Sold` = '0'", $ID, $userID));
 			
 		//SQL returned 0 tuples, "Leave me!" - http://johnnoble.net/img/photos/denethor_a.jpg
 			if (!count($this->data)) {

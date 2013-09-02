@@ -33,8 +33,10 @@
 <span class=\"count\"><span>" . $total . " " . ($total == 1 ? "Book" : "Books") . "</span></span>
 </li>
 
-<li class=\"search\">
-<h3>Search</h3>
+<li class=\"my-books\">
+<a href=\"" . $essentials->friendlyURL("my-books") . "\">
+<h3>My Books</h3>
+</a>
 </li>
 </ul>
 </div>

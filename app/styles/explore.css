@@ -168,11 +168,11 @@ section.welcome div ul li.browse span.count span {
 	width: 86%;
 }
 
-section.welcome div ul li.search {
-	background-position: -482px 120px;
+section.welcome div ul li.my-books {
+	background-position: -482px 127px;
 }
 
-section.welcome div ul li.search:hover {
+section.welcome div ul li.my-books:hover {
 	background-position: -482px -269px;
 }
 
@@ -210,7 +210,7 @@ section.welcome div ul li h3::after {
 		height: 100px
 	}
 	
-	section.welcome div ul li.search {
+	section.welcome div ul li.browse {
 		display: none;
 	}
 	
@@ -254,6 +254,10 @@ section.welcome div ul li h3::after {
 		margin: 0px 0px 10px 0px;
 		padding: 0px;
 		width: 100%;
+	}
+	
+	section.welcome div ul li.browse {
+		display: inline-block;
 	}
 	
 	section.welcome div ul li h3 {

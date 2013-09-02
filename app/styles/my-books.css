@@ -1,0 +1,318 @@
+/**
+ * Welcome section
+ * ----------------------------------
+*/
+
+section.welcome {
+	width: 100%;
+}
+
+section.welcome div#chart {
+	min-width: 310px;
+	height: 300px; 
+	margin: 0px;
+	width: 100%
+}
+
+section.welcome ul.stats {
+	background-color: rgba(51, 51, 51, 0.9);
+	height: 74px;
+	margin: 0px;
+	text-align: center;
+	width: 100%;
+}
+
+section.welcome ul.stats li {
+	border-left: 1px solid #DDDDDD;
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 36px;
+	font-weight: 300;
+	height: 74px;
+	list-style: none;
+	padding: 0px 10px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+section.welcome ul.stats li:last-child {
+	border-right: 1px solid #DDDDDD;
+}
+
+section.welcome ul.stats li.expiring.prompt {
+	background-color: #FFDFE0;
+	color: #666666;
+}
+
+section.welcome ul.stats li p {
+	margin: 0px;
+	padding: 17px 15px 0px 15px;
+}
+
+section.welcome ul.stats li p span {
+	display: block;
+	font-size: 14px;
+	padding: 10px 0px 0px 0px;
+}
+
+section.welcome ul.stats li p span.desktop, section.welcome ul.stats li p span.saleTotal {
+	display: inline;
+	font-size: 36px;
+}
+
+@media screen and (max-width: 1000px) {
+	section.welcome ul.stats li.sold, section.welcome ul.stats li.expiring {
+		display: none;
+	}
+	
+	section.welcome ul.stats li.sale {
+		border-right: 1px solid #DDDDDD;
+	}
+}
+
+@media screen and (max-width: 700px) {
+	section.welcome ul.stats li.purchased, section.welcome ul.stats li.sale {
+		display: none;
+	}
+	
+	section.welcome ul.stats li.earned {
+		border-right: 1px solid #DDDDDD;
+	}
+}
+
+@media screen and (max-width: 450px) {
+	section.welcome div#chart {
+		display: none;
+	}
+	
+	section.welcome ul.stats li p span.desktop {
+		display: none;
+	}
+}
+
+/**
+ * List of books for sale
+ * ----------------------------------
+*/
+
+section.content ul.sale {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+
+section.content ul.sale li {
+	border-bottom: 1px solid #DDDDDD;
+	list-style: none;
+	margin: 0px;
+	min-height: 164px;
+	padding: 10px 0px;
+	position: relative;
+}
+
+section.content ul.sale li:last-child {
+	border-bottom: none;
+}
+
+section.content ul.sale li img {
+	float: left;
+	height: 150px;
+	max-height: 150px;
+	max-width: 100px;
+	min-height: 150px;
+	min-width: 100px;
+	width: 100px;
+}
+
+section.content ul.sale li h3 {
+	color: #222222;
+	font-size: 15px;
+	font-weight: bolder;
+	letter-spacing: 1px;
+	line-height: normal;
+	margin: 0px 0px 0px 125px;
+	padding: 0px;
+	text-transform: uppercase;
+}
+
+section.content ul.sale li h4 {
+	color: #999999;
+	font-size: 11px;
+	font-weight: normal;
+	margin: 0px 0px 20px 125px;
+	padding-top: 5px;
+}
+
+section.content ul.sale li p.price {
+	color: #006DCC;
+	font-size: 20px;
+	margin-left: 125px;
+}
+
+section.content ul.sale li span.notice {
+	border-radius: 3px;
+	font-size: 10px;
+	margin-left: 7px;
+	padding: 2px 6px;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+section.content ul.sale li.expired span.notice {
+	background: #FF3366;
+	border: 1px solid #990000;
+	color: #FFFFFF;
+}
+
+section.content ul.sale li.expiring span.notice {
+	background: #FFFF66;
+	border: 1px solid #FFCC00;
+}
+
+section.content ul.sale li.sold span.notice {
+	background: #7AD03A;
+	border: 1px solid #339900;
+}
+
+section.content ul.sale li a.btn {
+	color: #FFFFFF;
+}
+
+section.content ul.sale li button.btn.restore {
+	bottom: 15px;
+	position: absolute;
+	right: 185px;
+}
+
+section.content ul.sale li a.btn.edit {
+	bottom: 15px;
+	position: absolute;
+	right: 105px;
+}
+
+section.content ul.sale li button.btn.delete {
+	bottom: 15px;
+	position: absolute;
+	right: 10px;
+}
+
+@media screen and (max-width: 650px) {
+	section.content ul.sale li a.btn.edit {
+		right: 55px;
+	}
+	
+	section.content ul.sale li button.btn.restore {
+		right: 100px;
+	}
+	
+	section.content ul.sale li button.btn.restore span, section.content ul.sale li a.btn.edit span, section.content ul.sale li button.btn.delete span {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 450px) {
+	section.content ul.sale li p.price {
+		display: none;
+	}
+}
+
+/**
+ * No books available
+ * ----------------------------------
+*/
+
+section.content div.none {
+	display: none;
+	height: 150px;
+	text-align: center;
+}
+
+section.content div.none.show {
+	display: block;
+}
+
+section.content div.none p {
+	padding-top: 25px;
+}
+
+section.content div.none a {
+	background: url(sprites/mr-smiley.png) no-repeat bottom left;
+	display: inline-block;
+	height: 50px;
+	line-height: 3.45;
+	margin-top: 10px;
+	padding-left: 60px;
+	vertical-align: middle;
+}
+
+section.content div.none a:hover {
+	background-position: top left;
+}
+
+/**
+ * List of purchased books
+ * ----------------------------------
+*/
+
+section.content ul.book-list li div h4.author {
+	margin-bottom: 0px;
+}
+
+section.content ul.book-list li:hover div p.price {
+	color: #006DCC;
+	display: block;
+	position: relative;
+	top: 0px;
+}
+
+@media screen and (max-width: 810px) {
+	section.content ul.book-list li div p.price {
+		color: #006DCC;
+		display: block;
+		position: relative;
+		text-align: left;
+		top: 0px;
+	}
+}
+
+/**
+ * Modal dialogs
+ * ----------------------------------
+*/
+
+div.confirm-dialog div.modal-header h3 {
+	font-weight: lighter;
+}
+
+div.confirm-dialog div.modal-footer {
+	position: relative;
+}
+
+div.confirm-dialog div.modal-footer span.validate {
+	color: #FF0000;
+	left: 15px;
+	position: absolute;
+	top: 19px;
+}
+
+@media screen and (max-width: 650px) {
+	div.confirm-dialog div.modal-footer {
+		border-top: none;
+		padding: 0px;
+	}
+	
+	div.confirm-dialog div.modal-footer span.validate {
+		display: none;
+	}
+	
+	div.confirm-dialog div.modal-footer button.confirm {
+		border-radius: 0px;
+		width: 100%;
+	}
+	
+	div.confirm-dialog div.modal-footer button.close-dialog {
+		border-radius: 0px 0px 5px 5px;
+		margin-left: 0px;
+		width: 100%;
+	}
+}

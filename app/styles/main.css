@@ -204,7 +204,7 @@ ul.book-list li.purchased {
 	opacity: 0.5;
 }
 
-ul.book-list li a img {
+ul.book-list li img {
 	height: 300px;
 	max-height: 300px;
 	max-width: 200px;
@@ -231,7 +231,7 @@ ul.book-list li:hover div {
 	z-index: 10;    
 }
 
-ul.book-list li div a h3 {
+ul.book-list li div h3 {
 	color: #222222;
 	font-size: 15px;
 	font-weight: bolder;
@@ -246,13 +246,13 @@ ul.book-list li div a h3 {
 	white-space: nowrap;
 }
 
-ul.book-list li:hover div a h3 {
+ul.book-list li:hover div h3 {
 	height: auto;
 	line-height: 20px;
 	white-space: normal;
 }
 
-ul.book-list li div a h4 {
+ul.book-list li div h4 {
 	color: #999999;
 	font-size: 11px;
 	font-weight: normal;
@@ -311,7 +311,7 @@ ul.book-list li button {
 	margin-top: 5px;
 }
 
-@media screen and (max-width: 805px) {
+@media screen and (max-width: 810px) {
 	ul.book-list li {
 		border-bottom: 1px solid #DDDDDD;
 		height: auto;
@@ -346,7 +346,7 @@ ul.book-list li button {
 		z-index: 15;
 	}
 
-	ul.book-list li a img {
+	ul.book-list li img {
 		float: left;
 		height: 150px;
 		max-height: 150px;
@@ -364,7 +364,7 @@ ul.book-list li button {
 		padding: 0px 0px 0px 125px;
 	}
 	
-	ul.book-list li div a h3 {
+	ul.book-list li div h3 {
 		height: auto;
 		margin: 0px;
 		overflow: visible;
@@ -372,7 +372,7 @@ ul.book-list li button {
 		white-space: normal;
 	}
 	
-	ul.book-list li div a h4 {
+	ul.book-list li div h4 {
 		text-align: left;
 	}
 	
