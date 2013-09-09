@@ -23,14 +23,14 @@ class Admin {
 	public static function APIData() {
 		global $wpdb;
 		
-		$data = $wpdb->get_results("SELECT * FROM `ffi_be_new_apis` WHERE `ID` = '1'");
+		$data = $wpdb->get_results("SELECT * FROM `ffi_be_apis` WHERE `ID` = '1'");
 		return $data[0];
 	}
 	
 	public static function Settings() {
 		global $wpdb;
 		
-		$data = $wpdb->get_results("SELECT * FROM `ffi_be_new_settings` WHERE `ID` = '1'");
+		$data = $wpdb->get_results("SELECT * FROM `ffi_be_settings` WHERE `ID` = '1'");
 		return $data[0];
 	}
 }

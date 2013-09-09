@@ -17,6 +17,8 @@
 
 namespace FFI\BE;
 
+require_once(dirname(dirname(__FILE__)) . "/exceptions/No_Data_Returned.php");
+
 class Settings {
 /**
  * Hold the results of the SQL query.
@@ -41,11 +43,11 @@ class Settings {
 	public function __construct() {
 		global $wpdb;
 		
-		$this->data = $wpdb->get_results("SELECT * FROM `ffi_be_new_settings` WHERE `ID` = '1'");
+		$this->data = $wpdb->get_results("SELECT * FROM `ffi_be_settings");
 		
 	//SQL returned 0 results
 		if (!count($this->data)) {
-			throw new No_Data_Available("The plugin settings table is corrupt. Please run the installer again.");
+			throw new No_Data_Returned("The plugin settings table is corrupt. Please run the installer again.");
 		}
 	}
 	
@@ -80,7 +82,7 @@ class Settings {
 */
 
 	public function getEmailName() {
-		return "<input class=\"regular-text\" id=\"email-name\" name=\"email-name\" type=\"text\" value=\"" . $this->data[0]->EmailName . "\">";
+		return "<input autocomplete=\"off\" class=\"regular-text\" id=\"email-name\" name=\"email-name\" type=\"text\" value=\"" . $this->data[0]->EmailName . "\">";
 	}
 	
 /**
@@ -93,7 +95,7 @@ class Settings {
 */
 
 	public function getEmailAddress() {
-		return "<input class=\"regular-text\" id=\"email-address\" name=\"email-address\" type=\"text\" value=\"" . $this->data[0]->EmailAddress . "\">";
+		return "<input autocomplete=\"off\" class=\"regular-text\" id=\"email-address\" name=\"email-address\" type=\"text\" value=\"" . $this->data[0]->EmailAddress . "\">";
 	}
 	
 /**

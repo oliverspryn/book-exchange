@@ -10,6 +10,8 @@
  *  - Remove index entries.
  *  - Refresh the entire index.
  *  - Search the index.
+ *  - Get the size of the index.
+ *  - Purge expired entries from the index.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -177,9 +179,13 @@ class IndexDen {
  * Reload the contents of an IndexDen index by deleting the index
  * entirely, creating the index again, and pushing all available
  * data from the local database to the index.
+ *
+ * Due to the steep amount of processing time, this method will
+ * only index a certain number at a time, and may need to be called
+ * repeatedly in order to index all of the data.
  * 
  * @access public
- * @return void
+ * @return array<bool|int>                        An array indicating whether all of the data has been indexed, and the number of documents indexed in this batch
  * @throws Indexing_Error                         Thrown in the event that IndexDen cannot index the batch of books
  * @throws Indextank_Exception_HttpException      [Bubbled up] Thrown in the event of an IndexDen communication error
  * @throws Indextank_Exception_IndexAlreadyExists [BUbbled up] Thrown if an index with the same name already exists
@@ -190,29 +196,56 @@ class IndexDen {
 
 	public static function reloadIndex() {
 		global $wpdb;
-
+		
+	//The maximum number of items to index at a time
+		$indexMax = 200;
+		
 	//Gather data about the index
 		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
 		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
 		$indexName = $APIData[0]->IndexDenIndex;
-
-	//Completely delete the old index (it's the easiest way to purge it out)
-		$oldAPI = new \Indextank_Api($URL);
-		$oldIndex = $oldAPI->get_index($indexName);
-		$oldIndex->delete_index();
-
-	//Create a new index with the same name
-		$newAPI = new \Indextank_Api($URL);
-		$newIndex = $newAPI->create_index($indexName, true); //true is IMPORTANT!!! It allows the plugin to search the index!
-
-	//Starting the index can take a few seconds...
-		while (!$newIndex->has_started()) {
-			sleep(1); //evil >:D
+		
+		$data = $wpdb->get_results("SELECT * FROM `ffi_be_indexdata` WHERE `Indexed` = 0 ORDER BY `SaleID` ASC LIMIT " . $indexMax);
+		$allAvailable = $wpdb->get_results("SELECT * FROM `ffi_be_indexdata` WHERE `Indexed` = 0");
+		$dataCount = count($data);
+		$allCount = count($allAvailable);
+		
+		if (!$dataCount) {
+		//Populate a table of values which will need to be indexed
+			$wpdb->query("INSERT INTO `ffi_be_indexdata` (`SaleID`, `Title`, `Author`, `Indexed`) SELECT ffi_be_sale.SaleID, `Title`, `Author`, '0' AS `Indexed` FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID WHERE DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND `Sold` = '0'");
+			
+			$data = $wpdb->get_results("SELECT * FROM `ffi_be_indexdata` WHERE `Indexed` = 0 ORDER BY `SaleID` ASC LIMIT " . $indexMax);
+			$dataCount = count($data);
+			
+		//Completely delete the old index (it's the easiest way to purge it out)
+			$oldAPI = new \Indextank_Api($URL);
+			$oldIndex = $oldAPI->get_index($indexName);
+			$oldIndex->delete_index();
+	
+		//Create a new index with the same name
+			$newAPI = new \Indextank_Api($URL);
+			$newIndex = $newAPI->create_index($indexName, true); //true is IMPORTANT!!! It allows the plugin to search the index!
+	
+		//Starting the index can take a few seconds...
+			while (!$newIndex->has_started()) {
+				sleep(1); //evil >:D
+			}
+		} else {
+			$newAPI = new \Indextank_Api($URL);
+			$newIndex = $newAPI->get_index($indexName);
+		}
+		
+	//Update the local data table based on the amount of data which was fetched
+		if ($dataCount < $indexMax || $dataCount == $allCount) {
+			$wpdb->query("TRUNCATE TABLE `ffi_be_indexdata`");
+			$lastIteration = true;
+		} else {
+			$wpdb->query("UPDATE `ffi_be_indexdata` SET `Indexed` = 1 WHERE `SaleID` IN (SELECT `SaleID` FROM (SELECT `SaleID` FROM `ffi_be_indexdata` WHERE `Indexed` = 0 ORDER BY `SaleID` ASC LIMIT " . $indexMax . ") `q`)");
+			$lastIteration = false;
 		}
 
 	//Construct the new set of data
 		$indexData = array();
-		$data = $wpdb->get_results("SELECT ffi_be_sale.SaleID, `Title`, `Author`, `ISBN10`, `ISBN13` FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID WHERE DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND `Sold` = '0'");
 
 		foreach($data as $item) {
 			array_push($indexData, array("docid" => $item->SaleID, "fields" => array(
@@ -237,6 +270,11 @@ class IndexDen {
 				}
 			}
 		}
+		
+		return array(
+			"Completed" => $lastIteration,
+			"Indexed"   => $dataCount
+		);
 	}
 	
 /**
@@ -357,6 +395,60 @@ class IndexDen {
 		}
 		
 		return json_encode($return);
+	}
+	
+/**
+ * Fetch the size of the IndexDen index.
+ * 
+ * @access public
+ * @return int                                      The size of the index
+ * @throws Indextank_Exception_HttpException        [Bubbled up] Thrown in the event of an IndexDen communication error
+ * @since  3.0
+ * @static
+*/
+
+	public static function getSize() {
+		global $wpdb;
+
+	//Gather data about the index
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
+		$indexName = $APIData[0]->IndexDenIndex;
+		
+	//Use a third-party library to send the index size request
+		$API = new \Indextank_Api($URL);
+		$index = $API->get_index($indexName);
+		
+		return $index->get_size();
+	}
+	
+/**
+ * Delete books from the IndexDen index which have recently expired.
+ * 
+ * @access public
+ * @return void
+ * @throws Indextank_Exception_HttpException        [Bubbled up] Thrown in the event of an IndexDen communication error
+ * @since  3.0
+ * @static
+*/
+
+	public static function purgeExpired() {
+		global $wpdb;
+		
+		$daysAgo = 15;
+		
+	//Get the listing of books to delete
+		$books = $wpdb->get_col("SELECT `SaleID` FROM `ffi_be_sale` WHERE DATE_ADD(Upload, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) < CURDATE() AND DATE_ADD(Upload, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > DATE_SUB(CURDATE(), INTERVAL " . $daysAgo . " DAY)");
+
+	//Gather data about the index
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		$URL = $APIData[0]->IndexDenUsername . ":" . $APIData[0]->IndexDenPassword . "@" . $APIData[0]->IndexDenURL;
+		$indexName = $APIData[0]->IndexDenIndex;
+		
+	//Use a third-party library to send the delete request
+		$API = new \Indextank_Api($URL);
+		$index = $API->get_index($indexName);
+		$index->delete_documents($books);
 	}
 }
 ?>

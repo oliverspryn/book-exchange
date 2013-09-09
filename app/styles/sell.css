@@ -92,6 +92,12 @@ section.welcome h2 {
 	font-weight: 300;
 }
 
+@media screen and (max-width: 650px) {
+	section.welcome {
+		border-top: 1px solid #DDDDDD;
+	}
+}
+
 /**
  * Book Information section
  * ----------------------------------

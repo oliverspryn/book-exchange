@@ -21,6 +21,7 @@ namespace FFI\BE;
 
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
+require_once(dirname(dirname(__FILE__)) . "/display/Course.php");
 require_once(dirname(dirname(__FILE__)) . "/third-party/Isbn.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Network_Connection_Error.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/No_Data_Returned.php");
@@ -37,9 +38,77 @@ class Book {
 
 	public static function total() {
 		global $wpdb;
+		
 		$total = $wpdb->get_results("SELECT COUNT(*) AS `Total` FROM `ffi_be_sale` WHERE DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND `Sold` = '0'");
 		
 		return $total[0]->Total;
+	}
+	
+/**
+ * Count the number of available books in a particular course.
+ *
+ * @access public
+ * @return int    The number of available books in a course
+ * @since  3.0
+ * @static
+*/
+
+	public static function totalInCourse($courseURL) {
+		global $wpdb;
+		
+		$total = $wpdb->get_results($wpdb->prepare("SELECT `Total` FROM `ffi_be_courses` LEFT JOIN(SELECT *, COUNT(`Course`) AS `Total` FROM `ffi_be_courses` RIGHT JOIN (SELECT `Course` FROM `ffi_be_bookcourses` LEFT JOIN `ffi_be_sale` ON ffi_be_bookcourses.SaleID = ffi_be_sale.SaleID WHERE DATE_ADD(ffi_be_sale.Upload, INTERVAL(SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND ffi_be_sale.Sold = '0'GROUP BY ffi_be_bookcourses.SaleID) AS `q1` ON ffi_be_courses.Code = q1.Course GROUP BY q1.Course) AS `q2` ON ffi_be_courses.Code = q2.Code WHERE ffi_be_courses.URL = %s ORDER BY ffi_be_courses.Name ASC", $courseURL));
+		
+		return $total[0]->Total;
+	}
+	
+	public static function generateArborJSInit($courseName, $courseURL) {
+		global $essentials;
+		
+		$completedNum = array();
+		$courseListing = Course::getNumbersWithBooks($courseURL);
+		$JS = "\$(function(){var graph={nodes:{'" . $courseName . "':{alpha:1,color:'#0044CC',shape:'dot'}";
+
+	//List the course numbers, without duplicates
+		foreach($courseListing as $courseInfo) {
+			if (!in_array($courseInfo->Number, $completedNum)) {
+				$JS .= ",'" . $courseInfo->Number . "':{alpha:1,color:'#A7AF00',shape:'dot'}";
+				array_push($completedNum, $courseInfo->Number);
+			}
+		}
+
+	//List the course sections
+		foreach($courseListing as $courseInfo) {
+			$JS .= ",'" . $courseInfo->Number . " " . $courseInfo->Section . "':{alpha:0,color:'orange',link:'" . $essentials->friendlyURL("browse/" . $courseURL . "/" . $courseInfo->Number . "/" . $courseInfo->Section) . "',shape:'rect'}";
+		}
+
+		$JS .= "},edges:{'" . $courseName . "':{";
+
+	//Connect the course numbers to the primary node
+		foreach($courseListing as $courseInfo) {
+			$JS .= "'" . $courseInfo->Number . "':{length:0.8},";
+		}
+
+		$JS = rtrim($JS, ",");
+
+		$JS .= "},";
+
+	//Connect the course sections to the course numbers
+		foreach($completedNum as $courseNum) {
+			$JS .= "'" . $courseNum . "':{";
+
+			foreach($courseListing as $courseInfo) {
+				$JS .= $courseInfo->Number == $courseNum ? ("'" . $courseInfo->Number . " " . $courseInfo->Section . "':{},") : "";
+			}
+
+			$JS = rtrim($JS, ",");
+			$JS .= "},";
+		}
+
+		$JS = rtrim($JS, ",");
+
+		$JS .= "}};var sys=arbor.ParticleSystem();sys.parameters({dt:0.015,gravity:true,repulsion:5000,stiffness:900});sys.renderer=Renderer('#explorer');sys.graft(graph);})";
+		
+		return $JS;
 	}
 
 /**
@@ -104,12 +173,14 @@ class Book {
 	public static function suggestCovers($ISBN) {
 		global $wpdb;
 
+		$maxResults = 12;
+
 	//Validate the ISBN
-		if (\Isbn::validate($ISBN, $max = 12)) {
-			$APIData = $wpdb->get_results("SELECT `GoogleAPI` FROM `ffi_be_apis`");
-			$URL = "https://www.googleapis.com/shopping/search/v1/public/products?country=US&key=" . $APIData[0]->GoogleAPI . "&q=" . \ISBN::clean($ISBN);
+		if (\Isbn::validate($ISBN)) {
+			$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+			$URL = "https://us.api.invisiblehand.co.uk/v1/products?query=" . \ISBN::clean($ISBN) . "&app_id=" . $APIData[0]->InvisibleHandAppID . "&app_key=" . $APIData[0]->InvisibleHandAppKey;
 			
-		//Send the request to the Google Shopping API server
+		//Send the request to the InvisibleHand API server
 			$curl = curl_init($URL);
 
 			curl_setopt($curl, CURLOPT_HEADER, false);
@@ -123,24 +194,31 @@ class Book {
 
 		//Check for any network errors
 			if ($errorNumber) {
-				throw new Network_Connection_Error("A network connection to the Google Shopping API has failed. cURL error details: " . $error);
+				throw new Network_Connection_Error("A network connection to the InvisibleHand API has failed. cURL error details: " . $error);
 			}
 		
-		//Parse the JSON response from the Google Shopping API and return only the book cover images
+		//Parse the JSON response from the InvisibleHand API and return only the book cover images
 			$counter = 1;
-			$items = $response->items;		
+			$items = $response->results;		
 			$return = array();
 			$URL = "";
 
 			foreach($items as $book) {
-				$URL = $book->product->images[0]->link;
-
-				if (!is_null($URL) || $URL != "") {
+				if (isset($book->image_url) && $book->image_url != "") {
+					$URL = $book->image_url;
+					
+				//Fetches the largest possible image from Amazon, by removing all image resize parameters
+				//http://aaugh.com/imageabuse.html
+					if (strpos($URL, "ecx.images-amazon.com") !== false) {
+						$exploded = explode(".", $URL);
+						$URL = $exploded[0] . "." . $exploded[1] . "." . $exploded[2] . "." . $exploded[4];
+					}
+					
 					array_push($return, $URL);
-				}
-
-				if ($counter++ >= $max) {
-					break;
+					
+					if ($counter++ >= $maxResults) {
+						break;
+					}
 				}
 			}
 

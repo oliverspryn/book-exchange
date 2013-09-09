@@ -36,51 +36,7 @@
 
 //Generate the arbor.js initialization script
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-		$completedNum = array();
-		$courseListing = FFI\BE\Course::getNumbersWithBooks($course);
-		$JS = "\$(function(){var graph={nodes:{'" . $info->Name . "':{alpha:1,color:'#0044CC',shape:'dot'}";
-
-	//List the course numbers, without duplicates
-		foreach($courseListing as $courseInfo) {
-			if (!in_array($courseInfo->Number, $completedNum)) {
-				$JS .= ",'" . $courseInfo->Number . "':{alpha:1,color:'#A7AF00',shape:'dot'}";
-				array_push($completedNum, $courseInfo->Number);
-			}
-		}
-
-	//List the course sections
-		foreach($courseListing as $courseInfo) {
-			$JS .= ",'" . $courseInfo->Number . " " . $courseInfo->Section . "':{alpha:0,color:'orange',link:'" . $essentials->friendlyURL("browse/" . $course . "/" . $courseInfo->Number . "/" . $courseInfo->Section) . "'}";
-		}
-
-		$JS .= "},edges:{'" . $info->Name . "':{";
-
-	//Connect the course numbers to the primary node
-		foreach($courseListing as $courseInfo) {
-			$JS .= "'" . $courseInfo->Number . "':{length:0.8},";
-		}
-
-		$JS = rtrim($JS, ",");
-
-		$JS .= "},";
-
-	//Connect the course sections to the course numbers
-		foreach($completedNum as $courseNum) {
-			$JS .= "'" . $courseNum . "':{";
-
-			foreach($courseListing as $courseInfo) {
-				$JS .= $courseInfo->Number == $courseNum ? ("'" . $courseInfo->Number . " " . $courseInfo->Section . "':{},") : "";
-			}
-
-			$JS = rtrim($JS, ",");
-			$JS .= "},";
-		}
-
-		$JS = rtrim($JS, ",");
-
-		$JS .= "}};var sys=arbor.ParticleSystem();sys.parameters({dt:0.015,gravity:true,repulsion:2000,stiffness:900});sys.renderer=Renderer('#explorer');sys.graft(graph);})";
-
-		$essentials->includeHeadHTML("\n<script>" . $JS . "</script>");
+		$essentials->includeHeadHTML("\n<script>" . FFI\BE\Book::generateArborJSInit($info->Name, $course) . "</script>");
 	}
 	
 //Set the page title
@@ -94,8 +50,8 @@
 ";
 		
 //Display the welcome splash section
-	$arts = array("bookshelf.jpg", "brighton-pier.jpg", "sheet-music.jpg", "romeo-and-juliet.jpg");
-	$science = array("brooklyn-bridge.jpg", "fibonacci-sequence.jpg", "php.jpg", "tuscarora-mountain-tunnel.jpg");
+	$arts = array("bookshelf.jpg", "phantom-of-the-opera.jpg", "parthenon.jpg", "piano.jpg");
+	$science = array("brooklyn-bridge.jpg", "electronic-board.jpg", "higgs-boson.jpg", "php.jpg");
 	$rand = mt_rand(0, 3);
 	$background = ($info->Type == "Arts") ? $arts[$rand] : $science[$rand];
 		
@@ -117,10 +73,12 @@
 <div class=\"row\">
 ";
 
-	//Display the sidebar
+//Display the sidebar
+	$total = FFI\BE\Book::totalInCourse($essentials->params[0]);
+
 	echo "<aside class=\"supplement\">
 <h2>" . $title . "</h2>
-<h3>5 Books Available</h3>
+<h3>" . $total . " " . ($total == 1 ? "Book" : "Books") . " Available</h3>
 
 <hr>
 

@@ -1284,6 +1284,7 @@ var Graphics = function(canvas){
     
     
     // shape primitives.
+
     // classes will return an {x,y,w,h, fill(), stroke()} object without drawing
     // functions will draw the shape based on current stroke/fill state
     Rect:function(x,y,w,h,r,style){
@@ -2866,7 +2867,7 @@ var Renderer = function(canvas) {
 			particleSystem = system;
 
 			particleSystem.screen({
-				padding : [50, 60, 50, 60],
+				padding : [20, 30, 20, 30],
 				size    : {
 					height : jQCanvas.height(),
 					width  : jQCanvas.width()
@@ -2881,14 +2882,14 @@ var Renderer = function(canvas) {
 	//Called when the window is resized
 		resize : function() {
 			particleSystem.screen({
-				padding : [50, 60, 50, 60],
+				padding : [20, 30, 20, 30],
 				size    : {
 					height : jQCanvas.height(),
-					width  : (win.width() > 980) ? (win.width() - 355) : (win.width() - 5)
+					width  : (window.innerWidth > 980) ? (window.innerWidth - 390) : (window.innerWidth - 35)
 				}
 			});
 
-			jQCanvas.attr('width', (win.width() > 980) ? (win.width() - 355) : (win.width() - 5));
+			jQCanvas.attr('width', (window.innerWidth > 980) ? (window.innerWidth - 390) : (window.innerWidth - 35));
 	
 			that.redraw();
 		},
@@ -2950,7 +2951,7 @@ var Renderer = function(canvas) {
 					mouseP = arbor.Point(e.pageX - pos.left, e.pageY - pos.top);
 					nearest = dragged = particleSystem.nearest(mouseP);
 					
-					if (nearest && selected && nearest.node === selected.node) {
+					if (nearest && selected && nearest.node === selected.node && nearest.node.data.alpha == 1) {
 						document.location.href = selected.node.data.link;
 						return false;
 					}
@@ -3015,7 +3016,7 @@ var Renderer = function(canvas) {
 					}
 
 					if (nearest.node.data.shape != 'dot') {
-						selected = (nearest.distance < 50) ? nearest : null;
+						selected = (nearest.distance < 30 && nearest.node.data.alpha == 1) ? nearest : null;
 
 						if (selected) {
 							jQCanvas.addClass('link');

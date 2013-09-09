@@ -223,7 +223,7 @@ section.welcome div ul li h3::after {
 	}
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 660px) {
 	section.welcome {
 		height: 190px;
 		max-height: 190px;

@@ -25,11 +25,14 @@
 <form class=\"form-horizontal\" method=\"post\">
 ";
 
-//Display the splash section	
+//Display the splash section
+	$esaterEggBkg = $essentials->user->ID == 198 ? " style=\"background-image:url(" . $essentials->normalizeURL("styles/backgrounds/beans.jpg") . ")\"" : "";
+	$easterEggTitle = $essentials->user->ID == 198 ? "Oh my Beans!" : "Sell Your Books"; //For a friend :-)
+
 	echo "<section id=\"splash\">
-<div class=\"ad-container\">
+<div class=\"ad-container\"" . $esaterEggBkg . ">
 <div class=\"ad-contents\">
-<h2>Sell Your Books</h2>
+<h2>" . $easterEggTitle . "</h2>
 </div>
 </div>
 </section>
