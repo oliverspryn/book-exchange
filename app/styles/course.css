@@ -1,14 +1,4 @@
 /**
- * General styles
- * ----------------------------------
-*/
-
-section.content.even {
-	background: #EAF3FA;
-	border-bottom: none;
-}
-
-/**
  * Course welcome section
  * ----------------------------------
 */
@@ -18,9 +8,14 @@ section#splash div.ad-container {
 	max-height: 280px;
 	min-height: 280px;
 }
+
 section#splash div.ad-container div.ad-contents > h2 {
 	display: none;
 	padding-top: 110px;
+}
+
+section#splash div.ad-container div.ad-contents > h2.force-show {
+	display: block;
 }
 
 section#splash div.course-welcome {
@@ -37,13 +32,79 @@ section#splash div.course-welcome img {
 	padding-top: 20px;
 }
 
-@media screen and (max-width: 980px) {   
-	section#splash div.ad-container div.ad-contents h2 {
-		display: block;
-	}
+section#splash ul.welcome-minor {
+	background-color: rgba(51, 51, 51, 0.9);
+	bottom: 0px;
+	display: none;
+	height: 60px;
+	margin: 0px;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
 
+section#splash ul.welcome-minor li {
+	color: #FFFFFF;
+	display: inline-block;
+	font-size: 36px;
+	font-weight: 300;
+	height: 61px;
+	line-height: 1.6;
+	list-style: none;
+	padding: 0px 7px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+section#splash ul.welcome-minor li img {
+	padding: 3px 7px 7px 7px;
+}
+
+@media screen and (max-width: 980px) {
+	section#splash div.ad-container div.ad-contents > h2.force-show {
+		display: none;
+	}
+	
 	section#splash div.course-welcome {
 		display: none;
+	}
+	
+	section#splash ul.welcome-minor {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 650px) {
+	section#splash {
+		border: none;
+		display: block;
+		height: 61px;
+	}
+	
+	section#splash div.ad-container {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 550px) {
+	section#splash ul.welcome-minor li {
+		font-size: 25px;
+		line-height: 2.23;
+	}
+	
+	section#splash ul.welcome-minor li img {
+		padding-top: 7px;
+	}
+}
+
+@media screen and (max-width: 430px) {
+	section#splash ul.welcome-minor li {
+		font-size: 20px;
+		line-height: 2.9;
+	}
+	
+	section#splash ul.welcome-minor li img {
+		padding-top: 8px;
 	}
 }
 
@@ -101,6 +162,10 @@ section.container div.row section.details section.content p span.mobile {
 	display: none;
 }
 
+section.container div.row section.details section.content.directions {
+	padding-bottom: 20px;
+}
+
 section.container div.row section.details canvas#explorer {
 	display: block;
 }
@@ -109,9 +174,51 @@ section.container div.row section.details canvas#explorer.link {
 	cursor: pointer;
 }
 
-section.container div.row section.details section.content.book-list {
-	padding-left: 10px;
-	padding-right: 10px;
+section.container div.row section.details section.content.mobile {
+	display: none;
+	padding-top: 0px;
+}
+
+section.container div.row section.details section.content.mobile ul {
+	margin: 0px;
+}
+
+section.container div.row section.details section.content.mobile ul li {
+	border-bottom: 1px solid #DDDDDD;
+	display: block;
+	height: 50px;
+	list-style: none;
+	margin: 15px 0px;
+	max-width: 100%;
+	min-width: 100%;
+	width: 100%;
+}
+
+section.container div.row section.details section.content.mobile ul li:last-child {
+	border-bottom: none;
+}
+
+section.container div.row section.details section.content.mobile ul li h3 {
+	color: #828282;
+	font-size: 15px;
+	font-weight: 300;
+	letter-spacing: 1px;
+	line-height: 20px;
+	margin: 0px;
+	margin-left: 0px;
+	padding: 0px;
+	vertical-align: top;
+}
+
+section.container div.row section.details section.content.mobile ul li span {
+	color: #828282;
+	display: block;
+	font-size: 13px;
+	margin: 0px;
+}
+
+section.container div.row section.details section.content.mobile ul li:hover h3, section.container div.row section.details section.content.mobile ul li:hover span {
+	color: #000000;
 }
 
 @media screen and (max-width: 980px) { 
@@ -123,9 +230,17 @@ section.container div.row section.details section.content.book-list {
 	section.container div.row section.details section.content p span.desktop {
 		display: none;
 	}
-
+	
 	section.container div.row section.details section.content p span.mobile {
 		display: inline;
+	}
+	
+	section.container div.row section.details canvas#explorer {
+		display: none;
+	}
+	
+	section.container div.row section.details section.content.mobile {
+		display: block;
 	}
 }
 
@@ -133,10 +248,6 @@ section.container div.row section.details section.content.book-list {
 	section.container div.row section.details section.content.book-list {
 		padding-left: 10%;
 		padding-right: 10%;
-	}
-
-	section.container div.row section.details section.content h2 {
-		display: block;
 	}
 }
 
@@ -195,16 +306,12 @@ section.container div.row aside.supplement ul.navigation li {
 	text-transform: uppercase;
 }
 
-section.container div.row aside.supplement ul.navigation li.total {
-	background-position: 30px -26px;
-}
-
 section.container div.row aside.supplement ul.navigation li.more {
-	background-position: 30px -64px;
+	background-position: 35px 10px;
 }
 
 section.container div.row aside.supplement ul.navigation li.sell {
-	background-position: 30px -101px;
+	background-position: 35px -25px;
 }
 
 section.container div.row aside.supplement ul.navigation li a, section.container div.row aside.supplement ul.navigation li span {
@@ -286,6 +393,7 @@ section.container div.row aside.supplement ul.new li h4 {
 	color: #999999;
 	font-size: 11px;
 	font-weight: normal;
+	line-height: 1.4;
 	margin: 0px 0px 20px 0px;
 	padding: 5px 0px 0px 100px;
 }
@@ -304,5 +412,32 @@ section.container div.row aside.supplement ul.new li p.price {
 @media screen and (max-width: 980px) {   
 	section.container div.row aside.supplement {
 		display: none;
+	}
+}
+
+/**
+ * Book details section
+ * ----------------------------------
+*/
+
+section.content h2 {
+	display: none;
+}
+
+section.content p span.mobile {
+	display: none;
+}
+
+section.book-list {
+	padding-top: 0px;
+}
+
+@media screen and (max-width: 980px) {
+	section.content p span.desktop {
+		display: none;
+	}
+	
+	section.content p span.mobile {
+		display: inline;
 	}
 }

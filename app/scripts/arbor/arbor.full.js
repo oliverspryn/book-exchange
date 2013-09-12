@@ -2867,7 +2867,7 @@ var Renderer = function(canvas) {
 			particleSystem = system;
 
 			particleSystem.screen({
-				padding : [20, 30, 20, 30],
+				padding : [50, 60, 50, 60],
 				size    : {
 					height : jQCanvas.height(),
 					width  : jQCanvas.width()
@@ -2882,7 +2882,7 @@ var Renderer = function(canvas) {
 	//Called when the window is resized
 		resize : function() {
 			particleSystem.screen({
-				padding : [20, 30, 20, 30],
+				padding : [50, 60, 50, 60],
 				size    : {
 					height : jQCanvas.height(),
 					width  : (window.innerWidth > 980) ? (window.innerWidth - 390) : (window.innerWidth - 35)

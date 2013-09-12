@@ -15,9 +15,7 @@
 	}
 	
 //Include the necessary scripts
-	$essentials->includePluginClass("APIs/Cloudinary");
-	$essentials->includeCSS("styles/course.css");
-	$essentials->includePluginClass("APIs/Cloudinary");
+	$essentials->includeCSS("styles/course.min.css");
 	$essentials->includePluginClass("display/Book");
 	$essentials->includePluginClass("display/Course");
 
@@ -56,27 +54,40 @@
 	$background = ($info->Type == "Arts") ? $arts[$rand] : $science[$rand];
 		
 	echo "<section id=\"splash\">
+<ul class=\"welcome-minor\">
+<li><img alt=\"" . $title . " Icon\" src=\"" . $essentials->dataURL("tiles/" . $info->CourseID . "/small.png") . "\"></li>
+<li>" . $title . "</li>
+</ul>
+
 <div class=\"ad-container\" style=\"background-image:url(" . $essentials->normalizeURL("images/course-backgrounds/" . $background) . ")\">
 <div class=\"ad-contents\">
-<h2>" . $title . "</h2>
+<h2" . (FFI\BE\DISPLAY_MODE == "courses" ? "" : " class=\"force-show\"") . ">" . $title . "</h2>
 </div>
 </div>
+";
 
+	if (FFI\BE\DISPLAY_MODE == "courses") {
+		echo "
 <div class=\"course-welcome\">
 <img alt=\"" . $title . " Icon\" src=\"" . $essentials->dataURL("tiles/" . $info->CourseID . "/large.png") . "\">
 </div>
-</section>
+";
+	}
+	
+	echo "</section>
 
-<section class=\"container\">
-<h2>" . $info->Name . " Courses and Avaliable Books</h2>
-
-<div class=\"row\">
 ";
 
-//Display the sidebar
-	$total = FFI\BE\Book::totalInCourse($essentials->params[0]);
-
-	echo "<aside class=\"supplement\">
+//This content must ONLY be displayed when the DISPLAY_MODE is set to "courses"
+	if (FFI\BE\DISPLAY_MODE == "courses") {
+		$sections = FFI\BE\Course::getNumbersWithBooks($essentials->params[0]);
+		$total = FFI\BE\Book::totalInCourse($essentials->params[0]);
+		
+		echo "<section class=\"container\">
+<h2>" . $info->Name . " Courses and Avaliable Books</h2>
+		
+<div class=\"row\">
+<aside class=\"supplement\">
 <h2>" . $title . "</h2>
 <h3>" . $total . " " . ($total == 1 ? "Book" : "Books") . " Available</h3>
 
@@ -90,17 +101,30 @@
 " . FFI\BE\Course::getRecentBooksInCourse($info->CourseID) . "
 </aside>
 
-<section class=\"details\">
-";
-
-//This content must ONLY be displayed when the DISPLAY_MODE is set to "courses"
-	if (FFI\BE\DISPLAY_MODE == "courses") {
-		echo "<section class=\"content\">
+<section class=\"details\">		
+<section class=\"content directions\">
 <h2>" . $title . "</h2>
-<p>A listing of all available books within the " . $title . " course can be explored by course section in the graph below. Each of the green atoms represents a course number. <span class=\"desktop\">Move your mouse near</span><span class=\"mobile\">Touch</span> one of the green atoms to see a pop out of course sections with available books.</p>
+<p>A listing of all available books within the " . $title . " course can be explored by course section <span class=\"desktop\">in the graph below. Each of the green atoms represents a course number. Move your mouse near one of the green atoms to see a pop out of course sections with available books.</span><span class=\"mobile\">in the list below.</span></p>
 </section>
 
-<canvas id=\"explorer\" height=\"640\" width=\"950\"></canvas>";
+<canvas id=\"explorer\" height=\"640\" width=\"950\"></canvas>
+
+<section class=\"content mobile no-border\">
+<h2>" . $info->Name . " Course Sections with Books</h2>
+
+<ul>";
+
+	foreach($sections as $section) {
+		echo "
+<li><a href=\"" . $essentials->friendlyURL("browse/" . $essentials->params[0] . "/" . $section->Number . "/" . strtoupper($section->Section)) . "\"><h3>" . $info->Name . " " . $section->Number . " " . $section->Section . "</h3><span>" . $section->SectionTotal . " " . ($section->SectionTotal == 1 ? "Book" : "Books") . " Available</span></a></li>";
+	}
+
+	echo "
+</ul>
+</section>
+</section>
+</div>
+</section>";
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "books"
 	} else {
 		$failRedirect = $essentials->friendlyURL("browse/" . $essentials->params[0]);
@@ -108,7 +132,7 @@
 		
 		echo "<section class=\"content\">
 <h2>" . $title . "</h2>
-<p>A listing of all available books for " . $title . " can be seen below. <span class=\"desktop\">Move your mouse over top each of the books to see more details.</span> Clicking the blue &quot;Buy&quot; button will initiate a purchase request.</p>
+<p>A listing of all available books for " . $title . " can be seen below. <span class=\"desktop\">Move your mouse over top each of the books to see more details.</span> <span class=\"desktop\">Clicking</span><span class=\"mobile\">Touching</span> the blue &quot;Buy&quot; button will initiate a purchase request.</p>
 </section>
 
 <section class=\"book-list content no-border\">
@@ -121,9 +145,4 @@
 		echo "</ul>
 </section>";
 	}
-
-	echo "
-</section>
-</div>
-</section>";
 ?>
