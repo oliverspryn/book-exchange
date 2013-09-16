@@ -25,27 +25,29 @@
 		$.extend($.fn.FFI_BE_Buy.defaults, options);
 
 		return this.on('click', $.fn.FFI_BE_Buy.defaults.targetObject, function() {
-		//The button which triggered the event
-			$.fn.FFI_BE_Buy.button = $(this);
-			
-		//Several properties of the button
-			$.fn.FFI_BE_Buy.ID = $.fn.FFI_BE_Buy.button.attr('data-id');
-			$.fn.FFI_BE_Buy.title = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-title'));
-			$.fn.FFI_BE_Buy.author = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-author'));
-			$.fn.FFI_BE_Buy.image = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-image'));
-			$.fn.FFI_BE_Buy.price = $.fn.FFI_BE_Buy.button.attr('data-price');
-			
-		//The modal dialog and some of its components
-			$.fn.FFI_BE_Buy.comments = null;
-			$.fn.FFI_BE_Buy.modal = null;
-			$.fn.FFI_BE_Buy.password = null;
-			$.fn.FFI_BE_Buy.submit = null;
-			$.fn.FFI_BE_Buy.username = null;
-			$.fn.FFI_BE_Buy.validationPrompt = null;
-			
-		//Bootstrap this plugin by calling its instance methods
-			$.fn.FFI_BE_Buy.buildDialog();
-			$.fn.FFI_BE_Buy.submitHandler();
+			if (!$(this).hasClass('disabled')) {
+			//The button which triggered the event
+				$.fn.FFI_BE_Buy.button = $(this);
+				
+			//Several properties of the button
+				$.fn.FFI_BE_Buy.ID = $.fn.FFI_BE_Buy.button.attr('data-id');
+				$.fn.FFI_BE_Buy.title = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-title'));
+				$.fn.FFI_BE_Buy.author = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-author'));
+				$.fn.FFI_BE_Buy.image = $.fn.FFI_BE_Buy.htmlEntitiesDecode($.fn.FFI_BE_Buy.button.attr('data-image'));
+				$.fn.FFI_BE_Buy.price = $.fn.FFI_BE_Buy.button.attr('data-price');
+				
+			//The modal dialog and some of its components
+				$.fn.FFI_BE_Buy.comments = null;
+				$.fn.FFI_BE_Buy.modal = null;
+				$.fn.FFI_BE_Buy.password = null;
+				$.fn.FFI_BE_Buy.submit = null;
+				$.fn.FFI_BE_Buy.username = null;
+				$.fn.FFI_BE_Buy.validationPrompt = null;
+				
+			//Bootstrap this plugin by calling its instance methods
+				$.fn.FFI_BE_Buy.buildDialog();
+				$.fn.FFI_BE_Buy.submitHandler();
+			}
 		});
 	};
 	
@@ -171,7 +173,7 @@
 			$.fn.FFI_BE_Buy.clearMsg();
 			
 		//Disable the submit button
-			$.fn.FFI_BE_Buy.submit.attr('disabled', 'disabled').html('Please wait...');
+			$.fn.FFI_BE_Buy.submit.attr('disabled', 'disabled').addClass('disabled').html('Please wait...');
 			
 		//Save the TinyMCE content to the textarea
 			tinymce.activeEditor.save();
@@ -202,9 +204,11 @@
 						$.fn.FFI_BE_Buy.modal.modal('hide');
 						
 					//Update the UI of the book quick view object to indicate that it has been purchased
-						$.fn.FFI_BE_Buy.button.attr('disabled', 'disabled').html('Purchased');
+						$.fn.FFI_BE_Buy.button.attr('disabled', 'disabled').addClass('disabled').html('Purchased');
+						
 						$.fn.FFI_BE_Buy.button.parent().parent().addClass('purchased');
 						$.fn.FFI_BE_Buy.button.siblings('p.price').html('<em>Purchased</em>');
+						$('span.purchase').attr('disabled', 'disabled').addClass('disabled').html('Purchased'); //Book details page has multple buttons
 						
 					//Update the user's login status
 						if ($.fn.FFI_BE_Buy.defaults.showLogin) {
@@ -225,7 +229,7 @@
 						$.fn.FFI_BE_Buy.msg(data);
 						
 					//Restore the submit button
-						$.fn.FFI_BE_Buy.submit.removeAttr('disabled').html(($.fn.FFI_BE_Buy.defaults.showLogin ? 'Login &amp;' : 'Confirm') + ' Purchase');
+						$.fn.FFI_BE_Buy.submit.removeAttr('disabled').removeClass('disabled').html(($.fn.FFI_BE_Buy.defaults.showLogin ? 'Login &amp;' : 'Confirm') + ' Purchase');
 					}
 				}
 			});

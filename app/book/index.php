@@ -3,7 +3,7 @@
 	$essentials->includePluginClass("display/Book_Details");
 	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("APIs/Cloudinary");
-	$essentials->includeCSS("styles/book.css");
+	$essentials->includeCSS("styles/book.min.css");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includeJS("scripts/buy.min.js");
 	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
@@ -22,7 +22,7 @@
 ";
 
 //Display the page header
-	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\Cloudinary::backgroundLarge($book->data[0]->ImageID) . ")\">
+	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\Cloudinary::background($book->data[0]->ImageID) . ")\">
 <section class=\"quick-info\">
 <h2>" . $book->data[0]->Title . "</h2>
 <h3>by " . $book->data[0]->Author . "</h3>
@@ -30,31 +30,49 @@
 
 <section class=\"cover\">
 <img src=\"" . FFI\BE\Cloudinary::cover($book->data[0]->ImageID) . "\">
-
 <span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-price=\"" . htmlentities($book->data[0]->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
 </section>
 </article>
 
 ";
 
-//Display the merchant and book's condition
-	$condition = array("Poor", "Fair", "Good", "Very Good", "Excellent");
-	$conditionCSS = array("poor", "fair", "good", "very-good", "excellent");
-
+//Display the container header
 	echo "<section class=\"container\">
 <h2>" . $book->data[0]->Title . " Book Details</h2>
 
 <div class=\"row\">
-<section class=\"details\">
+
+";
+
+//Display the sidebar
+	echo "<aside class=\"supplement\">
+<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-price=\"" . htmlentities($book->data[0]->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
+
+<ul class=\"navigation\">
+<li class=\"more\"><a href=\"" . $essentials->friendlyURL("") . "\">See More Courses</a></li>
+<li class=\"sell\"><a href=\"" . $essentials->friendlyURL("sell-books") . "\">Sell a Book</a></li>
+</ul>
+
+<hr>
+
+" . FFI\BE\Course::getRecentBooksInCourse($book->data[0]->CourseID, 4, $book->data[0]->SaleID) . "
+</aside>
+
+";
+	
+//Display the merchant and book's condition
+	$condition = array("Poor", "Fair", "Good", "Very Good", "Excellent");
+	$conditionCSS = array("poor", "fair", "good", "very-good", "excellent");
+
+	echo "<section class=\"details\">
 <section class=\"content first overview\">
 <h3>Merchant and Condition</h3>
 
 <ul>
 <li class=\"merchant\"><span>" . $book->data[0]->Merchant . "</span></li>
-<li class=\"condition " . $conditionCSS[$book->data[0]->Condition - 1] . "\"><span>" . $condition[$book->data[0]->Condition - 1] . " Condition</span></li>
-<li class=\"markings" . ($book->data[0]->Written == "1" ? " writing" : "") . "\"><span>" . ($book->data[0]->Written == "1" ? "Contains" : "No") . " Writing or Markings</span></li>
+<li class=\"condition " . $conditionCSS[$book->data[0]->Condition - 1] . "\"><span>" . $condition[$book->data[0]->Condition - 1] . "<span class=\"desktop\"> Condition</span></span></li>
+<li class=\"markings" . ($book->data[0]->Written == "1" ? " writing" : "") . "\"><span>" . ($book->data[0]->Written == "1" ? "Contains" : "No") . " Writing<span class=\"desktop\"> or Markings</span></span></li>
 </ul>
-
 </section>
 
 ";
@@ -125,21 +143,6 @@
 	}
 	
 	echo "</section>
-
-";
-
-//Display the sidebar
-	$additional = FFI\BE\Course::getRecentBooksInCourse($book->data[0]->CourseID, 5, $book->data[0]->SaleID);
-	
-	if ($additional != "") {
-		echo "<aside class=\"supplement\">
-<h3>More in " . $book->data[0]->Name . "</h3>
-
-" . $additional . "
-</aside>
-";
-	}
-	
-	echo "</div>
+</div>
 </section>";
 ?>

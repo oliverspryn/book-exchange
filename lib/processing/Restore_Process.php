@@ -20,6 +20,7 @@ namespace FFI\BE;
 
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
+require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
 
 class Restore_Process {
@@ -40,6 +41,24 @@ class Restore_Process {
 */
 
 	private $time;
+	
+/**
+ * Hold the title of the book.
+ *
+ * @access private
+ * @type   string
+*/
+
+	private $title;
+	
+/**
+ * Hold the author of the book.
+ *
+ * @access private
+ * @type   string
+*/
+
+	private $author;
 	
 /**
  * CONSTRUCTOR
@@ -103,7 +122,7 @@ class Restore_Process {
 		}
 		
 	//Get the book data
-		$data = $wpdb->get_results($wpdb->prepare("SELECT *, DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) AS `Expiring` FROM `ffi_be_sale` WHERE `SaleID` = %d", $_POST['ID']));
+		$data = $wpdb->get_results($wpdb->prepare("SELECT *, DATE_ADD(`Upload`, INTERVAL (SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) AS `Expiring` FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID WHERE `SaleID` = %d", $_POST['ID']));
 		
 	//Check to see if the book already exists
 		if (!count($data)) {
@@ -136,6 +155,8 @@ class Restore_Process {
 		}
 	
 		$this->saleID = $_POST['ID'];
+		$this->title = $data[0]->Title;
+		$this->author = $data[0]->Author;
 	}
 	
 /**
@@ -150,6 +171,8 @@ class Restore_Process {
 	
 	private function update() {
 		global $wpdb;
+		
+		IndexDen::updateByID($this->saleID, $this->title, $this->author);
 		
 		$wpdb->update("ffi_be_sale", array(
 			"Upload" => $this->time

@@ -178,6 +178,7 @@ class Course {
 		$course = preg_replace("/[^a-zA-Z0-9\s]/", "", $course); //Remove all non-alphanumeric characters, except for spaces
 		$course = preg_replace("/[\s]/", "-", $course);          //Replace remaining spaces with a "-"
 		$course = str_replace("--", "-", $course);               //Replace "--" with "-", will occur if a something like " & " is removed
+		$course = trim($course, "-");
 		return strtolower($course);
 	}
 }

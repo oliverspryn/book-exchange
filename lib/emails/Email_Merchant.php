@@ -126,7 +126,7 @@ class Email_Merchant extends Email_Base {
 ";
 
 	//Add comments from the buyer, if any were provided
-		if ($this->comments != "") {
+		if (trim(strip_tags($this->comments)) != "") {
 			$this->HTMLBody .= "<table cellpadding=\"none\" style=\"border-collapse: collapse;\">
 <tbody>
 <tr>

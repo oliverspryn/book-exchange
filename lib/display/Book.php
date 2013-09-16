@@ -58,7 +58,7 @@ class Book {
 		
 		$total = $wpdb->get_results($wpdb->prepare("SELECT `Total` FROM `ffi_be_courses` LEFT JOIN(SELECT *, COUNT(`Course`) AS `Total` FROM `ffi_be_courses` RIGHT JOIN (SELECT `Course` FROM `ffi_be_bookcourses` LEFT JOIN `ffi_be_sale` ON ffi_be_bookcourses.SaleID = ffi_be_sale.SaleID WHERE DATE_ADD(ffi_be_sale.Upload, INTERVAL(SELECT `BookExpireMonths` FROM `ffi_be_settings`) MONTH) > CURDATE() AND ffi_be_sale.Sold = '0'GROUP BY ffi_be_bookcourses.SaleID) AS `q1` ON ffi_be_courses.Code = q1.Course GROUP BY q1.Course) AS `q2` ON ffi_be_courses.Code = q2.Code WHERE ffi_be_courses.URL = %s ORDER BY ffi_be_courses.Name ASC", $courseURL));
 		
-		return $total[0]->Total;
+		return (int)$total[0]->Total;
 	}
 	
 	public static function generateArborJSInit($courseName, $courseURL) {
@@ -183,6 +183,7 @@ class Book {
 		//Send the request to the InvisibleHand API server
 			$curl = curl_init($URL);
 
+		curl_setopt($curl, CURLOPT_PROXY, "proxy.gcc.edu:8080");
 			curl_setopt($curl, CURLOPT_HEADER, false);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -191,7 +192,7 @@ class Book {
 			$errorNumber = curl_errno($curl);
 			$error = curl_error($curl);
 			curl_close($curl);
-
+			
 		//Check for any network errors
 			if ($errorNumber) {
 				throw new Network_Connection_Error("A network connection to the InvisibleHand API has failed. cURL error details: " . $error);
@@ -211,7 +212,10 @@ class Book {
 				//http://aaugh.com/imageabuse.html
 					if (strpos($URL, "ecx.images-amazon.com") !== false) {
 						$exploded = explode(".", $URL);
-						$URL = $exploded[0] . "." . $exploded[1] . "." . $exploded[2] . "." . $exploded[4];
+						
+						if (count($exploded) > 4) {
+							$URL = $exploded[0] . "." . $exploded[1] . "." . $exploded[2] . "." . $exploded[4];
+						}
 					}
 					
 					array_push($return, $URL);
@@ -220,6 +224,10 @@ class Book {
 						break;
 					}
 				}
+			}
+			
+			if (!count($return)) {
+				array_push($return, get_site_url() . "/wp-content/plugins/book-exchange/app/images/book-covers/unavailable-cover.jpg");
 			}
 
 			return json_encode($return);
@@ -299,7 +307,7 @@ class Book {
  * 
  * @access public
  * @param  string $title The title of a book
- * @return string        The URL purified version of the city or state name
+ * @return string        The URL purified version of the book title
  * @since  3.0
  * @static
 */
@@ -307,6 +315,7 @@ class Book {
 		$title = preg_replace("/[^a-zA-Z0-9\s]/", "", $title); //Remove all non-alphanumeric characters, except for spaces
 		$title = preg_replace("/[\s]/", "-", $title);          //Replace remaining spaces with a "-"
 		$title = str_replace("--", "-", $title);               //Replace "--" with "-", will occur if a something like " & " is removed
+		$title = trim($title, "-");
 		return strtolower($title);
 	}
 }

@@ -277,12 +277,12 @@
 					var HTML = '<ul>';
 
 					for (var i = 0; i < JSON.length; ++i) {
-						HTML += '<li><img class="suggestion" src="' + JSON[i] + '"></li>';
+						HTML += '<li><img class="' + (JSON.length == 1 ? 'selected ' : '') + 'suggestion" src="' + JSON[i] + '"></li>';
 					}
 
 					HTML += '</ul>';
 
-					$.fn.FFI_BE_Sell_Books_Assistant.imageURL.val('');
+					$.fn.FFI_BE_Sell_Books_Assistant.imageURL.val(JSON.length == 1 ? JSON[0] : '');
 					target.empty().html(HTML);
 				}
 				

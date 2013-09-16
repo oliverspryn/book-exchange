@@ -10,7 +10,6 @@
 					'required' : {
 						'message' : 'Please select a book cover'
 					}
-
 				}
 			}
 		});

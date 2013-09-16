@@ -6,10 +6,8 @@
 article.book-welcome {	
 	background-position: center;
 	background-repeat: no-repeat;
-	border-bottom: 1px solid #DDDDDD;
 	border-top: 1px solid #DDDDDD;
-	height: 350px;
-	margin: 40px 0px 55px 0px;
+	height: 385px;
 	position: relative;
 	z-index: 2;
 }
@@ -24,10 +22,10 @@ article.book-welcome section.quick-info h2 {
 	background-color: rgba(255, 255, 255, 0.3);
 	color: #222222;
 	font-size: 32px;
-	font-weight: bolder;
+	font-weight: 300;
 	letter-spacing: 1px;
-	margin: 0px 0px 0px 300px;
-	padding: 15px 15px 15px 60px;
+	margin: 0px 0px 0px 350px;
+	padding: 8px 15px 15px 40px;
 }
 
 article.book-welcome section.quick-info h3 {
@@ -35,56 +33,18 @@ article.book-welcome section.quick-info h3 {
 	color: #222222;
 	font-size: 20px;
 	font-weight: lighter;
-	margin: 0px 0px 0px 300px;
-	padding-left: 60px;
+	margin: 0px 0px 0px 350px;
+	padding: 0px 0px 4px 40px;
 }
-
-@media screen and (max-width: 650px) { 
-	article.book-welcome {
-		background-image: none !important;
-		border-top: 1px solid #DDDDDD;
-		height: auto;
-		margin: 0px;
-		padding: 20px 10% 20px 10%;
-		text-align: center;
-	}
-	
-	article.book-welcome section.quick-info {
-		position: static;
-	}
-	
-	article.book-welcome section.quick-info h2 {
-		font-size: 27px;
-		font-weight: 300;
-	}
-	
-	article.book-welcome section.quick-info h2, article.book-welcome section.quick-info h3 {
-		background-color: transparent;
-		margin: 0px;
-		padding: 0px;
-	}
-}
-
-/**
- * Book cover
- * ----------------------------------
-*/
 
 article.book-welcome section.cover {
-	-moz-shadow: 0px 0px 15px #000000;
-	-ms-shadow: 0px 0px 15px #000000;
-	-o-shadow: 0px 0px 15px #000000;
-	-webkit-shadow: 0px 0px 15px #000000;
-	box-shadow: 0px 0px 15px #000000;
-	
-	background: #181818;
+	background: rgba(51, 51, 51, 0.9);
 	clear: both;
 	display: inline-block;
-	margin: -40px 0px 0px 25px;
-	min-height: 401px;
-	min-width: 275px;
-	padding: 11px 10px;
+	min-width: 350px;
+	padding: 15px 0px;
 	position: relative;
+	text-align: center;
 	z-index: 2;
 }
 
@@ -97,90 +57,94 @@ article.book-welcome section.cover span.purchase {
 	
 	background: #006DCC;
 	border: 1px solid #FFFFFF;
-	bottom: 10px;
 	color: #FFFFFF;
 	cursor: pointer;
-	display: block;
-	margin-top: 10px;
-	padding: 7px 0px 7px 0px;
-	position: absolute;
+	display: none;
+	margin: 15px 0px 0px 37.5px;
+	padding: 7px 0px 8px 0px;
 	text-align: center;
-	width: 273px;
+	width: 233px;
+}
+
+article.book-welcome section.cover span.disabled.purchase {
+	background: #CCCCCC;
+	color: #000000;
+	cursor: default;
 }
 
 article.book-welcome section.cover span.purchase:hover {
 	background: #22AAEE;
 }
 
-article.book-welcome section.cover footer ul {
-	list-style: none;
-	margin: 10px 0px 0px 0px;
-	text-align: center;
+article.book-welcome section.cover span.disabled.purchase:hover {
+	background: #CCCCCC;
 }
 
-article.book-welcome section.cover footer ul li {
-	-moz-transition: all .25s ease-in-out;
-	-ms-transition: all .25s ease-in-out;
-	-o-transition: all .25s ease-in-out;
-	-webkit-transition: all .25s ease-in-out;
-	transition: all .25s ease-in-out;
+@media screen and (max-width: 980px) {
+	article.book-welcome section.quick-info h2, article.book-welcome section.quick-info h3 {
+		margin-left: 310px;
+	}
 	
-	background: url(sprites/social-icons.png) no-repeat;
-	display: inline-block;
-	height: 45px;
-	margin: 0px 5px 0px 5px;
-	width: 45px;
-}
+	article.book-welcome section.cover {
+		min-width: 310px;
+	}
+	
+	article.book-welcome section.cover img {
+		width: 235px;
+	}
 
-article.book-welcome section.cover footer ul li:first-child {
-	margin-left: 0px;
-}
-
-article.book-welcome section.cover footer ul li:last-child {
-	margin-right: 0px;
-}
-
-article.book-welcome section.cover footer ul li.facebook {
-	background-position: 17px 11px;
-}
-
-article.book-welcome section.cover footer ul li.facebook:hover {
-	background-color: #3B5998;
-}
-
-article.book-welcome section.cover footer ul li.twitter {
-	background-position: -27px 11px;
-}
-
-article.book-welcome section.cover footer ul li.twitter:hover {
-	background-color: #46C8F5;
-}
-
-article.book-welcome section.cover footer ul li.google-plus {
-	background-position: -71px 12px;
-}
-
-article.book-welcome section.cover footer ul li.google-plus:hover {
-	background-color: #DE4B38;
-}
-
-article.book-welcome section.cover footer ul li.pinterest {
-	background-position: -115px 11px;
-}
-
-article.book-welcome section.cover footer ul li.pinterest:hover {
-	background-color: #CC2127;
-}
-
-article.book-welcome section.cover footer ul li.email {
-	background-position: -158px 11px;
-}
-
-article.book-welcome section.cover footer ul li.email:hover {
-	background-color: #009BAD;
+	article.book-welcome section.cover span.purchase {
+		display: block;
+	}
 }
 
 @media screen and (max-width: 650px) { 
+	article.book-welcome {
+		background-image: none !important;
+		border-top: 1px solid #DDDDDD;
+		height: auto;
+		margin: 0px;
+		padding: 20px 10% 20px 10%;
+		text-align: center;
+	}
+	
+	article.book-welcome section.cover {
+		background: none;
+		min-width: inherit;
+		width: 100%;
+	}
+	
+	article.book-welcome section.cover img {
+		max-width: 100%;
+		width: 275px;
+	}
+	
+	article.book-welcome section.cover span.purchase {
+		border: 1px solid #000000;
+		margin: 15px auto 0px auto;
+		max-width: 100%;
+		width: 273px;
+	}
+	
+	article.book-welcome section.quick-info {
+		position: static;
+	}
+	
+	article.book-welcome section.quick-info h2 {
+		font-size: 27px;
+		font-weight: normal;
+	}
+	
+	article.book-welcome section.quick-info h3 {
+		font-weight: 300;
+	}
+	
+	article.book-welcome section.quick-info h2, article.book-welcome section.quick-info h3 {
+		background-color: transparent;
+		margin: 0px;
+		padding: 0px;
+	}
+	
 	article.book-welcome section.cover {
 		margin: 30px 0px 0px 0px;
 	}
@@ -192,9 +156,10 @@ article.book-welcome section.cover footer ul li.email:hover {
 */
 
 section.container {
-	background: #F5F5F5;
 	display: table;
-	margin: -60px 0px 0px 0px;
+	margin: 0px;
+	max-width: 100%;
+	overflow: hidden;
 	table-layout: auto;
 	width: 100%;
 }
@@ -204,12 +169,192 @@ section.container > h2 {
 }
 
 section.container div.row {
+	background-color: rgba(51, 51, 51, 0.9);
 	display: table-row;
 }
 
 @media screen and (max-width: 650px) { 
 	section.container {
 		margin: 0px;
+	}
+
+	section.container div.row {
+		background: #FFFFFF;
+	}
+}
+
+/**
+ * Sidebar
+ * ----------------------------------
+*/
+
+section.container div.row aside.supplement {
+	display: table-cell;
+	float: left;
+	padding-bottom: 10px;
+	width: 350px;
+}
+
+section.container div.row aside.supplement span.purchase {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	background: #006DCC;
+	border: 1px solid #FFFFFF;
+	color: #FFFFFF;
+	cursor: pointer;
+	display: block;
+	margin: 15px 0px 0px 37.5px;
+	padding: 7px 0px 7px 0px;
+	text-align: center;
+	width: 273px;
+}
+
+section.container div.row aside.supplement span.disabled.purchase {
+	background: #CCCCCC;
+	color: #000000;
+	cursor: default;
+}
+
+section.container div.row aside.supplement span.purchase:hover {
+	background: #22AAEE;
+}
+
+section.container div.row aside.supplement span.disabled.purchase:hover {
+	background: #CCCCCC;
+}
+
+section.container div.row aside.supplement ul.navigation {
+	list-style: none;
+	margin: 25px 0px 25px 0px;
+	padding-left: 0px;
+}
+
+section.container div.row aside.supplement ul.navigation li {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	background: url(sprites/browse.png) no-repeat;
+	color: #FFFFFF;
+	font-size: 13px;
+	text-transform: uppercase;
+}
+
+section.container div.row aside.supplement ul.navigation li.more {
+	background-position: 35px 10px;
+}
+
+section.container div.row aside.supplement ul.navigation li.sell {
+	background-position: 35px -25px;
+}
+
+section.container div.row aside.supplement ul.navigation li a, section.container div.row aside.supplement ul.navigation li span {
+	color: #FFFFFF;
+	display: block;
+	padding: 10px 0px 10px 75px;
+}
+
+section.container div.row aside.supplement ul.navigation li:hover {
+	background-color: #666666;
+}
+
+section.container div.row aside.supplement hr {
+	background: #FFFFFF;
+	border: none;
+	height: 1px;
+	margin-left: 5%;
+	text-align: center;
+	width: 90%;
+}
+
+section.container div.row aside.supplement ul.new {
+	list-style: none;
+	margin: 0px;
+	padding: 0px 0px 40px 0px;
+}
+
+section.container div.row aside.supplement ul.new:last-child {
+	padding: 0px;
+}
+
+section.container div.row aside.supplement ul.new li {
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+	
+	color: #FFFFFF;
+	display: block;
+	height: 120px;
+	margin: 7px 0px;
+	padding: 12px 17px;
+	position: relative;
+	vertical-align: top;
+}
+
+section.container div.row aside.supplement ul.new li:hover {
+	background-color: #666666;
+}
+
+section.container div.row aside.supplement ul.new li a {
+	color: #FFFFFF;
+}
+
+section.container div.row aside.supplement ul.new li img {
+	float: left;
+	height: 120px;
+	max-height: 120px;
+	max-width: 80px;
+	min-height: 120px;
+	min-width: 80px;
+	width: 80px;
+}
+
+section.container div.row aside.supplement ul.new li h3 {
+	color: #FFFFFF;
+	font-size: 15px;
+	font-weight: bolder;
+	letter-spacing: 1px;
+	line-height: normal;
+	margin: 0px;
+	max-height: 60px;
+	overflow: hidden;
+	padding: 3px 0px 0px 20px;
+	text-align: left;	
+	text-overflow: ellipsis;
+	text-transform: uppercase;
+}
+
+section.container div.row aside.supplement ul.new li h4 {
+	color: #999999;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 1.4;
+	margin: 0px 0px 20px 0px;
+	padding: 5px 0px 0px 100px;
+}
+
+section.container div.row aside.supplement ul.new li p.price {
+	bottom: 3px;
+	color: #FFFFFF;
+	font-size: 15px;
+	font-weight: lighter;
+	left: 100px;
+	padding: 100px 0px 0px 15px;
+	position: absolute;
+	right: 15px;
+}
+
+@media screen and (max-width: 980px) {   
+	section.container div.row aside.supplement {
+		display: none;
 	}
 }
 
@@ -219,14 +364,7 @@ section.container div.row {
 */
 
 section.container div.row section.details {
-	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-webkit-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	box-shadow: 0px 4px 10px 0px #CCCCCC;
-	
 	background-color: #FFFFFF;
-	border-right: 1px solid #CCCCCC;
 	display: table-cell;
 	margin-right: 350px;
 	vertical-align: top;
@@ -310,6 +448,7 @@ section.container div.row section.details section.content figure.comments {
  * Merchant and condition section
  * ----------------------------------
 */
+
 section.container div.row section.details section.content.overview {
 	padding-top: 85px;
 }
@@ -330,79 +469,79 @@ section.container div.row section.details section.content.overview ul li {
 	width: 30%;
 }
 
-section.container div.row section.details section.content.overview ul li  span {
+section.container div.row section.details section.content.overview ul li > span {
 	background: url(sprites/book-details.png) no-repeat;
 	display: inline-block;
 	padding-top: 130px;
 	width: 200px;
 }
 
-section.container div.row section.details section.content.overview ul li.merchant span {
+section.container div.row section.details section.content.overview ul li.merchant > span {
 	background-position: 43px 0px;
 }
 
-section.container div.row section.details section.content.overview ul li.condition.excellent span {
+section.container div.row section.details section.content.overview ul li.condition.excellent > span {
 	background-position: 37px -503px;
 }
 
-section.container div.row section.details section.content.overview ul li.condition.very-good span {
+section.container div.row section.details section.content.overview ul li.condition.very-good > span {
 	background-position: 37px -665px;
 }
 
-section.container div.row section.details section.content.overview ul li.condition.good span {
+section.container div.row section.details section.content.overview ul li.condition.good > span {
 	background-position: 37px -826px;
 }
 
-section.container div.row section.details section.content.overview ul li.condition.fair span {
+section.container div.row section.details section.content.overview ul li.condition.fair > span {
 	background-position: 37px -987px;
 }
 
-section.container div.row section.details section.content.overview ul li.condition.poor span {
+section.container div.row section.details section.content.overview ul li.condition.poor > span {
 	background-position: 37px -1148px;
 }
 
-section.container div.row section.details section.content.overview ul li.markings span {
+section.container div.row section.details section.content.overview ul li.markings > span {
 	background-position: 50px -162px;
 }
 
-section.container div.row section.details section.content.overview ul li.markings.writing span {
+section.container div.row section.details section.content.overview ul li.markings.writing > span {
 	background-position: 50px -322px;
 }
 
 @media screen and (max-width: 980px) { 
-	section.container div.row section.details section.content.overview ul li span {
+	section.container div.row section.details section.content.overview ul li > span {
 		width: 180px;
 	}
 	
-	section.container div.row section.details section.content.overview ul li.merchant span {
+	section.container div.row section.details section.content.overview ul li.merchant > span {
 		background-position: 32px 0px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.excellent span {
+	section.container div.row section.details section.content.overview ul li.condition.excellent > span {
 		background-position: 29px -503px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.very-good span {
+	section.container div.row section.details section.content.overview ul li.condition.very-good > span {
 		background-position: 29px -665px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.good span {
+	section.container div.row section.details section.content.overview ul li.condition.good > span {
 		background-position: 29px -826px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.fair span {
+	section.container div.row section.details section.content.overview ul li.condition.fair > span {
 		background-position: 29px -987px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.poor span {
+	section.container div.row section.details section.content.overview ul li.condition.poor > span {
 		background-position: 29px -1148px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.markings span {
+	section.container div.row section.details section.content.overview ul li.markings > span {
 		background-position: 40px -162px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.markings.writing span {
+	section.container div.row section.details section.content.overview ul li.markings.writing > span {
 		background-position: 40px -322px;
 	}
 }
@@ -415,50 +554,73 @@ section.container div.row section.details section.content.overview ul li.marking
 	section.container div.row section.details section.content.overview ul {
 		margin: 0px auto;
 		text-align: center;
-		width: 275px;
+		width: 100%;
 	}
 
 	section.container div.row section.details section.content.overview ul li {
 		display: block;
 		margin: 0px;
+		padding: 7px 0px;
+		text-align: center;
+		width: 100%;
 	}
 	
-	section.container div.row section.details section.content.overview ul li span {
-		padding: 30px 0px 30px 80px;
+	section.container div.row section.details section.content.overview ul li > span {
+		padding: 30px 0px 30px 90px;
 		text-align: left;
 		width: 200px;
 	}
 	
-	section.container div.row section.details section.content.overview ul li.merchant span {
+	section.container div.row section.details section.content.overview ul li.merchant > span {
 		background-position: -454px -20px;
 	}
+	
+	section.container div.row section.details section.content.overview ul li.condition {
+		padding-top: 18px;
+	}
 
-	section.container div.row section.details section.content.overview ul li.condition.excellent span {
+	section.container div.row section.details section.content.overview ul li.condition.excellent > span {
 		background-position: -454px -524px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.very-good span {
+	section.container div.row section.details section.content.overview ul li.condition.very-good > span {
 		background-position: -454px -686px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.good span {
+	section.container div.row section.details section.content.overview ul li.condition.good > span {
 		background-position: -454px -847px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.fair span {
+	section.container div.row section.details section.content.overview ul li.condition.fair > span {
 		background-position: -454px -1008px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.condition.poor span {
+	section.container div.row section.details section.content.overview ul li.condition.poor > span {
 		background-position: -454px -1169px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.markings span {
+	section.container div.row section.details section.content.overview ul li.markings > span {
 		background-position: -454px -177px;
 	}
 
-	section.container div.row section.details section.content.overview ul li.markings.writing span {
+	section.container div.row section.details section.content.overview ul li.markings.writing > span {
 		background-position: -454px -337px;
+	}
+}
+
+@media screen and (max-width: 405px) {
+	section.container div.row section.details section.content.overview ul li {
+		text-align: left;
+	}
+	
+	section.container div.row section.details section.content.overview ul li > span {
+		width: auto;
+	}
+}
+
+@media screen and (max-width: 330px) {
+	section.container div.row section.details section.content.overview ul li > span span.desktop {
+		display: none;
 	}
 }
 
@@ -468,36 +630,62 @@ section.container div.row section.details section.content.overview ul li.marking
 */
 
 section.container div.row section.details section.content.info ul {
+	height: 123px;
 	list-style: none;
-	margin: 0px 0px 0px 15px;
+	margin: 0px 0px 0px 10px;
 }
 
 section.container div.row section.details section.content.info ul li {
-	display: inline-block;
+	border-right: 1px solid #DDDDDD;
+	display: block;
+	float: left;
+	margin: 0px;
+	padding: 0px;
 	text-align: center;
 	vertical-align: top;
 	width: 49%;
 }
 
+section.container div.row section.details section.content.info ul li:last-child {
+	border-right: none;
+}
+
 section.container div.row section.details section.content.info ul li dl {
 	display: inline-block;
-	margin: 0px auto;
-	text-align: left;
-	width: auto;
+	margin: 0px;
+	width: 100%;
+}
+
+section.container div.row section.details section.content.info ul li dl dt {
+	margin: 0px;
+	padding: 7px;
+}
+
+section.container div.row section.details section.content.info ul li dl dd {
+	border-bottom: 1px solid #DDDDDD;
+	margin: 0px;
+	padding-bottom: 7px;
+}
+
+section.container div.row section.details section.content.info ul li dl dd:last-child {
+	border-bottom: none;
 }
 
 @media screen and (max-width: 650px) {
 	section.container div.row section.details section.content.info ul {
+		height: auto;
 		margin: 0px;
 	}
 
 	section.container div.row section.details section.content.info ul li {
+		border-right: none;
 		display: block;
+		float: none;
 		width: 100%;
 	}
 	
-	section.container div.row section.details section.content.info ul li dl {
-		width: 250px;
+	section.container div.row section.details section.content.info ul li dl dd {
+		border-bottom: none;
 	}
 }
 
@@ -517,6 +705,7 @@ section.container div.row section.details section.content.courses ul li {
 	background-repeat: no-repeat;
 	display: inline-block;
 	padding: 14px 7px 25px 7px;
+	width: 190px;
 }
 
 section.container div.row section.details section.content.courses ul li p {
@@ -524,101 +713,25 @@ section.container div.row section.details section.content.courses ul li p {
 	padding-top: 40px;
 }
 
-/**
- * Sidebar
- * ----------------------------------
-*/
-
-section.container div.row aside.supplement {
-	display: table-cell;
-	float: right;
-	padding-bottom: 10px;
-	width: 350px;
-}
-
-section.container div.row aside.supplement > h3 {
-	background: #006DCC;
-	color: #FFFFFF;
-	font-size: 17px;
-	padding-left: 7px;
-}
-
-section.container div.row aside.supplement p.empty {
-	padding-top: 40px;
-	text-align: center;
-	width: 100%;
-}
-
-section.container div.row aside.supplement ul {
-	list-style: none;
-	margin: 0px;
-	padding: 0px 0px 40px 0px;
-	text-align: center;
-}
-
-section.container div.row aside.supplement ul:last-child {
-	padding: 0px;
-}
-
-section.container div.row aside.supplement ul li {
-	-moz-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-ms-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-o-box-shadow: 0px 4px 10px 0px #CCCCCC;
-	-webkit-box-shadow: 0px 4px 10px 0px #CCC;
-	box-shadow: 0px 4px 10px 0px #CCC;
+@media screen and (max-width: 650px) {
+	section.container div.row section.details section.content.courses ul {
+		width: 100%;
+	}
 	
-	-moz-transition: all .25s ease-in-out;
-	-ms-transition: all .25s ease-in-out;
-	-o-transition: all .25s ease-in-out;
-	-webkit-transition: all .25s ease-in-out;
-	transition: all .25s ease-in-out;
-    
-	background: #FFFFFF no-repeat top;
-	border: 1px solid #CCCCCC;
-	color: #777777;
-	display: inline-block;
-	height: 200px;
-	margin: 7px;
-	position: relative;
-	vertical-align: top;
-	width: 300px;
-}
-
-section.container div.row aside.supplement ul li:hover {
-	border: 1px solid #555555;
-}
-
-section.container div.row aside.supplement ul li a {
-	color: #777777;
-}
-
-section.container div.row aside.supplement ul li h3 {
-	font-size: 18px;
-	font-weight: lighter;
-	height: 70px;
-	line-height: 1.25;
-	margin: 0px;
-	max-height: 70px;
-	overflow: hidden;
-	padding: 107px 10px 0px 10px;
-	text-align: left;
-	text-overflow: ellipsis;
-}
-
-section.container div.row aside.supplement ul li p.price {
-	background: url(sprites/actions.png) no-repeat 0px 1px;
-	bottom: 0px;
-	font-size: 11px;
-	height: 22px;
-	margin: 0px;
-	padding: 1px 0px 0px 30px;
-	position: absolute;
-	text-align: left;
-	width: 270px;
-}
-
-@media screen and (max-width: 980px) {   
-	section.container div.row aside.supplement {
-		display: none;
+	section.container div.row section.details section.content.courses ul li {
+		background-position: left;
+		border-bottom: 1px solid #DDDDDD;
+		height: 48px;
+		padding: 15px 0px;
+		width: 100%;
+	}
+	
+	section.container div.row section.details section.content.courses ul li:last-child {
+		border-bottom: none;
+	}
+	
+	section.container div.row section.details section.content.courses ul li p {
+		padding: 11px 0px 0px 60px;
+		text-align: left;
 	}
 }

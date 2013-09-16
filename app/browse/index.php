@@ -31,6 +31,11 @@
 	$course = $essentials->params[0];
 	$failRedirect = $essentials->friendlyURL("");
 	$info = FFI\BE\Course::getCourseInfo($course, $failRedirect);
+	
+	if (!count($info)) {
+		wp_redirect($essentials->friendlyURL(""));
+		exit;
+	}
 
 //Generate the arbor.js initialization script
 	if (FFI\BE\DISPLAY_MODE == "courses") {
@@ -102,12 +107,24 @@
 </aside>
 
 <section class=\"details\">		
-<section class=\"content directions\">
+";
+
+	if ($total) {
+		echo "<section class=\"content directions\">
 <h2>" . $title . "</h2>
 <p>A listing of all available books within the " . $title . " course can be explored by course section <span class=\"desktop\">in the graph below. Each of the green atoms represents a course number. Move your mouse near one of the green atoms to see a pop out of course sections with available books.</span><span class=\"mobile\">in the list below.</span></p>
 </section>
 
-<canvas id=\"explorer\" height=\"640\" width=\"950\"></canvas>
+<canvas id=\"explorer\" height=\"640\" width=\"950\"></canvas>";
+	} else {
+		echo "<section class=\"content center no-border no-data\">
+<h2>Nothing Available</h2>
+<p>We do not currently have any books available for " . $info->Name . ". Sorry about that. :-(</p>
+<p class=\"center\"><a href=\"" . $essentials->friendlyURL("sell-books") . "\" class=\"btn btn-primary\">Sell a Book</a></p>
+</section>";
+	}
+
+	echo "
 
 <section class=\"content mobile no-border\">
 <h2>" . $info->Name . " Course Sections with Books</h2>
@@ -129,6 +146,12 @@
 	} else {
 		$failRedirect = $essentials->friendlyURL("browse/" . $essentials->params[0]);
 		$books = FFI\BE\Course::getBooksInCourseSection($course, $essentials->params[2], strtolower($essentials->params[3]), $failRedirect);
+		
+	//Are there any books available for this section?
+		if (!count($books)) {
+			wp_redirect($essentials->friendlyURL("browse/" . $essentials->params[0]));
+			exit;
+		}
 		
 		echo "<section class=\"content\">
 <h2>" . $title . "</h2>

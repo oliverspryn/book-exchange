@@ -91,25 +91,6 @@ class Cloudinary {
 	}
 	
 /**
- * Generate the URL of the small book cover background image for display
- * in the quick link boxes, which are used in the sidebars
- * 
- * @access public
- * @param  string   $imageKey The key of the image to fetch from Cloudinary
- * @return string             The URL of the image with the supplied key
- * @see                       includes.display.Book.quickLink()
- * @static
- * @since  3.0
-*/
-
-	public static function backgroundSmall($imageKey) {
-		self::getCloudName();
-		$cover = self::checkStatus($imageKey);
-
-		return $cover ? ($cover . "background-small.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_fill,e_vibrance:100,g_north,h_100,w_300/" . $imageKey);
-	}
-	
-/**
  * Generate the URL of the large book cover background image for the book 
  * details page splash image
  * 
@@ -120,11 +101,11 @@ class Cloudinary {
  * @since  3.0
 */
 
-	public static function backgroundLarge($imageKey) {
+	public static function background($imageKey) {
 		self::getCloudName();
 		$cover = self::checkStatus($imageKey);
 		
-		return $cover ? ($cover . "background-large.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/,c_fill,e_blur:800,g_north,h_350,w_1500/e_vibrance:100/" . $imageKey);
+		return $cover ? ($cover . "background.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_fill,e_blur:800,h_385,w_2000/e_vibrance:100/" . $imageKey);
 	}
 	
 /**

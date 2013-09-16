@@ -221,6 +221,15 @@ section.container div.row section.details section.content.mobile ul li:hover h3,
 	color: #000000;
 }
 
+section.container div.row section.details section.no-data h2 {
+	display: block;
+}
+
+section.container div.row section.details section.no-data a {
+	color: #FFFFFF;
+	margin-top: 40px;
+}
+
 @media screen and (max-width: 980px) { 
 	section.container div.row section.details {
 		border-right: none;
@@ -258,7 +267,7 @@ section.container div.row section.details section.content.mobile ul li:hover h3,
 
 section.container div.row aside.supplement {
 	display: table-cell;
-	float: right;
+	float: left;
 	padding-bottom: 10px;
 	width: 350px;
 }
