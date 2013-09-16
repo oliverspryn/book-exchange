@@ -183,7 +183,6 @@ class Book {
 		//Send the request to the InvisibleHand API server
 			$curl = curl_init($URL);
 
-		curl_setopt($curl, CURLOPT_PROXY, "proxy.gcc.edu:8080");
 			curl_setopt($curl, CURLOPT_HEADER, false);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
