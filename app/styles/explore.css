@@ -18,8 +18,9 @@ body.show {
 */
 
 header#main {
-	top: 0px;
+	background: rgba(255, 255, 255, 0.75);
 	position: fixed !important;
+	top: 0px;
 }
 
 header#main a.logo {
@@ -32,6 +33,12 @@ header#main a.logo:hover {
 
 footer#bottom {
 	position: relative;
+}
+
+@media screen and (max-width: 980px) {
+	header#main {
+		background: rgba(255, 255, 255, 0.75);
+	}
 }
 
 /**
@@ -70,12 +77,22 @@ body.show section.loader {
 */
 
 section.welcome {
+	background: url(backgrounds/splash.jpg) no-repeat bottom center;
+	background-size: 100%;
 	bottom: 102px;
-	min-height: 400px;
+	min-height: 550px;
 	position: fixed;
-	top: 135px;
+	top: 0px;
 	width: 100%;
 	z-index: 0;
+}
+
+section.welcome div {
+	height: 410px;
+	margin-top: -135px;
+	position: absolute;
+	top: 50%;
+	width: 100%;
 }
 
 section.welcome div h2 {
@@ -97,14 +114,6 @@ section.welcome div h2::after {
 	padding: 0px;
 	text-align: center;
 	width: 200px;
-}
-
-section.welcome div {
-	height: 410px;
-	margin-top: -205px;
-	position: absolute;
-	top: 50%;
-	width: 100%;
 }
 
 section.welcome div ul {
@@ -197,13 +206,12 @@ section.welcome div ul li h3::after {
 
 @media screen and (max-width: 980px) {
 	section.welcome {
-		min-height: 200px;
-		top: 188px;
+		min-height: 395px;
 	}
 	
 	section.welcome div {
 		height: 210px;
-		margin-top: -105px;
+		margin-top: -15px;
 	}
 	
 	section.welcome div ul li {
@@ -225,11 +233,17 @@ section.welcome div ul li h3::after {
 
 @media screen and (max-width: 660px) {
 	section.welcome {
+		background: none;
 		height: 190px;
 		max-height: 190px;
 		min-height: 190px;
 		padding: 30px 5% 0px 5%;
+		top: 188px;
 		width: 90%;
+	}
+	
+	section.welcome div {
+		margin-top: -105px;
 	}
 	
 	section.welcome div h2 { 
@@ -438,7 +452,7 @@ section.explore header button.close-search span.small {
 	}
 }
 
-@media screen and (max-width: 650px) {	
+@media screen and (max-width: 660px) {	
 	section.explore.fixed {
 		padding-top: 50px;
 	}
@@ -645,7 +659,7 @@ section.explore.active-search section.search-hotspot {
 	}
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 660px) {
 	section.explore.active-search div.loader-mask {
 		top: 60px;
 	}
