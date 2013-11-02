@@ -250,12 +250,12 @@ class Email_Merchant extends Email_Base {
 *** Book Information ***
 
    Title:    " . $this->title . "
-   Price:     \$" . $this->price . "
+   Price:    \$" . $this->price . "
 
 ";
 
 	//Add comments from the buyer, if any were provided
-		if ($this->comments != "") {
+		if (trim(strip_tags($this->comments)) != "") {
 			$this->textBody .= "*** A word from the buyer ***
 			
 " . strip_tags($this->comment) . "

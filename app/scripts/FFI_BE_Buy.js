@@ -124,10 +124,6 @@
 		}).modal();
 		
 	//Share a few components of the dialog with the plugin
-		if ($.fn.FFI_BE_Buy.defaults.showComments) {
-			$.fn.FFI_BE_Buy.comments = $.fn.FFI_BE_Buy.modal.find('textarea');
-		}
-		
 		if ($.fn.FFI_BE_Buy.defaults.showLogin) {
 			$.fn.FFI_BE_Buy.password = $.fn.FFI_BE_Buy.modal.find('input.password');
 			$.fn.FFI_BE_Buy.username = $.fn.FFI_BE_Buy.modal.find('input.username');

@@ -79,7 +79,7 @@ body.show section.loader {
 section.welcome {
 	background: url(backgrounds/splash.jpg) no-repeat bottom center;
 	background-size: 100%;
-	bottom: 102px;
+	bottom: 100px;
 	min-height: 550px;
 	position: fixed;
 	top: 0px;

@@ -31,11 +31,6 @@
 </tr>
 
 <tr>
-<th><label for=\"google-api-key\">Google API Key:</label></th>
-<td><input class=\"regular-text\" id=\"google-api-key\" name=\"google-api-key\" type=\"text\" value=\"" . $API->GoogleAPI . "\"></td>
-</tr>
-
-<tr>
 <th><label for=\"indexden-url\">IndexDen API URL:</label></th>
 <td><input class=\"regular-text\" id=\"indexden-url\" name=\"indexden-url\" type=\"text\" value=\"" . $API->IndexDenURL . "\"></td>
 </tr>
@@ -53,6 +48,11 @@
 <tr>
 <th><label for=\"indexden-name\">IndexDen Index Name:</label></th>
 <td><input class=\"regular-text\" id=\"indexden-name\" name=\"indexden-name\" type=\"text\" value=\"" . $API->IndexDenIndex . "\"></td>
+</tr>
+
+<tr>
+<th><label for=\"indexden-name\">InvisibleHand App ID:</label></th>
+<td><input class=\"regular-text\" id=\"invisiblehand-app\" name=\"invisiblehand-app\" type=\"text\" value=\"" . $API->InvisibleHandAppID . "\"></td>
 </tr>
 
 <tr>

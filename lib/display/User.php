@@ -90,7 +90,7 @@ class User {
 				$sold[$stat->Date] = $soldTotal;
 			}
 			
-			return array(
+			return array (
 				"Purchases"         => $purchased,
 				"Purchase Total"    => $purchaseTotal,
 				"Sold"              => $sold,
