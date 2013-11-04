@@ -27,11 +27,17 @@ class Admin {
 		return $data[0];
 	}
 	
-	public static function Settings() {
+	public static function settings() {
 		global $wpdb;
 		
 		$data = $wpdb->get_results("SELECT * FROM `ffi_be_settings` WHERE `ID` = '1'");
 		return $data[0];
+	}
+	
+	public static function covers() {
+		global $wpdb;
+		
+		return $wpdb->get_results("SELECT * FROM `ffi_be_books` WHERE `ImageState` = 'PENDING_APPROVAL' ORDER BY `BookID` ASC");
 	}
 }
 ?>

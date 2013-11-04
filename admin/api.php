@@ -8,9 +8,8 @@
 //Display a table containing a listing of all system APIs
 	echo "<div class=\"wrap\">
 <h2>API Management</h2>
-<p>The Book Exchange requires access to several third-party services in order to provide features such as searching, book cover suggestions, image hosting and maniuplation, and sending emails.</p>
-<p>Please open an account with <a href=\"http://cloudinary.com\" target=\"_blank\">Cloudinary</a> for the hosting and manipulation of book covers, <a href=\"https://code.google.com/apis/console/\" target=\"_blank\">Google Shopping API</a> for new book cover suggestions, <a href=\"http://indexden.com\" target=\"_blank\">IndexDen</a> for searching available books, and <a href=\"http://mandrill.com\" target=\"_blank\">Mandrill</a> for sending emails. Copy the API keys from these services into the form below. A free subscription to each of these services will suffice for sites with low or medium amounts of traffic.</p>
-<p><strong>Note:</strong> You will need to manually enable the Google Shopping API service within Google APIs Console in order to have access to this feature.</p>
+<p>The Book Exchange requires access to several third-party services in order to provide features such as searching, image hosting and maniuplation, book cover suggestions, and sending emails.</p>
+<p>Please open an account with <a href=\"http://cloudinary.com\" target=\"_blank\">Cloudinary</a> for the hosting and manipulation of book covers, <a href=\"http://indexden.com\" target=\"_blank\">IndexDen</a> for searching available books, <a href=\"https://developer.getinvisiblehand.com/\" target=\"_blank\">InvisibleHand API</a> for new book cover suggestions, and <a href=\"http://mandrill.com\" target=\"_blank\">Mandrill</a> for sending emails. Copy the API keys from these services into the form below. A free subscription to each of these services will suffice for sites with low or medium amounts of traffic.</p>
 
 <form action=\"" . $_SERVER['REQUEST_URI'] . "\" method=\"post\">
 <table class=\"form-table\">
@@ -53,6 +52,11 @@
 <tr>
 <th><label for=\"indexden-name\">InvisibleHand App ID:</label></th>
 <td><input class=\"regular-text\" id=\"invisiblehand-app\" name=\"invisiblehand-app\" type=\"text\" value=\"" . $API->InvisibleHandAppID . "\"></td>
+</tr>
+
+<tr>
+<th><label for=\"indexden-name\">InvisibleHand App Key:</label></th>
+<td><input class=\"regular-text\" id=\"invisiblehand-key\" name=\"invisiblehand-key\" type=\"text\" value=\"" . $API->InvisibleHandAppKey . "\"></td>
 </tr>
 
 <tr>

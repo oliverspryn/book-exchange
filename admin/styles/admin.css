@@ -1,0 +1,33 @@
+/**
+ * Approve cover table styles
+ * ----------------------------------
+*/
+
+table.approve-covers tbody tr:last-child td {
+	border-bottom: none;
+}
+
+table.approve-covers tbody tr td img {
+	float: left;
+	max-width: 200px;
+	min-width: 200px;
+	width: 200px;
+}
+
+table.approve-covers tbody tr td h3 {
+	margin: 0px;
+	padding: 5px 0px 12px 225px;
+}
+
+table.approve-covers tbody tr td h4 {
+	margin: 0px;
+	padding: 5px 0px 18px 225px;
+}
+
+table.approve-covers tbody tr td p {
+	margin: 10px 0px 10px 225px; 
+}
+
+table.approve-covers tbody tr td p input.alternative-url-input {
+	width: 250px;
+}

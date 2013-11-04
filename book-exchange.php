@@ -44,7 +44,16 @@ License: MIT
 		//Modify the name of the first sub-menu item
 			$submenu['book-exchange/admin/approve.php'][0][0] = "Approve Covers";
 		}
+		
+		function adminScripts() {
+			wp_register_script("ffi-be-admin-approve-script", REAL_ADDR . "admin/scripts/FFI_BE_Approve.js", array("jquery"));
+			wp_enqueue_script("ffi-be-admin-approve-script");
+		
+			wp_register_style("ffi-be-admin-styles", REAL_ADDR . "admin/styles/admin.css");
+			wp_enqueue_style("ffi-be-admin-styles");
+		}
 
+		add_action("admin_enqueue_scripts", "FFI\\BE\\adminScripts");
 		add_action("admin_menu", "FFI\\BE\\addMenuItems");
 	}
 ?>
