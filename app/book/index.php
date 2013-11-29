@@ -3,9 +3,9 @@
 	$essentials->includePluginClass("display/Book_Details");
 	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("APIs/Cloudinary");
-	$essentials->includeCSS("styles/book.min.css");
+	$essentials->includeCSS("book.min.css");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
-	$essentials->includeJS("scripts/buy.min.js");
+	$essentials->includeJS("buy.min.js");
 	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
 
 //Fetch the book information

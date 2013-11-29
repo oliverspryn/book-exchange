@@ -18,7 +18,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes
+ * @package   lib
  * @since     3.0
 */
 
@@ -102,172 +102,6 @@ class Essentials {
 		$this->params = $params;
 		add_action("wp_head", array($this, "actionHookIncludeHTML"));
 	}
-
-/**
- * Check if the user is logged in. If so, then grant access to 
- * this page, otherwise, redirect to the login page.
- *
- * This method will also obtain access the the current user's 
- * information, if they are logged in.
- * 
- * @access public
- * @return void
- * @since  3.0
-*/
-
-	public function requireLogin() {
-		if (!is_user_logged_in()) {
-			wp_redirect(get_site_url() . "/wp-login.php?redirect_to=" . urlencode($_SERVER['REQUEST_URI']));
-			exit;
-		} else {
-			global $current_user;
-			get_currentuserinfo();
-			
-			$this->user = $current_user;
-		}
-	}
-	
-/**
- * This method will obtain access the the current user's information, 
- * if they are logged in.
- * 
- * @access public
- * @return boolean  Whether or not the user's information could be obtained, based on their login status
- * @since  3.0
-*/
-	
-	public function storeUserInfo() {
-		if (is_user_logged_in()) {
-			global $current_user;
-			get_currentuserinfo();
-			
-			$this->user = $current_user;
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-/**
- * Add HTML to the <head> section of a page. This could be most useful
- * for including content such as custom <meta> tags in the head section
- * of a page.
- *
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	public function includeHeadHTML($HTML) {
-		$this->HTML .= $HTML;
-	}
-	
-/**
- * The method called by Wordpress to include the HTML in the <head> 
- * section of a page.
- * 
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	public function actionHookIncludeHTML() {
-		echo $this->HTML . "\n";
-	}
-	
-/**
- * Set the <title> of the HTML page.
- * 
- * @access public
- * @param  string   $title The title of the HTML page
- * @return void
- * @since  3.0
-*/
-
-	public function setTitle($title) {
-		$this->title = $title;
-		
-		add_filter("wp_title", array($this, "actionHookSetTitle"));
-	}
-	
-/**
- * The method called by Wordpress to set the <title> of the HTML page.
- * 
- * @access public
- * @return void
- * @since  3.0
-*/
-	
-	public function actionHookSetTitle($title) {
-		return $this->title;
-	}
-	
-/**
- * Include the requested PHP script with respect to the app folder.
- * So a request like this "system/server/Validate.php" will include
- * the script like so: .../<plugin-name>/app/system/server/Validate.php,
- * regardless of the address of the PHP file which requested the script.
- *
- * This method uses the "require_once()" function to import the 
- * script.
- *
- * @access public
- * @param  string   $address The of the PHP script URL with respect to the "app" folder
- * @return void
- * @since  3.0
-*/
-
-	public function includePHP($address) {
-		require_once(PATH . "app/" . $address);
-	}
-	
-/**
- * Include the requested PHP class script with respect to the includes
- * folder. So a request like this "Validate" will include the class script
- * like so: .../<plugin-name>/includes/Validate.php, regardless of the
- * address of the PHP file which requested the script.
- *
- * This method uses the "require_once()" function to import the 
- * script.
- *
- * @access public
- * @param  string   $class The name of of the PHP plugin class to import
- * @return void
- * @since  3.0
-*/
-
-	public function includePluginClass($class) {
-		require_once(PATH . "lib/" . $class . ".php");
-	}
-	
-/**
- * Include the requested stylesheet in the <head> section of the page.
- * Local stylesheets are requested with respect to the "app" folder.
- * So a request such as "system/stylesheet/style.css" would include the 
- * stylesheet like so: .../<plugin-name>/app/system/stylesheet/style.css,
- * regardless of the address of the PHP file which requested the script.
- *
- * External stylesheets must be prefixed with a "//" for this class to 
- * know the request is for an external CSS stylesheet.
- * 
- * Since this method may be called multiple times, each address must be 
- * stored in the $this->CSS variable, since the stylesheet isn't added 
- * right away, but during the construction of the <head> section of the 
- * template. These addresses are stored in an array and are later added
- * to the template in the order they were requested.
- *
- * @access public
- * @param  string   $address The URL of the external stylesheet or the URL with respect to the "app" folder
- * @return void
- * @since  3.0
-*/
-
-	public function includeCSS($address) {
-	//Store this address for later
-		array_push($this->CSS, $address);
-		
-		add_action("wp_print_styles", array($this, "actionHookIncludeCSS"));
-	}
 	
 /**
  * The method called by Wordpress to include the CSS in the HTML page.
@@ -284,7 +118,7 @@ class Essentials {
 		//Local stylesheets will need their address modified
 		//The address for external stylesheets begin with "//"
 			if (substr($this->CSS[$i], 0, 2) != "//") {
-				$this->CSS[$i] = REAL_ADDR . "app/" . $this->CSS[$i];
+				$this->CSS[$i] = REAL_ADDR . "app/system/styles/" . $this->CSS[$i];
 			}
 			
 			wp_register_style($styleName, $this->CSS[$i], array(), NULL); //NULL removes the ?ver from the URL
@@ -293,32 +127,16 @@ class Essentials {
 	}
 	
 /**
- * Include the requested script in the <head> section of the page. Local 
- * scripts are requested with respect to the "app" folder. So a request 
- * such as "system/javascripts/script.js" would includethe script like so:
- * .../<plugin-name>/app/system/javascripts/script.js, regardless of the 
- * address of the PHP file which requested the script.
- *
- * External scripts must be prefixed with a "//" for this class to 
- * know the request is for an external JS file.
+ * The method called by Wordpress to include the HTML in the <head> 
+ * section of a page.
  * 
- * Since this method may be called multiple times, each address must be 
- * stored in the $this->JS variable, since the script isn't added 
- * right away, but during the construction of the <head> section of the 
- * template. These addresses are stored in an array and are later added
- * to the template in the order they were requested.
- *
  * @access public
- * @param  string   $address The URL of the external script or the URL with respect to the "app" folder
  * @return void
  * @since  3.0
 */
-
-	public function includeJS($address) {
-	//Store this address for later
-		array_push($this->JS, $address);
-		
-		add_action("wp_enqueue_scripts", array($this, "actionHookIncludeJS"));
+	
+	public function actionHookIncludeHTML() {
+		echo $this->HTML . ($this->HTML != "" ? "\n" : "");
 	}
 	
 /**
@@ -336,12 +154,167 @@ class Essentials {
 		//Local scripts will need their address modified
 		//The address for external scripts begin with "//"
 			if (substr($this->JS[$i], 0, 2) != "//") {
-				$this->JS[$i] = REAL_ADDR . "app/" . $this->JS[$i];
+				$this->JS[$i] = REAL_ADDR . "app/system/scripts/" . $this->JS[$i];
 			}
 			
 			wp_register_script($styleName, $this->JS[$i], array(), NULL); //NULL removes the ?ver from the URL
 			wp_enqueue_script($styleName);
 		}
+	}
+	
+/**
+ * The method called by Wordpress to set the <title> of the HTML page.
+ * 
+ * @access public
+ * @return void
+ * @since  3.0
+*/
+	
+	public function actionHookSetTitle($title) {
+		return $this->title;
+	}
+	
+/**
+ * This method will take a URL relative to the plugin's "data"
+ * folder and append the actual physical address to this file.
+ * So a request such as "info/images/bkg.jpg" would rewrite
+ * the URL like so: .../<plugin-name>/data/info/images/bkg.jpg.
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "data" folder
+ * @return string   $address The normalized version of the given URL
+ * @since  3.0
+*/
+
+	public function dataURL($address) {
+		return REAL_ADDR . "data/" . $address;
+	}
+	
+/**
+ * This method will take a URL relative with respect to the "app" 
+ * folder and give it an absolute URL with respect to the friendly 
+ * URL of this plugin. So a request such as "subpage/details.php" 
+ * would rewrite the URL like so: 
+ * //<wordpress-site>/<plugin-name>/listings/details.php
+ *
+ * @access public
+ * @param  string   $address The URL with respect to the "app" folder
+ * @return string   $address The friendly version of the given URL
+ * @since  3.0
+*/
+
+	public function friendlyURL($address) {
+		return FAKE_ADDR . $address;
+	}
+	
+/**
+ * Include the requested stylesheet in the <head> section of the page.
+ * Local stylesheets are requested with respect to the "app/system/styles"
+ * folder. So a request such as "style.css" would include the stylesheet
+ * like so: .../<plugin-name>/app/system/styles/style.css, regardless of
+ * the address of the PHP file which requested the script.
+ *
+ * External stylesheets must be prefixed with a "//" for this class to 
+ * know the request is for an external CSS stylesheet.
+ * 
+ * Since this method may be called multiple times, each address must be 
+ * stored in the $this->CSS variable, since the stylesheet isn't added 
+ * right away, but during the construction of the <head> section of the 
+ * template. These addresses are stored in an array and are later added
+ * to the template in the order they were requested.
+ *
+ * @access public
+ * @param  string   $address The URL of the external stylesheet or the URL with respect to the "app/system/styles" folder
+ * @return void
+ * @since  3.0
+*/
+
+	public function includeCSS($address) {
+	//Store this address for later
+		array_push($this->CSS, $address);
+		
+		add_action("wp_print_styles", array($this, "actionHookIncludeCSS"));
+	}
+	
+/**
+ * Add HTML to the <head> section of a page. This could be most useful
+ * for including content such as custom <meta> tags in the head section
+ * of a page.
+ *
+ * @access public
+ * @return void
+ * @since  3.0
+*/
+	
+	public function includeHeadHTML($HTML) {
+		$this->HTML .= $HTML;
+	}
+	
+/**
+ * Include the requested script in the <head> section of the page. Local 
+ * scripts are requested with respect to the "app/system/scripts" folder.
+ * So a request such as "script.js" would include the script like so:
+ * .../<plugin-name>/app/system/scripts/script.js, regardless of the 
+ * address of the PHP file which requested the script.
+ *
+ * External scripts must be prefixed with a "//" for this class to 
+ * know the request is for an external JS file.
+ * 
+ * Since this method may be called multiple times, each address must be 
+ * stored in the $this->JS variable, since the script isn't added 
+ * right away, but during the construction of the <head> section of the 
+ * template. These addresses are stored in an array and are later added
+ * to the template in the order they were requested.
+ *
+ * @access public
+ * @param  string   $address The URL of the external script or the URL with respect to the "app/system/scripts" folder
+ * @return void
+ * @since  3.0
+*/
+
+	public function includeJS($address) {
+	//Store this address for later
+		array_push($this->JS, $address);
+		
+		add_action("wp_enqueue_scripts", array($this, "actionHookIncludeJS"));
+	}
+	
+/**
+ * Include the requested PHP script with respect to the app folder.
+ * So a request like this "lib/processing/Validate.php" will include
+ * the script like so: .../<plugin-name>/app/lib/processing/Validate.php,
+ * regardless of the address of the PHP file which requested the script.
+ *
+ * This method uses the "require_once()" function to import the 
+ * script.
+ *
+ * @access public
+ * @param  string   $address The of the PHP script URL with respect to the "app" folder
+ * @return void
+ * @since  3.0
+*/
+
+	public function includePHP($address) {
+		require_once(PATH . "app/" . $address);
+	}
+	
+/**
+ * Include the requested PHP class script with respect to the includes
+ * folder. So a request like this "processing/Validate" will include the 
+ * class script like so: .../<plugin-name>/lib/processing/Validate.php,
+ * regardless of the address of the PHP file which requested the script.
+ *
+ * This method uses the "require_once()" function to import the 
+ * script.
+ *
+ * @access public
+ * @param  string   $class The name of of the PHP plugin class to import
+ * @return void
+ * @since  3.0
+*/
+
+	public function includePluginClass($class) {
+		require_once(PATH . "lib/" . $class . ".php");
 	}
 	
 /**
@@ -369,38 +342,65 @@ class Essentials {
 	public function normalizeURL($address) {
 		 return (CDN ? RESOURCE_PATH : REAL_ADDR) . "app/" . $address;
 	}
+
+/**
+ * Check if the user is logged in. If so, then grant access to 
+ * this page, otherwise, redirect to the login page.
+ *
+ * This method will also obtain access the the current user's 
+ * information, if they are logged in.
+ * 
+ * @access public
+ * @return void
+ * @since  3.0
+*/
+
+	public function requireLogin() {
+		if (!is_user_logged_in()) {
+			wp_redirect(get_site_url() . "/wp-login.php?redirect_to=" . urlencode($_SERVER['REQUEST_URI']));
+			exit;
+		} else {
+			global $current_user;
+			get_currentuserinfo();
+			
+			$this->user = $current_user;
+		}
+	}
 	
 /**
- * This method will take a URL relative with respect to the "app" 
- * folder and give it an absolute URL with respect to the friendly 
- * URL of this plugin. So a request such as "subpage/details.php" 
- * would rewrite the URL like so: 
- * //<wordpress-site>/<plugin-name>/listings/details.php
- *
+ * Set the <title> of the HTML page.
+ * 
  * @access public
- * @param  string   $address The URL with respect to the "app" folder
- * @return string   $address The friendly version of the given URL
+ * @param  string   $title The title of the HTML page
+ * @return void
  * @since  3.0
 */
 
-	public function friendlyURL($address) {
-		return FAKE_ADDR . $address;
+	public function setTitle($title) {
+		$this->title = $title;
+		
+		add_filter("wp_title", array($this, "actionHookSetTitle"));
 	}
-
+	
 /**
- * This method will take a URL relative to the plugin's "data"
- * folder and append the actual physical address to this file.
- * So a request such as "info/images/bkg.jpg" would rewrite
- * the URL like so: .../<plugin-name>/data/info/images/bkg.jpg.
- *
+ * This method will obtain access the the current user's information, 
+ * if they are logged in.
+ * 
  * @access public
- * @param  string   $address The URL with respect to the "data" folder
- * @return string   $address The normalized version of the given URL
+ * @return boolean  Whether or not the user's information could be obtained, based on their login status
  * @since  3.0
 */
-
-	public function dataURL($address) {
-		return REAL_ADDR . "data/" . $address;
+	
+	public function storeUserInfo() {
+		if (is_user_logged_in()) {
+			global $current_user;
+			get_currentuserinfo();
+			
+			$this->user = $current_user;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

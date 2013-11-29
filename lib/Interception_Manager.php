@@ -32,7 +32,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes
+ * @package   lib
  * @since     3.0
 */
 
@@ -73,7 +73,7 @@ class Interception_Manager {
  * Whether or not this plugin has been determined to be active.
  *
  * @access private
- * @type   boolean 
+ * @type   bool 
 */
 	
 	private $pluginActive = false;
@@ -115,89 +115,77 @@ class Interception_Manager {
 	}
 	
 /**
- * This method is like a PHP implementation of mod_rewrite for 
- * Wordpress plugins.
+ * Parse the address to see if a given exception case should become
+ * active.
  *
- * Using this function will interrupt the normal fetch-execute cycle
- * this class goes through when intercepting a page. If a special case
- * of a URL is encountered, this method will force this class to heed
- * an exception (not to be confused with throwing an exception) for that
- * URL which is defined by the parameters of this method. If said page 
- * is visited without being registered as an exception, a 404 error is
- * likely to occur.
+ * @access private
+ * @param  string   $exception The string the URL should START with in order to activate the exception, with respect to the "app" folder
+ * @return bool                Whether or not the requested exception should be activated
+ * @since  3.0
+*/
+	
+	private function activateException($exception) {
+		$URL = parse_url($this->requestedURL);
+		$exception = "/" . URL_ACTIVATE . "/" . $exception;
+		
+		return !strncasecmp($URL['path'], $exception, strlen($exception));
+	}
+	
+/**
+ * Parse the address to see if the plugin should become active.
  *
- * Here is how this method is can be called and what goes on. Let us 
- * assume that visiting a page like this: http://<wordpress-site>/
- * <plugin-name>/<page>/ would cause this class to bring the user to the
- * desired page without having to register an exception. On the contrary,
- * assume this page: http://<wordpress-site>/<plugin-name>/<page>/options/
- * is an SEO-friendly URL which would normally be handled by mod_rewrite
- * to direct the request to the appropriate page for processing. A URL
- * such as the previous one would be a case where using registerException()
- * would be necessary.
- *
- * This method takes an arbirtary number of parameters:
- *  - parameter 1: the string the URL should START with in order to 
- *                 activate the exception, with respect to the "app" 
- *                 folder. (i.e. the URL without "http://<wordpress-site>/
- *                 <plugin-name>/", note the trailing "/")
- *  - parameter 2: the URL of the file this class should request when 
- *                 this exception is encountered, with respect to the 
- *                 "app" folder
- *  - parameter n: this method will explode the URL from the name of the 
- *                 plugin to the end of the URL into an array using the
- *                 "/" as the delimiter. Using the earlier example
- *                 http://<wordpress-site>/<plugin-name>/<page>/options/
- *                 would be split into: Array([0] => <plugin-name>, [1] =>
- *                 <page>, [2] => options). Thus, each of these n parameters
- *                 would correspond to the index elements of this array for 
- *                 which this method should store for later use. For example
- *                 passing parameters 1 and 2 would store "<page>" and 
- *                 "options", respectively, for later use.
- *
- * The extracted array elements are then again stored as an array and passed
- * to the Essentials class. The page which is fetched from parameter 2 will
- * then be able to access the extracted information using $essentials->params.
- * For example, using the case presented in the comments for parameter n,
- * $essentials->params[0] would fetch "<page>" and $essentials->params[1] would
- * fetch "options".
- * 
- * @access public
- * @param  string   $activateURL The string the URL should START with in order to activate the exception, with respect to the "app" folder
- * @param  string   $redirectURL The URL of the file this class should request when this exception is encountered, with respect to the "app" folder
- * @param  int      ...$indexes  The index elements of the array holding the exploded page URL for which this method should store for later use
+ * @access private
  * @return void
  * @since  3.0
 */
 	
-	public function registerException() {
-		$params = func_get_args();
-		
-	//Run this function if the plugin and excpetion has been determined to be active
-		if ($this->pluginActive && $this->activateException($params[0])) {
-			$replace = $params[1]; //The URL of the page this exception should actually fetch
-			$URL = array_filter(explode("/", ltrim($this->requestedURL, "/")));
-			$URLIndexes = count($URL) - 1;
-			
-		//Go through each of the n parameters
-			for($i = 2; $i < count($params); ++$i) {
-				if ($params[$i] <= $URLIndexes) {
-					array_push($this->params, $URL[$params[$i]]);
-				} else {
-					return;
-				}
-			}
-			
-		//Share the URL this exception case should fetch with the rest of the class
-			$this->scriptURL = $replace;
+	private function activatePlugin() {
+		$URL = parse_url($this->requestedURL);
+		$this->pluginActive = !strncasecmp($URL['path'], "/" . URL_ACTIVATE, strlen("/" . URL_ACTIVATE));
+	}
+	
+/**
+ * Generate the URL to fetch the appropriate script from the requested
+ * URL.
+ *
+ * @access private
+ * @return void
+ * @since  3.0
+*/
+	
+	private function generateURL() {
+	//If an exception has already generated the URL, then there is little left to do
+		if ($this->scriptURL != "") {
+			$this->scriptURL = "/" . $this->scriptURL;
+			return;
 		}
+		
+		$URL =  parse_url(str_ireplace("/" . URL_ACTIVATE, "", $this->requestedURL));
+		$return = $URL['path'];
+		
+	/**
+	 * Now that we have the path the script, do we need to include index.php, 
+	 * if a request was made like this: /<plugin-name>/
+	 *
+	 * If the path does not end with ".php" then include "index.php" on the
+	 * end to indicate the physical URL of the required script.
+	*/
+		if (substr($return, -4) != ".php") {
+			if (substr($return, -1) == "/") {
+				$return .= "index.php";
+			} else {
+				$return .= "/index.php";
+			}
+		}
+		
+		$this->scriptURL = $return;
 	}
 	
 /**
  * This method will:
  *  - Parse the requested URL into an address which can be used to
- *    fetch correct script from the "app" directory
- *  - Include the "pluggable" function library from Wordpress
+ *    fetch correct script from the "app" directory.
+ *  - Include the "pluggable" function library from Wordpress.
  *  - Register the FFI\BE\ACTIVE and FFI\PLUGIN_PAGE constants
  *    indicating that this specific plugin is active on the current
  *    page and that a more general ForwardFour Innovations plugin
@@ -205,11 +193,11 @@ class Interception_Manager {
  *    useful in cases where ForwardFour Innovations themes may need
  *    to adjust page rendering in the case that the current page 
  *    is displaying content from an active plugin.
- *  - Include requests for the appropriate application files
+ *  - Include requests for the appropriate application files.
  *  - Utilize the Essentials class to give the page an appropriate 
- *    title and load necessary stylesheets and scripts
- *  - Include the run the global plugin file
- *  - Replace the content of the page with that from the loaded page
+ *    title and load necessary stylesheets and scripts.
+ *  - Include the run the global plugin file.
+ *  - Replace the content of the page with that from the loaded page.
  * 
  * @access public
  * @return void
@@ -227,9 +215,9 @@ class Interception_Manager {
 		/**
 		 * The application will need to perform two types of interceptions:
 		 *  - A "regular" one where the contents of the page is replaced
-		 *    with the application's contents
+		 *    with the application's contents.
 		 *  - A 404 version where the entire page is generated, since its
-		 *    contents cannot be replaced
+		 *    contents cannot be replaced.
 		 *
 		 * Both are necessary since a link to this plugin's main page will likely
 		 * exist on the main navigtaion bar, so users can access it. However,
@@ -280,7 +268,7 @@ class Interception_Manager {
  * http://<wordpress-site>/my-plugin
  *
  * NOTE: This feature will ONLY work with Wordpress themes designed by 
- * ForwardFour Innovations
+ * ForwardFour Innovations.
  *
  * @access public
  * @param  string   $address The URL with respect to the "app" folder
@@ -289,89 +277,6 @@ class Interception_Manager {
 	
 	public function highlightNavLink($address) {
 		$this->navLink = get_site_url() . "/" . $address;
-	}
-	
-/**
- * Get the URL of the current page without the protocol and installation
- * address of Wordpress.
- *
- * @access private
- * @return void
- * @since  3.0
-*/
-	
-	private function URLNoRoot() {
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$request = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		
-		$this->requestedURL = str_ireplace(get_site_url(), "", $request);
-	}
-	
-/**
- * Parse the address to see if the plugin should become active
- *
- * @access private
- * @return void
- * @since  3.0
-*/
-	
-	private function activatePlugin() {
-		$URL = parse_url($this->requestedURL);
-		$this->pluginActive = !strncasecmp($URL['path'], "/" . URL_ACTIVATE, strlen("/" . URL_ACTIVATE));
-	}
-	
-/**
- * Parse the address to see if a given exception case should become
- * active
- *
- * @access private
- * @param  string   $exception The string the URL should START with in order to activate the exception, with respect to the "app" folder
- * @return boolean             Whether or not the requested exception should be activated
- * @since  3.0
-*/
-	
-	private function activateException($exception) {
-		$URL = parse_url($this->requestedURL);
-		$exception = "/" . URL_ACTIVATE . "/" . $exception;
-		
-		return !strncasecmp($URL['path'], $exception, strlen($exception));
-	}
-	
-/**
- * Generate the URL to fetch the appropriate script from the requested
- * URL.
- *
- * @access private
- * @return void
- * @since  3.0
-*/
-	
-	private function generateURL() {
-	//If an exception has already generated the URL, then there is little left to do
-		if ($this->scriptURL != "") {
-			$this->scriptURL = "/" . $this->scriptURL;
-			return;
-		}
-		
-		$URL =  parse_url(str_ireplace("/" . URL_ACTIVATE, "", $this->requestedURL));
-		$return = $URL['path'];
-		
-	/**
-	 * Now that we have the path the script, do we need to include index.php, 
-	 * if a request was made like this: /<plugin-name>/
-	 *
-	 * If the path does not end with ".php" then include "index.php" on the
-	 * end to indicate the physical URL of the required script.
-	*/
-		if (substr($return, -4) != ".php") {
-			if (substr($return, -1) == "/") {
-				$return .= "index.php";
-			} else {
-				$return .= "/index.php";
-			}
-		}
-		
-		$this->scriptURL = $return;
 	}
 	
 /**
@@ -388,7 +293,10 @@ class Interception_Manager {
 	
 /**
  * Replace the 404 error page with the appropriate page from the 
- * application.
+ * application. If there isn't any plugin page available, then
+ * include the 404.php page from the site template.
+ *
+ * The plugin template MUST include a 404.php page.
  *
  * @access public
  * @return void
@@ -414,8 +322,104 @@ class Interception_Manager {
 			get_footer();
 			exit;
 		} else {
-			//No, really, show a 404
+		//No, really, show a 404
+			require_once(get_template_directory() . "/404.php");
 		}
+	}
+	
+/**
+ * This method is like a PHP implementation of mod_rewrite for 
+ * Wordpress plugins.
+ *
+ * Using this function will interrupt the normal fetch-execute cycle
+ * this class goes through when intercepting a page. If a special case
+ * of a URL is encountered, this method will force this class to heed
+ * an exception (not to be confused with throwing an exception) for that
+ * URL which is defined by the parameters of this method. If said page 
+ * is visited without being registered as an exception, a 404 error is
+ * likely to occur.
+ *
+ * Here is how this method is can be called and what goes on. Let us 
+ * assume that visiting a page like this: http://<wordpress-site>/
+ * <plugin-name>/<page>/ would cause this class to bring the user to the
+ * desired page without having to register an exception. On the contrary,
+ * assume this page: http://<wordpress-site>/<plugin-name>/<page>/options/
+ * is an SEO-friendly URL which would normally be handled by mod_rewrite
+ * to direct the request to the appropriate page for processing. A URL
+ * such as the previous one would be a case where using registerException()
+ * would be necessary.
+ *
+ * This method takes an arbirtary number of parameters:
+ *  - parameter 1: the string the URL should START with in order to 
+ *                 activate the exception, with respect to the "app" 
+ *                 folder. (i.e. the URL without "http://<wordpress-site>/
+ *                 <plugin-name>/", note the trailing "/")
+ *  - parameter 2: the URL of the file this class should request when 
+ *                 this exception is encountered, with respect to the 
+ *                 "app" folder.
+ *  - parameter n: this method will explode the URL from the name of the 
+ *                 plugin to the end of the URL into an array using the
+ *                 "/" as the delimiter. Using the earlier example
+ *                 http://<wordpress-site>/<plugin-name>/<page>/options/
+ *                 would be split into: Array([0] => <plugin-name>, [1] =>
+ *                 <page>, [2] => options). Thus, each of these n parameters
+ *                 would correspond to the index elements of this array for 
+ *                 which this method should store for later use. For example
+ *                 passing parameters 1 and 2 would store "<page>" and 
+ *                 "options", respectively, for later use.
+ *
+ * The extracted array elements are then again stored as an array and passed
+ * to the Essentials class. The page which is fetched from parameter 2 will
+ * then be able to access the extracted information using $essentials->params.
+ * For example, using the case presented in the comments for parameter n,
+ * $essentials->params[0] would fetch "<page>" and $essentials->params[1] would
+ * fetch "options".
+ * 
+ * @access public
+ * @param  string   $activateURL The string the URL should START with in order to activate the exception, with respect to the "app" folder
+ * @param  string   $redirectURL The URL of the file this class should request when this exception is encountered, with respect to the "app" folder
+ * @param  int      ...$indexes  The index elements of the array holding the exploded page URL for which this method should store for later use
+ * @return void
+ * @since  3.0
+*/
+	
+	public function registerException() {
+		$params = func_get_args();
+		
+	//Run this function if the plugin and excpetion has been determined to be active
+		if ($this->pluginActive && $this->activateException($params[0])) {
+			$replace = $params[1]; //The URL of the page this exception should actually fetch
+			$URL = array_filter(explode("/", ltrim($this->requestedURL, "/")));
+			$URLIndexes = count($URL) - 1;
+			
+		//Go through each of the n parameters
+			for($i = 2; $i < count($params); ++$i) {
+				if ($params[$i] <= $URLIndexes) {
+					array_push($this->params, $URL[$params[$i]]);
+				} else {
+					return;
+				}
+			}
+			
+		//Share the URL this exception case should fetch with the rest of the class
+			$this->scriptURL = $replace;
+		}
+	}
+	
+/**
+ * Get the URL of the current page without the protocol and installation
+ * address of Wordpress.
+ *
+ * @access private
+ * @return void
+ * @since  3.0
+*/
+	
+	private function URLNoRoot() {
+		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+		$request = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		
+		$this->requestedURL = str_ireplace(get_site_url(), "", $request);
 	}
 }
 ?>

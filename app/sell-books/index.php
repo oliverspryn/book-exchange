@@ -6,8 +6,8 @@
 	$essentials->includePluginClass("display/Sell_Book_Display");
 	$essentials->includePluginClass("processing/Sell_Book_Process");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
-	$essentials->includeJS("scripts/sell.superpackage.min.js");
-	$essentials->includeCSS("styles/sell.superpackage.min.css");
+	$essentials->includeJS("sell.superpackage.min.js");
+	$essentials->includeCSS("sell.superpackage.min.css");
 	
 //Instantiate form element display class
 	$params = $essentials->params ? $essentials->params[0] : 0;

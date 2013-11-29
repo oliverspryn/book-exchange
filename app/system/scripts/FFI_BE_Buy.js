@@ -298,7 +298,7 @@
 */
 
 	$.fn.FFI_BE_Buy.defaults = {
-		processURL   : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/purchase.php',
+		processURL   : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/purchase.php',
 		showComments : true,                                     //Whether or not to show the comments section
 		showLogin    : true,                                     //Whether or not to show the login section
 		targetObject : 'button.purchase, span.purchase'          //The target object which will trigger a purchase

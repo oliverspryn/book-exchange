@@ -15,14 +15,14 @@
 	}
 	
 //Include the necessary scripts
-	$essentials->includeCSS("styles/course.min.css");
+	$essentials->includeCSS("course.min.css");
 	$essentials->includePluginClass("display/Book");
 	$essentials->includePluginClass("display/Course");
 
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-		$essentials->includeJS("scripts/arbor/arbor.js");
+		$essentials->includeJS("arbor/arbor.js");
 	} else {
-		$essentials->includeJS("scripts/buy.min.js");
+		$essentials->includeJS("buy.min.js");
 		$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 		$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
 	}
@@ -64,7 +64,7 @@
 <li>" . $title . "</li>
 </ul>
 
-<div class=\"ad-container\" style=\"background-image:url(" . $essentials->normalizeURL("images/course-backgrounds/" . $background) . ")\">
+<div class=\"ad-container\" style=\"background-image:url(" . $essentials->normalizeURL("system/images/course-backgrounds/" . $background) . ")\">
 <div class=\"ad-contents\">
 <h2" . (FFI\BE\DISPLAY_MODE == "courses" ? "" : " class=\"force-show\"") . ">" . $title . "</h2>
 </div>

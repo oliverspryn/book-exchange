@@ -1,10 +1,10 @@
 <?php
 //Include the necessary scripts
-	$essentials->includeCSS("styles/my-books.min.css");
+	$essentials->includeCSS("my-books.min.css");
 	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includePluginClass("display/User");
 	$essentials->includeJS("//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.2/highcharts.js");
-	$essentials->includeJS("scripts/my-books.min.js");
+	$essentials->includeJS("my-books.min.js");
 	$essentials->requireLogin();
 	$essentials->setTitle("My Books");
 	

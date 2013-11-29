@@ -301,6 +301,6 @@
 */
 	
 	$.fn.FFI_BE_Sell_Books_Assistant.defaults = {
-		fetchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/suggest.php'
+		fetchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/suggest.php'
 	};
 })(jQuery);

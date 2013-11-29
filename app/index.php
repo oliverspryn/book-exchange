@@ -1,9 +1,9 @@
 <?php
 //Include the necessary scripts
 	$essentials->setTitle("Book Exchange");
-	$essentials->includeCSS("styles/explore.min.css");
-	$essentials->includeJS("scripts/explore.min.js");
-	$essentials->includeJS("scripts/buy.min.js");
+	$essentials->includeCSS("explore.min.css");
+	$essentials->includeJS("explore.min.js");
+	$essentials->includeJS("buy.min.js");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includePluginClass("display/Book");
 	$essentials->includePluginClass("display/Course");

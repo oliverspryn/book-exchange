@@ -38,7 +38,7 @@
 						'ID' : button.attr('data-id')
 					}, 
 					'type' : 'POST',
-					'url' : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/includes/ajax/restore.php',
+					'url' : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/restore.php',
 					'success' : function(data) {
 					//If the transaction was successful, close the dialog and disable the purchase button
 						if (data == 'success') {

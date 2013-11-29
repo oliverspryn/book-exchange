@@ -1,6 +1,6 @@
 <?php
 //Include this plugin's main stylesheet
-	$essentials->includeCSS("styles/main.min.css");
+	$essentials->includeCSS("main.min.css");
 	
 //Include jQuery
 	$essentials->includeJS("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js");
