@@ -10,6 +10,7 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
+ * @extends   FFI\BE\Processor_Base
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
@@ -18,32 +19,70 @@
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/display/Book.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
+require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
 require_once(dirname(dirname(__FILE__)) . "/third-party/Isbn.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
 
-class Sell_Book_Process {
+class Sell_Book_Process extends Processor_Base {
 /**
- * Hold the ID of the merchant.
+ * Hold the author of the book.
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $author;
+	
+/**
+ * Hold the user's comments.
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $comments;
+	
+/**
+ * Hold the condition of the book.
  *
  * @access private
  * @type   int
 */
 	
-	private $merchant;
+	private $condition;
+	
+/**
+ * Hold the list of course names for which this book was
+ * used.
+ *
+ * @access private
+ * @type   array<string>
+*/
+	
+	private $courses;
 
 /**
- * Hold the current date and time, formatted for MySQL.
+ * Hold the cover image of the book.
  *
  * @access private
  * @type   string
 */
-
-	private $now;
+	
+	private $cover;
+	
+/**
+ * Hold the edition of the book.
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $edition;
 
 /**
  * Hold the ISBN 10 of the book.
@@ -62,53 +101,25 @@ class Sell_Book_Process {
 */
 	
 	private $ISBN13;
+	
+/**
+ * Hold the ID of the merchant.
+ *
+ * @access private
+ * @type   int
+*/
+	
+	private $merchant;
 
 /**
- * Hold the title of the book.
+ * Hold the current date and time, formatted for MySQL.
  *
  * @access private
  * @type   string
 */
-	
-	private $title;
 
-/**
- * Hold the author of the book.
- *
- * @access private
- * @type   string
-*/
+	private $now;
 	
-	private $author;
-
-/**
- * Hold the edition of the book.
- *
- * @access private
- * @type   string
-*/
-	
-	private $edition;
-
-/**
- * Hold the cover image of the book.
- *
- * @access private
- * @type   string
-*/
-	
-	private $cover;
-
-/**
- * Hold the list of course names for which this book was
- * used.
- *
- * @access private
- * @type   array<string>
-*/
-	
-	private $courses;
-
 /**
  * Hold the list of course numbers for which this book was
  * used.
@@ -117,18 +128,8 @@ class Sell_Book_Process {
  * @type   array<int>
 */
 	
-	private $numbers; //Next is Deuteronomy
-
-/**
- * Hold the list of course sections for which this book was
- * used.
- *
- * @access private
- * @type   array<char>
-*/
+	private $numbers; //Next is Deuteronomy :D
 	
-	private $sections;
-
 /**
  * Hold the price of the book.
  *
@@ -139,13 +140,23 @@ class Sell_Book_Process {
 	private $price;
 
 /**
- * Hold the condition of the book.
+ * Hold the list of course sections for which this book was
+ * used.
  *
  * @access private
- * @type   int
+ * @type   array<char>
 */
 	
-	private $condition;
+	private $sections;
+	
+/**
+ * Hold the title of the book.
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $title;
 
 /**
  * Hold whether the book has any markings.
@@ -157,15 +168,6 @@ class Sell_Book_Process {
 	private $written;
 
 /**
- * Hold the user's comments.
- *
- * @access private
- * @type   string
-*/
-	
-	private $comments;
-
-/**
  * CONSTRUCTOR
  *
  * This method will call helper methods to:
@@ -175,12 +177,15 @@ class Sell_Book_Process {
  *  - Either insert the data into a database or update existing data.
  * 
  * @access public
- * @param  int    $ID The sale ID of the book to update. $ID = 0 means there is no entry to update (i.e. insert a book).
+ * @param  int                               $ID The sale ID of the book to update. $ID = 0 means there is no entry to update (i.e. insert a book).
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 
 	public function __construct($ID) {
+		parent::__construct();
+	
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm($ID)) {
 			$this->validateAndRetain($ID);
@@ -208,7 +213,8 @@ class Sell_Book_Process {
 		if (is_array($_POST) && count($_POST) && 
 			((!intval($ID) && isset($_POST['ISBN10']) && isset($_POST['ISBN13'])) || (intval($ID) && !isset($_POST['ISBN10']) && !isset($_POST['ISBN13']))) && isset($_POST['title'])  && isset($_POST['author']) && isset($_POST['imageURL']) && isset($_POST['course']) && isset($_POST['number']) && isset($_POST['section']) && isset($_POST['price']) && isset($_POST['condition']) && isset($_POST['written']) &&
 			((!intval($ID) && !empty($_POST['ISBN10']) && !empty($_POST['ISBN13'])) || intval($ID)) && !empty($_POST['title']) && !empty($_POST['author']) && !empty($_POST['imageURL']) && is_array($_POST['course']) && count($_POST['course']) && is_array($_POST['number']) && count($_POST['number']) && is_array($_POST['section']) && count($_POST['section']) && is_numeric($_POST['price']) && is_numeric($_POST['condition']) && is_numeric($_POST['written'])) {
-			return true;	
+			return true;
+			
 		}
 		
 		return false;
@@ -226,10 +232,11 @@ class Sell_Book_Process {
 */
 	
 	private function validateAndRetain($ID) {
-		global $essentials, $wpdb;
+		global $wpdb;
 
 	//Retain the merchant ID, an earlier script will already have ensured the user is logged in
-		$this->merchant = $essentials->user->ID;
+		$this->retainUserInfo();
+		$this->merchant = $this->user->ID;
 
 	//Retain the current time
 		$info = $wpdb->get_results("SELECT * FROM `ffi_be_settings`");
@@ -258,7 +265,7 @@ class Sell_Book_Process {
 				throw new Validation_Failed("The ISBN10 and ISBN13 values are incompatible");
 			}
 		} else {
-			$ISBN = $wpdb->get_col($wpdb->prepare("SELECT `ISBN13` FROM ffi_be_books	LEFT JOIN `ffi_be_sale` ON ffi_be_books.BookID = ffi_be_sale.BookID WHERE SaleID = %d", $ID));
+			$ISBN = $wpdb->get_col($wpdb->prepare("SELECT `ISBN13` FROM ffi_be_books LEFT JOIN `ffi_be_sale` ON ffi_be_books.BookID = ffi_be_sale.BookID WHERE SaleID = %d", $ID));
 			$this->ISBN13 = $ISBN[0];
 		}
 
@@ -324,33 +331,6 @@ class Sell_Book_Process {
 	//Retain the user's comments
 		$this->comments = $_POST['comments'];
 	}
-
-/**
- * Check to see if a particular integer value falls between a specified
- * range.
- * 
- * @access private
- * @param  int      $value The integer value to check
- * @param  int      $min   The minimum value the integer may equal
- * @param  int      $max   The maximum value the integer may equal
- * @return bool            Whether or not the integer falls within the specified range
- * @since  3.0
-*/
-	
-	private function intBetween($value, $min, $max) {
-		if (!is_numeric($value)) {
-			return false;
-		}
-		
-		$value = intval($value);
-		
-	//Check the integer extrema
-		if ($value >= $min && $value <= $max) {
-			return true;
-		}
-		
-		return false;
-	}
 	
 /**
  * Use the values validated and retained in memory by the 
@@ -361,6 +341,7 @@ class Sell_Book_Process {
  * @access private
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
 	private function insert() {
@@ -376,19 +357,19 @@ class Sell_Book_Process {
 			$existing = true;
 
 		//Update the book's title, author, or edition in case the existing entry could be improved by the user's change
-			$wpdb->update("ffi_be_books", array(
+			$wpdb->update("ffi_be_books", array (
 				"Title"   => $this->title,
 				"Author"  => $this->author,
 				"Edition" => $this->edition
 			), array (
 				"ISBN13" => $this->ISBN13
-			), array(
+			), array (
 				"%s", "%s", "%s"
 			), array (
 				"%s"
 			));
 		} catch (No_Data_Returned $e) {
-			$wpdb->insert("ffi_be_books", array(
+			$wpdb->insert("ffi_be_books", array (
 				"BookID"     => NULL,
 				"ISBN10"     => $this->ISBN10,
 				"ISBN13"     => $this->ISBN13,
@@ -397,7 +378,7 @@ class Sell_Book_Process {
 				"Edition"    => $this->edition,
 				"ImageID"    => $this->cover,
 				"ImageState" => "PENDING_APPROVAL"
-			), array(
+			), array (
 				"%d", "%s", "%s", "%s", "%s", "%s", "%s", "%s"
 			));
 			
@@ -405,7 +386,7 @@ class Sell_Book_Process {
 		}
 		
 	//Insert the sale information
-		$wpdb->insert("ffi_be_sale", array(
+		$wpdb->insert("ffi_be_sale", array (
 			"SaleID"     => NULL,
 			"BookID"     => $bookID,
 			"MerchantID" => $this->merchant,
@@ -415,7 +396,7 @@ class Sell_Book_Process {
 			"Condition"  => $this->condition,
 			"Written"    => $this->written,
 			"Comments"   => $this->comments
-		), array(
+		), array (
 			"%s", "%d", "%d", "%s", "%d", "%d", "%d", "%d", "%s"
 		));
 
@@ -423,12 +404,12 @@ class Sell_Book_Process {
 
 	//Insert the listing of related courses
 		for ($i = 0; $i < count($this->courses); ++$i) {
-			$wpdb->insert("ffi_be_bookcourses", array(
+			$wpdb->insert("ffi_be_bookcourses", array (
 				"SaleID"  => $saleID,
 				"Course"  => $this->courses[$i],
 				"Number"  => $this->numbers[$i],
 				"Section" => $this->sections[$i]
-			), array(
+			), array (
 				"%d", "%s", "%d", "%s"
 			));
 		}
@@ -441,7 +422,7 @@ class Sell_Book_Process {
 		}
 
 	//Redirect to the book
-		wp_redirect(get_site_url() . "/book-exchange/book/" . $saleID . "/" . Book::URLPurify($this->title));
+		wp_redirect(get_site_url() . "/book-exchange/book/" . $saleID . "/" . $this->URLPurify($this->title));
 		exit;
 	}
 	
@@ -452,29 +433,30 @@ class Sell_Book_Process {
  * changes which were made to the local database.
  * 
  * @access private
- * @param  int      $ID The sale ID of the book to update
+ * @param  int                               $ID The sale ID of the book to update
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
 	private function update($ID) {
 		global $wpdb;
 		
 	//Update the book's title, author, or edition in case the existing entry could be improved by the user's change
-		$wpdb->update("ffi_be_books", array(
+		$wpdb->update("ffi_be_books", array (
 			"Title"   => $this->title,
 			"Author"  => $this->author,
 			"Edition" => $this->edition
 		), array (
 			"ISBN13" => $this->ISBN13
-		), array(
+		), array (
 			"%s", "%s", "%s"
 		), array (
 			"%s"
 		));
 
 	//Delete the old listing of related courses associated with this book
-		$wpdb->delete("ffi_be_bookcourses", array(
+		$wpdb->delete("ffi_be_bookcourses", array (
 			"SaleID" => $ID
 		), array (
 			"%d"
@@ -482,18 +464,18 @@ class Sell_Book_Process {
 
 	//Insert an updated listing of related courses
 		for ($i = 0; $i < count($this->courses); ++$i) {
-			$wpdb->insert("ffi_be_bookcourses", array(
+			$wpdb->insert("ffi_be_bookcourses", array (
 				"SaleID"  => $ID,
 				"Course"  => $this->courses[$i],
 				"Number"  => $this->numbers[$i],
 				"Section" => $this->sections[$i]
-			), array(
+			), array (
 				"%d", "%s", "%d", "%s"
 			));
 		}
 
 	//Update the sale information
-		$wpdb->update("ffi_be_sale", array(
+		$wpdb->update("ffi_be_sale", array (
 			"Upload"    => $this->now,
 			"Price"     => $this->price,
 			"Condition" => $this->condition,
@@ -509,7 +491,7 @@ class Sell_Book_Process {
 		IndexDen::updateByISBN($this->ISBN13, $this->title, $this->author);
 
 	//Redirect to the book
-		wp_redirect(get_site_url() . "/book-exchange/book/" . $ID . "/" . Book::URLPurify($this->title));
+		wp_redirect(get_site_url() . "/book-exchange/book/" . $ID . "/" . $this->URLPurify($this->title));
 		exit;
 	}
 }

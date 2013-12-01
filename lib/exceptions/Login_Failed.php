@@ -12,7 +12,7 @@
  * @extends   FFI\BE\Base
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.exceptions
+ * @package   lib.exceptions
  * @since     3.0
 */
 

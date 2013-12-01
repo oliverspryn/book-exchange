@@ -4,20 +4,30 @@
 	$essentials->setTitle("Sell Your Books");
 	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("display/Sell_Book_Display");
+	$essentials->includePluginClass("exceptions/No_Data_Returned");
+	$essentials->includePluginClass("exceptions/Validation_Failed");
 	$essentials->includePluginClass("processing/Sell_Book_Process");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includeJS("sell.superpackage.min.js");
 	$essentials->includeCSS("sell.superpackage.min.css");
 	
-//Instantiate form element display class
+//Instantiate the form element display and processor classes
 	$params = $essentials->params ? $essentials->params[0] : 0;
 	$userID = $essentials->user->ID;
-	$successRedirect = $essentials->friendlyURL("");
-	$failRedirect = $essentials->friendlyURL("sell-books");
-	$display = new FFI\BE\Sell_Book_Display($params, $userID, $failRedirect);
-
-//Instantiate the form processor class
-	new FFI\BE\Sell_Book_Process($params);
+	
+	try {
+		$display = new FFI\BE\Sell_Book_Display($params, $userID);
+		new FFI\BE\Sell_Book_Process($params);
+	} catch (No_Data_Returned $e) {
+		wp_redirect($essentials->friendlyURL("sell-books"));
+		exit;
+	} catch (Validation_Failed $e) {
+		echo $e->getMessage();
+		exit;
+	} catch (Exception $e) {
+		wp_redirect($essentials->friendlyURL("sell-books"));
+		exit;
+	}
 	
 //Display the page
 	echo "<h1>Sell Your Books</h1>
@@ -199,7 +209,7 @@
 //Display the submit button
 	echo "<section class=\"no-border step stripe\">
 <button class=\"btn btn-primary\" type=\"submit\">Submit Book</button>
-<button class=\"btn cancel\" type=\"button\">Cancel</button>
+<a class=\"btn\" href=\"" . $essentials->friendlyURL("") . "\">Cancel</a>
 </section>
 </form>";
 ?>

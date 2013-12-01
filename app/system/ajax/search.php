@@ -12,5 +12,7 @@
 		echo "IndexDen error dump: " . $e->getMessage();
 	} catch (FFI\BE\Validation_Failed $e) {
 		echo "USER_ERROR" . $e->getMessage(); //Prefixed with "USER_ERROR" so the user will be alerted of their mistake
+	} catch (Exception $e) {
+		echo "Unknown error: " . $e->getMessage();
 	}
 ?>

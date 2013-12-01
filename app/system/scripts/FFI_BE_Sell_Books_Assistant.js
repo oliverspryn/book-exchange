@@ -61,6 +61,8 @@
 	//Listen for changes to the ISBN10 text input
 		$.fn.FFI_BE_Sell_Books_Assistant.ISBN10.change(function() {
 			var ISBN10 = $.fn.FFI_BE_Sell_Books_Assistant.ISBN10.val();
+			ISBN10 = ISBN10.toUpperCase();
+			$.fn.FFI_BE_Sell_Books_Assistant.ISBN10.val(ISBN10)
 			
 			if (ISBN10 != '') {
 				ISBN10 = ISBN.parse($.fn.FFI_BE_Sell_Books_Assistant.ISBN10.val());
@@ -219,12 +221,12 @@
 		
 	//Fetch data from the server to pre-fill the rest of the book and course information
 		$.ajax({
-			'data' : {
+			data       : {
 				'ISBN' : ISBN.asIsbn13() //Doesn't matter which type we send
 			},
-			'type' : 'GET',
-			'url' : $.fn.FFI_BE_Sell_Books_Assistant.defaults.fetchURL,
-			'success' : function(data) {
+			type       : 'GET',
+			url        : $.fn.FFI_BE_Sell_Books_Assistant.defaults.fetchURL,
+			success    : function(data) {
 			//Validate the incoming JSON
 				try {
 					var JSON = $.parseJSON(data);
@@ -293,7 +295,7 @@
 	};
 	
 /**
- * The plugin settings
+ * The plugin settings.
  *
  * @access public
  * @since  3.0
@@ -301,6 +303,6 @@
 */
 	
 	$.fn.FFI_BE_Sell_Books_Assistant.defaults = {
-		fetchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/suggest.php'
+		'fetchURL' : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/suggest.php'
 	};
 })(jQuery);

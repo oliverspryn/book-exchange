@@ -52,7 +52,7 @@
 	};
 	
 /**
- * Build the modal dialog and initialize the TinyMCE editor
+ * Build the modal dialog and initialize the TinyMCE editor.
  * 
  * @access public
  * @return void
@@ -172,7 +172,9 @@
 			$.fn.FFI_BE_Buy.submit.attr('disabled', 'disabled').addClass('disabled').html('Please wait...');
 			
 		//Save the TinyMCE content to the textarea
-			tinymce.activeEditor.save();
+			if (tinymce.activeEditor != null) {
+				tinymce.activeEditor.save();
+			}
 			
 		//Generate the POST data object for the purchase request
 			var POST = {
@@ -266,7 +268,7 @@
 	};
 	
 /**
- * Clear the dialog's message alert
+ * Clear the dialog's message alert.
  *
  * @access public
  * @return void
@@ -278,7 +280,7 @@
 	};
 	
 /**
- * Decode all applicable characters from HTML entities
+ * Decode all applicable characters from HTML entities.
  *
  * @access public
  * @param  string input The string to be decoded from HTML entities
@@ -291,16 +293,16 @@
 	};
 
 /**
- * Plugin default settings
+ * Plugin default settings.
  *
  * @access public
  * @type   object<bool|string>
 */
 
 	$.fn.FFI_BE_Buy.defaults = {
-		processURL   : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/purchase.php',
-		showComments : true,                                     //Whether or not to show the comments section
-		showLogin    : true,                                     //Whether or not to show the login section
-		targetObject : 'button.purchase, span.purchase'          //The target object which will trigger a purchase
+		'processURL'   : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/purchase.php',
+		'showComments' : true,                            //Whether or not to show the comments section
+		'showLogin'    : true,                            //Whether or not to show the login section
+		'targetObject' : 'button.purchase, span.purchase' //The target object which will trigger a purchase
 	};
 })(jQuery);

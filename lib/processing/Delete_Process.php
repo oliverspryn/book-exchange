@@ -10,6 +10,7 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
+ * @extends   FFI\BE\Processor_Base
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
@@ -18,12 +19,13 @@
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
+require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 
-class Delete_Process {
+class Delete_Process extends Processor_Base {
 /**
  * Hold the ID of the sale to restore.
  *
@@ -48,6 +50,8 @@ class Delete_Process {
 */
 
 	public function __construct() {
+		parent::__construct();
+	
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->validateAndRetain();
@@ -61,7 +65,7 @@ class Delete_Process {
  * necessarily valid).
  * 
  * @access private
- * @return bool         Whether or not the user has submitted the form
+ * @return bool    Whether or not the user has submitted the form
  * @since  3.0
 */
 	
@@ -87,10 +91,10 @@ class Delete_Process {
 */
 	
 	private function validateAndRetain() {
-		global $current_user, $wpdb;
+		global $wpdb;
 		
 	//Check to see if the user is logged in
-		if (!is_user_logged_in()) {
+		if (!$this->loggedIn) {
 			throw new Validation_Failed("You are not logged in");
 		}
 		
@@ -103,9 +107,9 @@ class Delete_Process {
 		}
 		
 	//Check to see if the user actually owns this book
-		get_currentuserinfo();
+		$this->retainUserInfo();
 		
-		if ($data[0]->MerchantID != $current_user->ID) {
+		if ($data[0]->MerchantID != $this->user->ID) {
 			throw new Validation_Failed("You do not own this book");
 		}
 	
@@ -120,6 +124,7 @@ class Delete_Process {
  * @access private
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
 	private function delete() {

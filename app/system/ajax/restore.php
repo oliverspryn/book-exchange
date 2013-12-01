@@ -9,5 +9,7 @@
 		echo "success";
 	} catch (FFI\BE\Validation_Failed $e) {
 		echo $e->getMessage();
+	} catch (Exception $e) {
+		echo "Unknown error: " . $e->getMessage();
 	}
 ?>

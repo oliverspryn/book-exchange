@@ -10,17 +10,15 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
+ * @extends   FFI\BE\Processor_Base
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.form.processing
+ * @package   lib.processing
  * @since     3.0
 */
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/user.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
 require_once(dirname(dirname(__FILE__)) . "/display/Book.php");
@@ -28,40 +26,18 @@ require_once(dirname(dirname(__FILE__)) . "/emails/Email_Buyer.php");
 require_once(dirname(dirname(__FILE__)) . "/emails/Email_Merchant.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Login_Failed.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
+require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/user.php");
 	
-class Purchase_Process {
-/**
- * Hold the buyer's login status
- *
- * @access private
- * @type   bool
-*/
-	
-	private $loggedIn = false;
-	
-/**
- * Hold the ID of the book
- *
- * @access private
- * @type   int
-*/
-	
-	private $ID;
-	
-/**
- * Hold the comments from the buyer
- *
- * @access private
- * @type   string
-*/
-	
-	private $comments;
-	
+class Purchase_Process extends Processor_Base {
 /**
  * Hold the data for the book which is being purchased
  * 
  * @access private
- * @type   object<mixed>
+ * @type   object
 */
 	
 	private $book;
@@ -76,6 +52,25 @@ class Purchase_Process {
 	private $buyer;
 	
 /**
+ * Hold the comments from the buyer
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $comments;
+	
+	
+/**
+ * Hold the ID of the book
+ *
+ * @access private
+ * @type   int
+*/
+	
+	private $ID;
+
+/**
  * Hold the data about the merchant
  *
  * @access private
@@ -83,15 +78,6 @@ class Purchase_Process {
 */
 	
 	private $merchant;
-
-/**
- * Hold the plugin settings fetched fro a database
- *
- * @access private
- * @type   object<mixed>
-*/
-
-	private $info;
 	
 /**
  * CONSTRUCTOR
@@ -105,15 +91,16 @@ class Purchase_Process {
  * @access public
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
 	public function __construct() {
-		$this->loggedIn = is_user_logged_in();
-		
+		parent::__construct();
+	
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->login();
-			$this->fetchSettings();
+			$this->fetchSettings("ffi_be_settings");
 			$this->validateAndRetain();
 			IndexDen::delete($this->ID);
 			$this->sendEmails();
@@ -142,51 +129,6 @@ class Purchase_Process {
 	}
 	
 /**
- * Log in the buyer, if necessary. The buyer's account data will be
- * retained whether or not they were previously logged in.
- *
- * @access private
- * @return void
- * @since  3.0
- * @throws Login_Failed Thrown if a user's login credentials are invalid
-*/
-	
-	private function login() {
-		if (!$this->loggedIn) {
-		//Gather the credentials
-			$credentials = array(
-				"user_login"    => $_POST['username'],
-				"user_password" => $_POST['password'],
-				"remember"      => false
-			);
-			
-		//Log the user in and retain the account information
-			$this->buyer = wp_signon($credentials, false);
-			
-			if (is_wp_error($this->buyer)) {
-				throw new Login_Failed("Your username or password is invalid");
-			}
-		} else {
-			$this->buyer = wp_get_current_user();
-		}
-	}
-
-/**
- * Fetch the plugin settings from the database and make the data
- * available to the rest of the class.
- *
- * @access private
- * @return void
- * @since  3.0
-*/
-
-	private function fetchSettings() {
-		global $wpdb;
-
-		$this->info = $wpdb->get_results("SELECT * FROM `ffi_be_settings`");
-	}
-	
-/**
  * Determine whether or not all of the required information has been
  * submitted and is completely valid. If validation has succeeded, then
  * store the data within the class for later database entry.
@@ -199,12 +141,13 @@ class Purchase_Process {
 
 	private function validateAndRetain() {
 	//Calculate the book's expiration
-		$timezone = new \DateTimeZone($this->info[0]->TimeZone);
+		$timezone = new \DateTimeZone($this->settings[0]->TimeZone);
 		$uploaded = new \DateTime($this->book[0]->Upload, $timezone);
-		$expires = $uploaded->add(new \DateInterval("P" . $this->info[0]->BookExpireMonths . "M"));
+		$expires = $uploaded->add(new \DateInterval("P" . $this->settings[0]->BookExpireMonths . "M"));
 		$now = new \DateTime();
 
-	//Fetch, validate, and retain the book data		
+	//Fetch, validate, and retain the book data
+	
 		$this->ID = $_POST['id'];
 		$this->book = Book::details($this->ID);
 		
@@ -221,6 +164,7 @@ class Purchase_Process {
 		}
 		
 	//Fetch, validate, and retain the merchant data
+		$this->buyer = &$this->user;
 		$this->merchant = get_userdata($this->book[0]->MerchantID);
 		
 		if (!$this->merchant) {
@@ -247,8 +191,8 @@ class Purchase_Process {
 	private function sendEmails() {
 	//Send the buyer an email
 		$emailBuyer = new Email_Buyer();
-		$emailBuyer->fromEmail = $this->info[0]->EmailAddress;
-		$emailBuyer->fromName = $this->info[0]->EmailName;
+		$emailBuyer->fromEmail = $this->settings[0]->EmailAddress;
+		$emailBuyer->fromName = $this->settings[0]->EmailName;
 		$emailBuyer->subject = "ORDER SUCCESS: " . $this->book[0]->Title;
 		$emailBuyer->toEmail = $this->buyer->user_email;
 		$emailBuyer->toName = $this->buyer->first_name . " " . $this->buyer->last_name;
@@ -302,10 +246,10 @@ class Purchase_Process {
 		
 
 	//Log the purchase
-		$timezone = new \DateTimeZone($this->info[0]->TimeZone);
+		$timezone = new \DateTimeZone($this->settings[0]->TimeZone);
 		$timestamp = new \DateTime("now", $timezone);
 		
-		$wpdb->insert("ffi_be_purchases", array(
+		$wpdb->insert("ffi_be_purchases", array (
 			"PurchaseID" => NULL,
 			"BookID"     => $this->book[0]->BookID,
 			"Price"      => $this->book[0]->Price,
@@ -315,8 +259,6 @@ class Purchase_Process {
 		), array (
 			"%d", "%d", "%d", "%d", "%d", "%s"
 		));
-		
-		exit;
 	}
 }
 ?>

@@ -10,6 +10,7 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
+ * @extends   FFI\BE\Processor_Base
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
@@ -18,11 +19,19 @@
 
 namespace FFI\BE;
 
+require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 
-class Settings_Process {
+class Settings_Process extends Processor_Base {
+/**
+ * Hold the automated email from address.
+ *
+ * @access private
+ * @type   string
+*/
+	
+	private $address;
+
 /**
  * Hold the book expiration duration.
  *
@@ -40,16 +49,6 @@ class Settings_Process {
 */
 	
 	private $name;
-	
-	
-/**
- * Hold the automated email from address.
- *
- * @access private
- * @type   string
-*/
-	
-	private $address;
 	
 /**
  * Hold the plugin's time zone.
@@ -75,6 +74,7 @@ class Settings_Process {
 */
 	
 	public function __construct() {
+		parent::__construct();
 		$this->hasPrivileges();
 		
 	//Check to see if the user has submitted the form
@@ -93,8 +93,8 @@ class Settings_Process {
  * @since  3.0
 */
 	
-	private function hasPrivileges() {
-		if (is_user_logged_in() && current_user_can("update_core")) {
+	private function hasPrivileges() {	
+		if ($this->isAdmin) {
 			//Nice!
 		} else {
 			throw new Validation_Failed("You are not logged in with administrator privileges");
@@ -151,7 +151,7 @@ class Settings_Process {
 		$this->address = $_POST['email-address'];
 		
 	//Validate and retain the plugin's time zone
-		$zones = array(
+		$zones = array (
 			"America/New_York",
 			"America/Chicago",
 			"America/Denver",
@@ -168,33 +168,6 @@ class Settings_Process {
 	}
 	
 /**
- * Check to see if a particular integer value falls between a specified
- * range.
- * 
- * @access private
- * @param  int      $value The integer value to check
- * @param  int      $min   The minimum value the integer may equal
- * @param  int      $max   The maximum value the integer may equal
- * @return bool            Whether or not the integer falls within the specified range
- * @since  3.0
-*/
-	
-	private function intBetween($value, $min, $max) {
-		if (!is_numeric($value)) {
-			return false;
-		}
-		
-		$value = intval($value);
-		
-	//Check the integer extrema
-		if ($value >= $min && $value <= $max) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-/**
  * Update the plugin's settings.
  *
  * @access private
@@ -205,16 +178,16 @@ class Settings_Process {
 	private function update() {
 		global $wpdb;
 		
-		$wpdb->update("ffi_be_settings", array(
+		$wpdb->update("ffi_be_settings", array (
 			"BookExpireMonths" => $this->expire,
 			"EmailName"        => $this->name,
 			"EmailAddress"     => $this->address,
 			"TimeZone"         => $this->timeZone
-		), array(
+		), array (
 			"SettingsID" => 1
-		), array(
+		), array (
 			"%d", "%s", "%s", "%s"
-		), array(
+		), array (
 			"%d"
 		));
 		

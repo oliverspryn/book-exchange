@@ -14,7 +14,7 @@
  * @extends   \Exception
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.exceptions
+ * @package   lib.exceptions
  * @since     3.0
 */
 
@@ -51,16 +51,16 @@ abstract class Base extends \Exception {
  * be returned in the event that a custom exception object
  * is echoed to the display. It will include the following
  * in the returned string:
- *  - the class name
- *  - the generated message
- *  - the file which threw the exception
- *  - the line in the file which threw the exception
- *  - a trace of the call stack
+ *  - The class name.
+ *  - The generated message.
+ *  - The file which threw the exception.
+ *  - The line in the file which threw the exception.
+ *  - A trace of the call stack.
  *
  * @access    public
  * @overrides parent::toString()
  * @return    string             A string containing nearly all relevant information about the current exception, see description
- * @since  3.0
+ * @since     3.0
 */
 
 	public function __toString() {

@@ -485,21 +485,6 @@ section.explore header button.close-search span.small {
  * ----------------------------------
 */
 
-section.explore section.courses {	
-	-moz-transition: all .5s ease-in-out;
-	-ms-transition: all .5s ease-in-out;
-	-o-transition: all .5s ease-in-out;
-	-webkit-transition: all .5s ease-in-out;
-	transition: all .5s ease-in-out;
-	
-	-moz-opacity: 1;
-	-ms-opacity: 1;
-	-o-opacity: 1;
-	-webkit-opacity: 1;
-	filter: alpha(opacity=1);
-	opacity: 1;
-}
-
 section.explore section.courses.liberal-arts {
 	background: #FFFFFF;
 	border-top: none !important;
@@ -628,12 +613,7 @@ section.explore.active-search div.loader-mask {
 }
 
 section.explore.active-search section.courses {
-	-moz-opacity: 0;
-	-ms-opacity: 0;
-	-o-opacity: 0;
-	-webkit-opacity: 0;
-	filter: alpha(opacity=0);
-	opacity: 0;
+	display: none;
 }
 
 section.explore.active-search section.search-hotspot {
@@ -641,6 +621,18 @@ section.explore.active-search section.search-hotspot {
 	min-height: 400px;
 	position: relative;
 	top: 0px;
+}
+
+section.explore.active-search section.search-hotspot span#end {
+	background: url(sprites/searching-large.gif) no-repeat center center;
+	display: block;
+	height: 35px;
+	margin-top: 30px;
+	width: 100%;
+}
+
+section.explore.active-search section.search-hotspot span#end.hide {
+	display: none;
 }
 
 @media screen and (max-width: 980px) {

@@ -1,36 +1,43 @@
 <?php
 //Include the necessary scripts
-	$essentials->includePluginClass("display/Book_Details");
-	$essentials->includePluginClass("display/Course");
-	$essentials->includePluginClass("APIs/Cloudinary");
 	$essentials->includeCSS("book.min.css");
+	$essentials->includeHeadHTML("<script>\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})</script>");
+	$essentials->includePluginClass("APIs/Cloudinary");
+	$essentials->includePluginClass("display/Book");
+	$essentials->includePluginClass("display/Course");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includeJS("buy.min.js");
-	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
 
 //Fetch the book information
 	$params = $essentials->params ? $essentials->params[0] : 0;
-	$failRedirect = $essentials->friendlyURL("");
-	$book = new FFI\BE\Book_Details($params, $failRedirect);
+	$book = FFI\BE\Book::details($params, $failRedirect);
+	
+//Check to see if any information was returned
+	if (!count($book)) {
+		wp_redirect($essentials->friendlyURL(""));
+		exit;
+	}
+	
+	$info = &$book[0];
 
 //Set the page title
-	$essentials->setTitle($book->data[0]->Title);
+	$essentials->setTitle($info->Title);
 	
 //Display the page
-	echo "<h1>" . $book->data[0]->Title . "</h1>
+	echo "<h1>" . $info->Title . "</h1>
 	
 ";
 
 //Display the page header
-	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\Cloudinary::background($book->data[0]->ImageID) . ")\">
+	echo "<article class=\"book-welcome\" style=\"background-image: url(" . FFI\BE\Cloudinary::background($info->ImageID) . ")\">
 <section class=\"quick-info\">
-<h2>" . $book->data[0]->Title . "</h2>
-<h3>by " . $book->data[0]->Author . "</h3>
+<h2>" . $info->Title . "</h2>
+<h3>by " . $info->Author . "</h3>
 </section>
 
 <section class=\"cover\">
-<img src=\"" . FFI\BE\Cloudinary::cover($book->data[0]->ImageID) . "\">
-<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-price=\"" . htmlentities($book->data[0]->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
+<img src=\"" . FFI\BE\Cloudinary::cover($info->ImageID) . "\">
+<span class=\"purchase\" data-id=\"" . $info->SaleID . "\" data-title=\"" . htmlentities($info->Title) . "\" data-author=\"" . htmlentities($info->Author) . "\" data-price=\"" . htmlentities($info->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($info->ImageID)) . "\">Buy for \$" . $info->Price . ".00</span>
 </section>
 </article>
 
@@ -38,7 +45,7 @@
 
 //Display the container header
 	echo "<section class=\"container\">
-<h2>" . $book->data[0]->Title . " Book Details</h2>
+<h2>" . $info->Title . " Book Details</h2>
 
 <div class=\"row\">
 
@@ -46,7 +53,7 @@
 
 //Display the sidebar
 	echo "<aside class=\"supplement\">
-<span class=\"purchase\" data-id=\"" . $book->data[0]->BookID . "\" data-title=\"" . htmlentities($book->data[0]->Title) . "\" data-author=\"" . htmlentities($book->data[0]->Author) . "\" data-price=\"" . htmlentities($book->data[0]->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($book->data[0]->ImageID)) . "\">Buy for \$" . $book->data[0]->Price . ".00</span>
+<span class=\"purchase\" data-id=\"" . $info->SaleID . "\" data-title=\"" . htmlentities($info->Title) . "\" data-author=\"" . htmlentities($info->Author) . "\" data-price=\"" . htmlentities($info->Price) . "\" data-image=\"" . htmlentities(FFI\BE\Cloudinary::coverPreview($info->ImageID)) . "\">Buy for \$" . $info->Price . ".00</span>
 
 <ul class=\"navigation\">
 <li class=\"more\"><a href=\"" . $essentials->friendlyURL("") . "\">See More Courses</a></li>
@@ -55,7 +62,7 @@
 
 <hr>
 
-" . FFI\BE\Course::getRecentBooksInCourse($book->data[0]->CourseID, 4, $book->data[0]->SaleID) . "
+" . FFI\BE\Course::getRecentBooksInCourse($info->CourseID, 4, $info->SaleID) . "
 </aside>
 
 ";
@@ -69,9 +76,9 @@
 <h3>Merchant and Condition</h3>
 
 <ul>
-<li class=\"merchant\"><span>" . $book->data[0]->Merchant . "</span></li>
-<li class=\"condition " . $conditionCSS[$book->data[0]->Condition - 1] . "\"><span>" . $condition[$book->data[0]->Condition - 1] . "<span class=\"desktop\"> Condition</span></span></li>
-<li class=\"markings" . ($book->data[0]->Written == "1" ? " writing" : "") . "\"><span>" . ($book->data[0]->Written == "1" ? "Contains" : "No") . " Writing<span class=\"desktop\"> or Markings</span></span></li>
+<li class=\"merchant\"><span>" . $info->Merchant . "</span></li>
+<li class=\"condition " . $conditionCSS[$info->Condition - 1] . "\"><span>" . $condition[$info->Condition - 1] . "<span class=\"desktop\"> Condition</span></span></li>
+<li class=\"markings" . ($info->Written == "1" ? " writing" : "") . "\"><span>" . ($info->Written == "1" ? "Contains" : "No") . " Writing<span class=\"desktop\"> or Markings</span></span></li>
 </ul>
 </section>
 
@@ -86,21 +93,21 @@
 <li>
 <dl>
 <dt>ISBN-10</td>
-<dd>" . $book->data[0]->ISBN10 . "</dd>
+<dd>" . $info->ISBN10 . "</dd>
 <dt>ISBN-13</td>
-<dd>" . $book->data[0]->ISBN13 . "</dd>
+<dd>" . $info->ISBN13 . "</dd>
 </dl>
 </li>
 
 <li>
 <dl>
 <dt>Author</dt>
-<dd>" . $book->data[0]->Author . "</dd>
+<dd>" . $info->Author . "</dd>
 ";
 
-	if ($book->data[0]->Edition != "") {
+	if ($info->Edition != "") {
 		echo "<dt>Edition</dt>
-<dd>" . $book->data[0]->Edition . "</dd>
+<dd>" . $info->Edition . "</dd>
 ";
 	}
 	
@@ -118,7 +125,7 @@
 
 <ul class=\"course-list\">";
 
-	foreach($book->data as $course) {
+	foreach($book as $course) {
 		echo "
 <li style=\"background-image: url(" . $essentials->dataURL("tiles/" . $course->CourseID . "/small.png") . ")\">
 <p>" . $course->Name . " " . $course->Number . " " . $course->Section . "</p>
@@ -132,12 +139,12 @@
 ";
 
 //Display the user's comments
-	if ($book->data[0]->Comments != "") {
+	if ($info->Comments != "") {
 		echo "<section class=\"content stripe comments\">
 <h3>User Comments</h3>
 <figure class=\"comments\"></figure>
 
-" . $book->data[0]->Comments . "
+" . $info->Comments . "
 </section>
 ";
 	}

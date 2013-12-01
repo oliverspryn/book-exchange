@@ -15,8 +15,12 @@
 			echo $e->getMessage();
 		} catch (FFI\BE\Validation_Failed $e) {
 			echo "USER_ERROR" . $e->getMessage();
+		} catch (Exception $e) {
+			echo "Unknown error: " . $e->getMessage();
 		}
 	} catch (FFI\BE\Validation_Failed $e) {
 		echo "USER_ERROR" . $e->getMessage();
+	} catch (Exception $e) {
+		echo "Unknown error: " . $e->getMessage();
 	}
 ?>

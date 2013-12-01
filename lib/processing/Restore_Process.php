@@ -10,6 +10,7 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
+ * @extends   FFI\BE\Processor_Base
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
@@ -18,12 +19,23 @@
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
+require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 
-class Restore_Process {
+class Restore_Process extends Processor_Base {
+/**
+ * Hold the author of the book.
+ *
+ * @access private
+ * @type   string
+*/
+
+	private $author;
+	
 /**
  * Hold the ID of the sale to restore.
  *
@@ -52,15 +64,6 @@ class Restore_Process {
 	private $title;
 	
 /**
- * Hold the author of the book.
- *
- * @access private
- * @type   string
-*/
-
-	private $author;
-	
-/**
  * CONSTRUCTOR
  *
  * This method will call helper methods to:
@@ -75,6 +78,8 @@ class Restore_Process {
 */
 
 	public function __construct() {
+		parent::__construct();
+	
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->validateAndRetain();
@@ -117,7 +122,7 @@ class Restore_Process {
 		global $current_user, $wpdb;
 		
 	//Check to see if the user is logged in
-		if (!is_user_logged_in()) {
+		if (!$this->loggedIn) {
 			throw new Validation_Failed("You are not logged in");
 		}
 		
@@ -135,9 +140,9 @@ class Restore_Process {
 		}
 		
 	//Check to see if the user actually owns this book
-		get_currentuserinfo();
+		$this->retainUserInfo();
 		
-		if ($data[0]->MerchantID != $current_user->ID) {
+		if ($data[0]->MerchantID != $this->user->ID) {
 			throw new Validation_Failed("You do not own this book");
 		}
 		
@@ -167,6 +172,7 @@ class Restore_Process {
  * @access private
  * @return void
  * @since  3.0
+ * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
 	private function update() {
@@ -174,11 +180,11 @@ class Restore_Process {
 		
 		IndexDen::updateByID($this->saleID, $this->title, $this->author);
 		
-		$wpdb->update("ffi_be_sale", array(
+		$wpdb->update("ffi_be_sale", array (
 			"Upload" => $this->time
 		), array (
 			"SaleID" => $this->saleID
-		), array(
+		), array (
 			"%s"
 		), array (
 			"%d"

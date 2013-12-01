@@ -101,16 +101,16 @@
  * This method initializes several events which persist for the
  * duration of the plugin. These events include:
  *  - Focus on the search input when a user beings typing, if it
- *    does not already have focus
+ *    does not already have focus.
  *  - Allow a small delay between the time the user starts typing
- *    a query until he or she is finished
- *  - Activate the searching tools as the user begins typing
+ *    a query until he or she is finished.
+ *  - Activate the searching tools as the user begins typing.
  *  - Scroll the explore panel into view as the search input field
- *    gains focus
+ *    gains focus.
  *  - Update the hash and search results as the user presses the 
- *    forward and back buttons
+ *    forward and back buttons.
  *  - Update the URL hash and perform a new search as drop down 
- *    menu values change
+ *    menu values change.
  *
  * @access public
  * @return void
@@ -198,7 +198,7 @@
 	};
 	
 /**
- * Remove the page initialization mask after a set duration
+ * Remove the page initialization mask after a set duration.
  *
  * @access public
  * @return void
@@ -217,7 +217,7 @@
 
 /**
  * Determine whether the end of search results trigger object
- * is within view of the user's viewport
+ * is within view of the user's viewport.
  *
  * @access public
  * @return bool   Whether or not the trigger object is within view
@@ -241,7 +241,7 @@
 	
 /**
  * Determine whether or not the explore section is in search
- * mode
+ * mode.
  *
  * @access public
  * @return boolean  Whether or not the explore section is in search mode
@@ -253,7 +253,7 @@
 	};
 	
 /**
- * Update the URL hash value based on the search form input values
+ * Update the URL hash value based on the search form input values.
  *
  * @access public
  * @return void
@@ -279,7 +279,7 @@
 	
 /**
  * Send the search request to the server and build the listing
- * of search results from the fetched data
+ * of search results from the fetched data.
  *
  * @access public
  * @return void
@@ -293,28 +293,31 @@
 		$.fn.FFI_BE_Explore.allowPageFetch = false;
 		$.fn.FFI_BE_Explore.currentPage = 1;
 		$.fn.FFI_BE_Explore.reachedEnd = false;
-		
+				
 	//Send the search 
 		$.ajax({
-			'data' : {
-				'q' : query,
-				'by' : by,
-				'in' : $.fn.FFI_BE_Explore.inMenu.val(),
-				'sort' : $.fn.FFI_BE_Explore.sortMenu.val(),
-				'page' : $.fn.FFI_BE_Explore.currentPage,
+			'data'      : {
+				'q'     : query,
+				'by'    : by,
+				'in'    : $.fn.FFI_BE_Explore.inMenu.val(),
+				'sort'  : $.fn.FFI_BE_Explore.sortMenu.val(),
+				'page'  : $.fn.FFI_BE_Explore.currentPage,
 				'limit' : $.fn.FFI_BE_Explore.defaults.searchResultsLimit
 			}, 
-			'type' : 'GET',
-			'url' : $.fn.FFI_BE_Explore.defaults.searchURL,
-			'success' : function(data) {
+			'type'      : 'GET',
+			'url'       : $.fn.FFI_BE_Explore.defaults.searchURL,
+			'success'   : function(data) {
 			//Searching may have been cancelled by the time the request was returned
 				if ($.fn.FFI_BE_Explore.searchActive()) {
+					$('span#end').removeClass('hide');
+
 				//Validate the incoming JSON
 					try {
 						var JSON = $.parseJSON(data);
 					} catch(e) {
 						if (data == '') {
 							$.fn.FFI_BE_Explore.reachedEnd = true;
+							$('span#end').addClass('hide');
 						} else if (data.substring(0, 10) == 'USER_ERROR') {
 							alert(data.substring(10));
 						} else {
@@ -369,6 +372,7 @@
 				//Have we maxxed out the search results?
 					if (JSON.length < $.fn.FFI_BE_Explore.defaults.searchResultsLimit) {
 						$.fn.FFI_BE_Explore.reachedEnd = true;
+						$('span#end').addClass('hide');
 				//Set a time delay before the next page of results is allowed to fetch
 					} else {
 						setTimeout(function() {
@@ -414,7 +418,7 @@
 
 /**
  * Generate the URL to a particular book when given the ID and
- * title of the book
+ * title of the book.
  *
  * @access public
  * @param  int    ID    The ID of the book
@@ -467,7 +471,7 @@
 	};
 
 /**
- * Convert all applicable characters to HTML entities
+ * Convert all applicable characters to HTML entities.
  *
  * @access public
  * @param  string input The string to be encoded to HTML entities
@@ -481,7 +485,7 @@
 
 /**
  * Send the request for the next page of search results and
- * build the next set of search results from the fetched data
+ * build the next set of search results from the fetched data.
  *
  * @access public
  * @return void
@@ -493,17 +497,17 @@
 			$.fn.FFI_BE_Explore.allowPageFetch = false;
 			
 			$.ajax({
-				'data' : {
-					'q' : $.fn.FFI_BE_Explore.input.val(),
-					'by' : $.fn.FFI_BE_Explore.by.val(),
-					'in' : $.fn.FFI_BE_Explore.inMenu.val(),
-					'sort' : $.fn.FFI_BE_Explore.sortMenu.val(),
-					'page' : ++$.fn.FFI_BE_Explore.currentPage,
+				'data'      : {
+					'q'     : $.fn.FFI_BE_Explore.input.val(),
+					'by'    : $.fn.FFI_BE_Explore.by.val(),
+					'in'    : $.fn.FFI_BE_Explore.inMenu.val(),
+					'sort'  : $.fn.FFI_BE_Explore.sortMenu.val(),
+					'page'  : ++$.fn.FFI_BE_Explore.currentPage,
 					'limit' : $.fn.FFI_BE_Explore.defaults.searchResultsLimit
 				}, 
-				'type' : 'GET',
-				'url' : $.fn.FFI_BE_Explore.defaults.searchURL,
-				'success' : function(data) {
+				'type'      : 'GET',
+				'url'       : $.fn.FFI_BE_Explore.defaults.searchURL,
+				'success'   : function(data) {
 				//Searching may have been cancelled by the time the request was returned
 					if ($.fn.FFI_BE_Explore.searchActive()) {
 					//Validate the incoming JSON
@@ -512,6 +516,7 @@
 						} catch(e) {
 							if (data == '') {
 								$.fn.FFI_BE_Explore.reachedEnd = true;
+								$('span#end').addClass('hide');
 							} else if (data.substring(0, 10) == 'USER_ERROR') {
 								alert(data.substring(10));
 							} else {
@@ -538,6 +543,7 @@
 					//Have we maxxed out the search results?
 						if (JSON.length < $.fn.FFI_BE_Explore.defaults.searchResultsLimit) {
 							$.fn.FFI_BE_Explore.reachedEnd = true;
+							$('span#end').addClass('hide');
 					//Set a time delay before the next page of results is allowed to fetch
 						} else {
 							setTimeout(function() {
@@ -580,7 +586,7 @@
 	};
 	
 /**
- * Scroll the viewport to the top of the explore/search section
+ * Scroll the viewport to the top of the explore/search section.
  *
  * @access public
  * @return void
@@ -598,7 +604,7 @@
 	};
 	
 /**
- * Show the search controls
+ * Show the search controls.
  *
  * @access public
  * @return void
@@ -610,7 +616,7 @@
 	};
 	
 /**
- * Hide the search controls
+ * Hide the search controls.
  *
  * @access public
  * @return void
@@ -625,7 +631,7 @@
  * Prepare the UI for searches by hiding the course listing sections, 
  * or, if the page is already in search mode, apply a light visual
  * mask over top of the existing search results while new results are
- * fetched
+ * fetched.
  *
  * @access public
  * @return void
@@ -635,11 +641,6 @@
 	$.fn.FFI_BE_Explore.activateSearch = function() {
 		if (!$.fn.FFI_BE_Explore.searchActive()) {
 			$.fn.FFI_BE_Explore.section.addClass('active-search');
-			
-		//Wait for old elements to transition out
-			setTimeout(function() {
-				$('section.liberal-arts, section.science-mathematics').hide();
-			}, $.fn.FFI_BE_Explore.adjacentContainersFadeDuration);
 		} else {
 			if (!$('div.loader-mask').length) {
 				$('<div class="loader-mask"/>').appendTo($.fn.FFI_BE_Explore.section);
@@ -660,30 +661,33 @@
 	
 	$.fn.FFI_BE_Explore.resetSearch = function() {
 		$.fn.FFI_BE_Explore.input.val('');
+		$.fn.FFI_BE_Explore.by.val('title');
+		$.fn.FFI_BE_Explore.inMenu.val('0');
+		$.fn.FFI_BE_Explore.sortMenu.val('relevance');
+
 		$.fn.FFI_BE_Explore.updateHash();
 		$.fn.FFI_BE_Explore.section.removeClass('active-search show-controls');
-		$('section.liberal-arts, section.science-mathematics').show();
 		$('section.search-hotspot').remove();
 		$('div.loader-mask').remove();
 		clearTimeout($.fn.FFI_BE_Explore.typeTimer);
 	};
 	
 /**
- * Plugin default settings
+ * Plugin default settings.
  *
  * @access public
  * @type   object<int|string>
 */
 	
 	$.fn.FFI_BE_Explore.defaults = {
-		adjacentContainersFadeDuration : 500,  //The amount of time required for CSS to fade out the course containers
-		hashUpdateDelay : 1000,                //The amount of time to wait after the user finishes typing updating the hash
-		maskRemoveDelay : 1500,                //The delay before removing the page initialization hash
-		maskRemoveFadeDuration : 250,          //The amount of time required for CSS to fade out the page initialization hash
-		nextPageFetchDelay : 1000,             //The amount of time to wait before fetching the next page of results
-		searchResultsLimit : 12,               //The maximum number of search results to retrieve at a time
-		searchURL : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/search.php',
-		windowScrollTime : 500                 //The amount of time required to scroll the search/explore section into view
+		'adjacentContainersFadeDuration' : 500,    //The amount of time required for CSS to fade out the course containers
+		'hashUpdateDelay'                : 1000,   //The amount of time to wait after the user finishes typing updating the hash
+		'maskRemoveDelay'                : 1500,   //The delay before removing the page initialization hash
+		'maskRemoveFadeDuration'         : 250,    //The amount of time required for CSS to fade out the page initialization hash
+		'nextPageFetchDelay'             : 1000,   //The amount of time to wait before fetching the next page of results
+		'searchResultsLimit'             : 12,     //The maximum number of search results to retrieve at a time
+		'searchURL'                      : document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'wp-content/plugins/book-exchange/app/system/ajax/search.php',
+		'windowScrollTime'               : 500     //The amount of time required to scroll the search/explore section into view
 	};
 })(jQuery);
 

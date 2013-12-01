@@ -1,13 +1,12 @@
 <?php
 //Include the necessary scripts
-	$essentials->setTitle("Book Exchange");
 	$essentials->includeCSS("explore.min.css");
+	$essentials->includeHeadHTML("<script>\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})</script>");
+	$essentials->includePluginClass("display/Course");
 	$essentials->includeJS("explore.min.js");
 	$essentials->includeJS("buy.min.js");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
-	$essentials->includePluginClass("display/Book");
-	$essentials->includePluginClass("display/Course");
-	$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
+	$essentials->setTitle("Book Exchange");
 	
 //Display the loader mask
 	echo "<section class=\"loader\"></section>
@@ -15,7 +14,7 @@
 ";
 
 //Display the welcome section
-	$total = FFI\BE\Book::total();
+	$total = FFI\BE\Course::total();
 
 	echo "<section class=\"welcome\">
 <div>
@@ -49,7 +48,7 @@
 	$menu = "";
 	
 	foreach($allCourses as $course) {
-		$menu .= "<option value=\"" . $course->CourseID . "\">" . htmlentities($course->Name) . "</option>
+		$menu .= "<option value=\"" . $course->Code . "\">" . htmlentities($course->Name) . "</option>
 ";
 	}
 

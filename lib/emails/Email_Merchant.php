@@ -8,10 +8,10 @@
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
- * @extends   Email_Base
+ * @extends   FFI\BE\Email_Base
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.email
+ * @package   lib.email
  * @since     3.0
 */
 
@@ -21,7 +21,7 @@ require_once(dirname(__FILE__) . "/Email_Base.php");
 
 class Email_Merchant extends Email_Base {
 /**
- * Hold the title of the book
+ * Hold the title of the book.
  *
  * @access public
  * @type   string
@@ -30,7 +30,7 @@ class Email_Merchant extends Email_Base {
 	public $title;
 
 /**
- * Hold the price of the book
+ * Hold the price of the book.
  *
  * @access public
  * @type   int
@@ -39,7 +39,7 @@ class Email_Merchant extends Email_Base {
 	public $price;
 
 /**
- * Hold the URL of the cover to the book
+ * Hold the URL of the cover to the book.
  *
  * @access public
  * @type   string
@@ -48,7 +48,7 @@ class Email_Merchant extends Email_Base {
 	public $imageURL;
 	
 /**
- * Hold the comments from the buyer
+ * Hold the comments from the buyer.
  *
  * @access public
  * @type   string
@@ -57,7 +57,7 @@ class Email_Merchant extends Email_Base {
 	public $comments;
 	
 /**
- * Hold the name of the buyer
+ * Hold the name of the buyer.
  *
  * @access public
  * @type   string
@@ -66,7 +66,7 @@ class Email_Merchant extends Email_Base {
 	public $buyer;
 
 /**
- * Hold the first name of the buyer
+ * Hold the first name of the buyer.
  *
  * @access public
  * @type   string
@@ -76,7 +76,7 @@ class Email_Merchant extends Email_Base {
 
 /**
  * Build the HTML and plain-text versions of the email body 
- * from the information gathered previously
+ * from the information gathered previously.
  *
  * @access public
  * @return void
@@ -85,7 +85,16 @@ class Email_Merchant extends Email_Base {
 	
 	public function buildBody() {
 	//Generate the absolute URL to the directory where the images in the email can be found
-		$directory = "http://" . $_SERVER['HTTP_HOST'] . str_replace("includes/ajax/purchase.php", "", $_SERVER['PHP_SELF']) . "images/email-assets/";
+		$directory = "http://" . $_SERVER['HTTP_HOST'] . str_replace("ajax/purchase.php", "", $_SERVER['PHP_SELF']) . "images/email-assets/";
+		
+	//Clean the URL to the book cover
+		$cleanURL = $this->imageURL;
+		
+		if (substr($cleanURL, 0, 7) == "http://" || substr($cleanURL, 0, 8) == "https://") {
+			//Good!
+		} else {
+			$cleanURL = "http://" . $cleanURL;
+		}
 		
 	//Generate the HTML version of the email
 		$this->HTMLBody = "<!DOCTYPE html>
@@ -96,12 +105,32 @@ class Email_Merchant extends Email_Base {
 </head>
 
 <body>
-<table cellpadding=\"none\" style=\"border-collapse:collapse; border-top: 5px solid #000000;\" width=\"660\">
+<table cellpadding=\"none\" style=\"border-collapse: collapse; border-top: 5px solid #000000;\" width=\"660\">
 <tbody>
 <tr>
-<td align=\"center\" background=\"" . $directory . "header-merchant.jpg\" height=\"647\" valign=\"top\" style=\"border-left: 1px solid #000000; border-right: 1px solid #000000;\" width=\"660\">
-<img alt=\"" . htmlentities($this->title) . " Book Cover\" height=\"355\" src=\"http:" . $this->imageURL . "\" style=\"padding-top: 212px;\" width=\"275\" />
-<p style=\"color: #FFFFFF; font-family: Arial,sans-serif; font-size: 16px; margin: 0px; padding-top: 16px;\">\$" . $this->price . ".00</p>
+<td align=\"center\" background=\"" . $directory . "header-merchant.jpg\" height=\"647\" style=\"border-left: 1px solid #000000; border-right: 1px solid #000000;\" valign=\"top\" width=\"660\">
+<!--[if gte mso 9]>
+<v:rect xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\" style=\"height: 647px; width: 660px;\">
+<v:fill src=\"" . $directory . "header-merchant.jpg\" type=\"frame\" />
+<![endif]-->
+<table cellpadding=\"none\" style=\"border-collapse: collapse;\" width=\"640\">
+<tbody>
+<tr>
+<td height=\"208\"></td>
+</tr>
+
+<tr>
+<td align=\"center\" height=\"355\">
+<img alt=\"" . htmlentities($this->title) . " Book Cover\" height=\"355\" src=\"" . $cleanURL . "\" width=\"275\" />
+<p style=\"font-size: 17px; margin: 0px;\">&nbsp;</p>
+<p align=\"center\" style=\"color: #FFFFFF; font-family: Arial,sans-serif; font-size: 16px; margin: 0px;\">\$" . $this->price . ".00</p>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if gte mso 9]>
+</v:rect>
+<![endif]-->
 </td>
 </tr>
 
@@ -258,7 +287,7 @@ class Email_Merchant extends Email_Base {
 		if (trim(strip_tags($this->comments)) != "") {
 			$this->textBody .= "*** A word from the buyer ***
 			
-" . strip_tags($this->comment) . "
+" . strip_tags($this->comments) . "
 
 ";
 		}

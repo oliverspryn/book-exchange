@@ -24,11 +24,5 @@
 			selector : 'textarea',
 			toolbar  : 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | undo redo | forecolor backcolor'
 		});
-		
-	//Enable the cancel button to leave the form
-		$('button.cancel').click(function() {
-			var URL = document.location.href.substring(0, document.location.href.indexOf('book-exchange')) + 'book-exchange';
-			document.location.href = URL;
-		});
 	});
 })(jQuery);

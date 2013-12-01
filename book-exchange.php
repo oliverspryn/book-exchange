@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Book Exchange
-Plugin URI: http://forwardfour.com/book-exchange
+Plugin URI: https://github.com/ffiadmin/book-exchange
 Description: This is a plugin for the Grove City College Student Government Association's student textbook exchange.
 Version: 3.0
 Author: Oliver Spryn
-Author URI: http://forwardfour.com/
+Author URI: http://spryn.me/
 License: MIT
 */
 
@@ -26,12 +26,13 @@ License: MIT
 	if (!is_admin()) {
 		require_once(PATH . "lib/Interception_Manager.php");
 		$intercept = new Interception_Manager();
-		$intercept->registerException("book", "book/index.php", 2);
-		$intercept->registerException("browse", "browse/index.php", 2);
-		$intercept->registerException("browse", "browse/index.php", 2, 3, 4);
-		$intercept->registerException("sell-books", "sell-books/index.php", 2);
+		$intercept->registerException("book", "book/index.php", 2);               // Book Details page
+		$intercept->registerException("browse", "browse/index.php", 2);           // Browse course numbers and sections page
+		$intercept->registerException("browse", "browse/index.php", 2, 3, 4);     // Browse books in a course section page
+		$intercept->registerException("sell-books", "sell-books/index.php", 2);   // Sell a book editing page
 		$intercept->highlightNavLink(URL_ACTIVATE);
 		$intercept->go();
+//Run administrative-only features
 	} else {
 		function addMenuItems() {
    			global $submenu;

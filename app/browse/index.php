@@ -24,13 +24,12 @@
 	} else {
 		$essentials->includeJS("buy.min.js");
 		$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
-		$essentials->includeHeadHTML("<script>(function(\$){\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})})(jQuery);</script>");
+		$essentials->includeHeadHTML("<script>\$(function(){\$(document).FFI_BE_Buy(" . (is_user_logged_in() ? "{'showLogin':false}" : "") . ")})</script>");
 	}
-
+	
 //Get information regarding the current course
 	$course = $essentials->params[0];
-	$failRedirect = $essentials->friendlyURL("");
-	$info = FFI\BE\Course::getCourseInfo($course, $failRedirect);
+	$info = FFI\BE\Course::getCourseInfo($course);
 	
 	if (!count($info)) {
 		wp_redirect($essentials->friendlyURL(""));
@@ -53,7 +52,7 @@
 ";
 		
 //Display the welcome splash section
-	$arts = array("bookshelf.jpg", "phantom-of-the-opera.jpg", "parthenon.jpg", "piano.jpg");
+	$arts = array("bookshelf.jpg", "parthenon.jpg", "phantom-of-the-opera.jpg", "piano.jpg");
 	$science = array("brooklyn-bridge.jpg", "electronic-board.jpg", "higgs-boson.jpg", "php.jpg");
 	$rand = mt_rand(0, 3);
 	$background = ($info->Type == "Arts") ? $arts[$rand] : $science[$rand];
@@ -85,11 +84,11 @@
 
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "courses"
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-		$sections = FFI\BE\Course::getNumbersWithBooks($essentials->params[0]);
-		$total = FFI\BE\Book::totalInCourse($essentials->params[0]);
+		$total = FFI\BE\Book::totalInCourse($course);
+		$sections = FFI\BE\Course::getNumbersWithBooks($course);
 		
 		echo "<section class=\"container\">
-<h2>" . $info->Name . " Courses and Avaliable Books</h2>
+<h2>" . $info->Name . " and Avaliable Books</h2>
 		
 <div class=\"row\">
 <aside class=\"supplement\">
@@ -133,7 +132,7 @@
 
 	foreach($sections as $section) {
 		echo "
-<li><a href=\"" . $essentials->friendlyURL("browse/" . $essentials->params[0] . "/" . $section->Number . "/" . strtoupper($section->Section)) . "\"><h3>" . $info->Name . " " . $section->Number . " " . $section->Section . "</h3><span>" . $section->SectionTotal . " " . ($section->SectionTotal == 1 ? "Book" : "Books") . " Available</span></a></li>";
+<li><a href=\"" . $essentials->friendlyURL("browse/" . $course . "/" . $section->Number . "/" . strtoupper($section->Section)) . "\"><h3>" . $info->Name . " " . $section->Number . " " . $section->Section . "</h3><span>" . $section->SectionTotal . " " . ($section->SectionTotal == 1 ? "Book" : "Books") . " Available</span></a></li>";
 	}
 
 	echo "
@@ -144,12 +143,11 @@
 </section>";
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "books"
 	} else {
-		$failRedirect = $essentials->friendlyURL("browse/" . $essentials->params[0]);
-		$books = FFI\BE\Course::getBooksInCourseSection($course, $essentials->params[2], strtolower($essentials->params[3]), $failRedirect);
+		$books = FFI\BE\Course::getBooksInCourseSection($course, $essentials->params[2], strtolower($essentials->params[3]));
 		
 	//Are there any books available for this section?
 		if (!count($books)) {
-			wp_redirect($essentials->friendlyURL("browse/" . $essentials->params[0]));
+			wp_redirect($essentials->friendlyURL("browse/" . $course));
 			exit;
 		}
 		

@@ -1,6 +1,6 @@
 <?php
 /**
- * Sell books form display class
+ * Sell Books Display class
  *
  * This class is used to fetch data from the MySQL database for the 
  * sell books display form. If data is returned from the database, 
@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI\BE
- * @package   includes.form.display
+ * @package   lib.display
  * @since     3.0
 */
 
@@ -22,16 +22,27 @@ namespace FFI\BE;
 
 require_once(dirname(__FILE__) . "/Course.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
+require_once(dirname(dirname(__FILE__)) . "/exceptions/No_Data_Returned.php");
+require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 
 class Sell_Book_Display {	
 /**
  * Hold the results of the SQL query.
  *
  * @access private
- * @type   boolean|object<mixed>
+ * @type   object
 */
 	
 	private $data;
+
+/**
+ * Hold the first row of results from the SQL query.
+ *
+ * @access private
+ * @type   object
+*/
+	
+	private $details;
 
 /**
  * CONSTRUCTOR
@@ -40,27 +51,31 @@ class Sell_Book_Display {
  * and if not, redirect to the URL indicated by $failRedirect.
  * 
  * @access public
- * @param  int      $ID           The ID of the book to fetch from the database
- * @param  int      $userID       The ID of the user requesting this page
- * @param  string   $failRedirect The URL to redirect to if the SQL query returns zero tuples (i.e. an invalid $ID or $userID is given)
+ * @param  int              $ID     The ID of the book to fetch from the database
+ * @param  int              $userID The ID of the user requesting this page
  * @return void
+ * @throws No_Data_Returned         Thrown when no data is returned from the database
  * @since  3.0
 */
 	
-	public function __construct($ID, $userID, $failRedirect) {
+	public function __construct($ID, $userID) {
 		global $wpdb;
 		
-		if ($ID) {
-			$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID LEFT JOIN `ffi_be_bookcourses` ON ffi_be_sale.SaleID = ffi_be_bookcourses.SaleID WHERE ffi_be_sale.SaleID = %d AND ffi_be_sale.MerchantID = %d AND `Sold` = '0'", $ID, $userID));
-			
-		//SQL returned 0 tuples, "Leave me!" - http://johnnoble.net/img/photos/denethor_a.jpg
-			if (!count($this->data)) {
-				wp_redirect($failRedirect);
-				exit;
-			}
-		} else {
+	//Don't continue if the ID is zero
+        if ($ID == 0) {
 			$this->data = false;
+			return;
 		}
+		
+	//Try to fetch the data
+		$this->data = $wpdb->get_results($wpdb->prepare("SELECT * FROM `ffi_be_sale` LEFT JOIN `ffi_be_books` ON ffi_be_sale.BookID = ffi_be_books.BookID LEFT JOIN `ffi_be_bookcourses` ON ffi_be_sale.SaleID = ffi_be_bookcourses.SaleID WHERE ffi_be_sale.SaleID = %d AND ffi_be_sale.MerchantID = %d AND `Sold` = '0'", $ID, $userID));
+			
+	//SQL returned 0 tuples, "Leave me!" - http://johnnoble.net/img/photos/denethor_a.jpg
+		if (!count($this->data)) {
+			throw new No_Data_Returned("No book information exists for the given ID");
+		}
+		
+		$this->details = &$this->data[0];
 	}
 	
 /**
@@ -74,7 +89,7 @@ class Sell_Book_Display {
 	
 	public function getISBN10() {
 		if ($this->data) {
-			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN10]]\" disabled id=\"ISBN10\" name=\"ISBN10\" type=\"text\" value=\"" . htmlentities($this->data[0]->ISBN10) . "\">";
+			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN10]]\" disabled id=\"ISBN10\" name=\"ISBN10\" type=\"text\" value=\"" . htmlentities($this->details->ISBN10) . "\">";
 		} else {
 			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN10]]\" id=\"ISBN10\" name=\"ISBN10\" type=\"text\" value=\"\">";
 		}
@@ -91,7 +106,7 @@ class Sell_Book_Display {
 	
 	public function getISBN13() {
 		if ($this->data) {
-			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN13]]\" disabled id=\"ISBN13\" name=\"ISBN13\" type=\"text\" value=\"" . htmlentities($this->data[0]->ISBN13) . "\">";
+			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN13]]\" disabled id=\"ISBN13\" name=\"ISBN13\" type=\"text\" value=\"" . htmlentities($this->details->ISBN13) . "\">";
 		} else {
 			return "<input autocomplete=\"off\" class=\"validate[required,custom[ISBN13]]\" id=\"ISBN13\" name=\"ISBN13\" type=\"text\" value=\"\">";
 		}
@@ -107,7 +122,7 @@ class Sell_Book_Display {
 */
 	
 	public function getTitle() {
-		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"title\" name=\"title\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->Title : "") . "\">";
+		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"title\" name=\"title\" type=\"text\" value=\"" . htmlentities($this->data ? $this->details->Title : "") . "\">";
 	}
 	
 /**
@@ -120,7 +135,7 @@ class Sell_Book_Display {
 */
 	
 	public function getAuthors() {
-		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"author\" name=\"author\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->Author : "") . "\">";
+		return "<input autocomplete=\"off\" class=\"validate[required]\" id=\"author\" name=\"author\" type=\"text\" value=\"" . htmlentities($this->data ? $this->details->Author : "") . "\">";
 	}
 	
 /**
@@ -133,7 +148,7 @@ class Sell_Book_Display {
 */
 	
 	public function getEdition() {
-		return "<input autocomplete=\"off\" id=\"edition\" name=\"edition\" type=\"text\" value=\"" . htmlentities($this->data ? $this->data[0]->Edition : "") . "\">";
+		return "<input autocomplete=\"off\" id=\"edition\" name=\"edition\" type=\"text\" value=\"" . htmlentities($this->data ? $this->details->Edition : "") . "\">";
 	}
 
 /**
@@ -146,13 +161,13 @@ class Sell_Book_Display {
 */
 	
 	public function getCover() {
-		$return = "<input class=\"cover-input validate[required]\" id=\"imageURL\" name=\"imageURL\" type=\"text\" value=\"" . htmlentities($this->data ? Cloudinary::coverPreview($this->data[0]->ImageID) : "") . "\">
+		$return = "<input class=\"cover-input validate[required]\" id=\"imageURL\" name=\"imageURL\" type=\"text\" value=\"" . htmlentities($this->data ? Cloudinary::coverPreview($this->details->ImageID) : "") . "\">
 <div class=\"book-cover\">
 ";
 
 		if ($this->data) {
 			$return .= "<ul>
-<li><img class=\"selected suggestion\" src=\"" . Cloudinary::coverPreview($this->data[0]->ImageID) . "\"></li>
+<li><img class=\"selected suggestion\" src=\"" . Cloudinary::coverPreview($this->details->ImageID) . "\"></li>
 </ul>
 ";
 		}
@@ -285,7 +300,7 @@ class Sell_Book_Display {
 */
 	
 	public function getPrice() {
-		return "<input autocomplete=\"off\" class=\"input-mini validate[required,custom[integer],min[0],max[999]]\" id=\"price\" max=\"999\" min=\"0\" name=\"price\" type=\"number\" value=\"" . htmlentities($this->data ? $this->data[0]->Price : "5") . "\">";
+		return "<input autocomplete=\"off\" class=\"input-mini validate[required,custom[integer],min[0],max[999]]\" id=\"price\" max=\"999\" min=\"0\" name=\"price\" type=\"number\" value=\"" . htmlentities($this->data ? $this->details->Price : "5") . "\">";
 	}
 	
 /**
@@ -298,8 +313,8 @@ class Sell_Book_Display {
 */
 	
 	public function getWriting() {
-		$checkedYes = $this->data[0]->Written == "1";
-		$checkedNo = $this->data[0]->Written == "0" || !$this->data;
+		$checkedYes = $this->details->Written == "1";
+		$checkedNo = $this->details->Written == "0" || !$this->data;
 	
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
@@ -320,11 +335,11 @@ class Sell_Book_Display {
 */
 	
 	public function getCondition() {
-		$poor = $this->data[0]->Condition == "1";
-		$fair = $this->data[0]->Condition == "2";
-		$good = $this->data[0]->Condition == "3";
-		$veryGood = $this->data[0]->Condition == "4" || !$this->data;
-		$excellent = $this->data[0]->Condition == "5";
+		$poor = $this->details->Condition == "1";
+		$fair = $this->details->Condition == "2";
+		$good = $this->details->Condition == "3";
+		$veryGood = $this->details->Condition == "4" || !$this->data;
+		$excellent = $this->details->Condition == "5";
 	
 	//Return the generated output
 		return "<div class=\"btn-group\" data-toggle=\"buttons-radio\">
@@ -351,7 +366,7 @@ class Sell_Book_Display {
 */
 	
 	public function getComments() {
-		return "<textarea id=\"comments\" name=\"comments\">" . ($this->data ? $this->data[0]->Comments : "") . "</textarea>";
+		return "<textarea id=\"comments\" name=\"comments\">" . ($this->data ? $this->details->Comments : "") . "</textarea>";
 	}
 }
 ?>
