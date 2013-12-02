@@ -19,7 +19,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI_BE
- * @since     3.0
+ * @since     3.0.0
 */
 
 (function($) {
@@ -54,7 +54,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Sell_Books_Assistant.eventsInit = function() {
@@ -208,7 +208,7 @@
  * @param  string    ISBN   The ISBN10 or ISBN13 of the desired book
  * @param  animation jQuery A jQuery object referencing an element to reveal while the data is being requested
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Sell_Books_Assistant.fetch = function(ISBN, animation) {
@@ -298,7 +298,7 @@
  * The plugin settings.
  *
  * @access public
- * @since  3.0
+ * @since  3.0.0
  * @type   object<string>
 */
 	

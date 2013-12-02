@@ -6,7 +6,7 @@
 	echo "<div class=\"wrap\">
 <h2>Book Cover Approval</h2>
 <p>Book covers are not automatically published onto the exchange until they have been verified by a human for accuracy and proper modesty.</p>
-<p>If there are any book covers which require approval, they will show in a table below. Please take a moment to review each of the covers. Pressing &quot;Approve&quot; will immediately publish the cover to the exchange, while &quot;Inappropriate&quot; or &quot;Unavailable&quot; will publish a generic, alternative cover instead. Since these covers have been automatically suggested by the system, there is a chance that some of them may be incorrect. You can do a search on <a href=\"https://images.google.com\" target=\"_blank\">Google Images</a> for the book cover and paste the URL of the correct cover into the corresponding text input.</p>
+<p>If there are any book covers which require approval, they will show in a table below. Please take a moment to review each of the covers. Pressing &quot;Approve&quot; will immediately publish the cover to the exchange, while &quot;Inappropriate&quot; or &quot;Unavailable&quot; will publish a generic, alternative cover instead. Since these covers have been automatically suggested by the system, there is a chance that some of them may be incorrect. You can do a search on <a href=\"https://images.google.com\" target=\"_blank\">Google Images</a> for the correct book cover and paste the URL of the image of the correct cover into the corresponding text input.</p>
 
 ";
 	
@@ -39,6 +39,14 @@
 </tr>
 ";
 		}
+	} else {
+		echo "
+<tr>
+<td class=\"none\">
+<p>Horray! No book covers need approval!</p>
+</td>
+</tr>
+";
 	}
 	
 	echo "</tbody>

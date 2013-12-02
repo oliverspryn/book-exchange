@@ -14,19 +14,18 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
 
+require_once(dirname(__FILE__) . "/Processor_Base.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/display/Book.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
 require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
-require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
 require_once(dirname(dirname(__FILE__)) . "/third-party/Isbn.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
 
 class Sell_Book_Process extends Processor_Base {
 /**
@@ -179,7 +178,7 @@ class Sell_Book_Process extends Processor_Base {
  * @access public
  * @param  int                               $ID The sale ID of the book to update. $ID = 0 means there is no entry to update (i.e. insert a book).
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 
@@ -206,7 +205,7 @@ class Sell_Book_Process extends Processor_Base {
  * @access private
  * @param  int      $ID The sale ID of the book to update
  * @return bool         Whether or not the user has submitted the form
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	private function userSubmittedForm($ID) {
@@ -227,7 +226,7 @@ class Sell_Book_Process extends Processor_Base {
  * 
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Validation_Failed Thrown when ANY portion of the validation process fails
 */
 	
@@ -340,7 +339,7 @@ class Sell_Book_Process extends Processor_Base {
  * 
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
@@ -435,7 +434,7 @@ class Sell_Book_Process extends Processor_Base {
  * @access private
  * @param  int                               $ID The sale ID of the book to update
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	

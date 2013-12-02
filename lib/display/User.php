@@ -14,7 +14,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.display
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -36,7 +36,7 @@ class User {
  * 
  * @access public
  * @return array<mixed> An array containing various bits of statistical information
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 	
@@ -97,7 +97,7 @@ class User {
  * 
  * @access public
  * @return array<mixed> An array containing various bits of information on books for sale
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 	
@@ -167,7 +167,7 @@ class User {
  * 
  * @access public
  * @return object An object containing a list of books the user has purchased
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 
@@ -189,7 +189,7 @@ class User {
  * 
  * @access public
  * @return object An object containing a list of books the user has sold
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 	

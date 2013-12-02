@@ -10,7 +10,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI_BE
- * @since     3.0
+ * @since     3.0.0
 */
 
 (function($) {
@@ -59,7 +59,7 @@
  * @access public
  * @param  event  e The event object which was dispatched
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.approveHandler = function(e) {
@@ -99,7 +99,7 @@
  * @access public
  * @param  event  e The event object which was dispatched
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.inappropriateHandler = function(e) {
@@ -139,7 +139,7 @@
  * @access public
  * @param  event  e The event object which was dispatched
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.unavailableHandler = function(e) {
@@ -180,7 +180,7 @@
  * @access public
  * @param  event  e The event object which was dispatched
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.altURLHandler = function(e) {
@@ -203,7 +203,7 @@
  * @access public
  * @param  event  e The event object which was dispatched
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.altBtnHandler = function(e) {
@@ -247,7 +247,7 @@
  * @access public
  * @param  jQObject target An input element to referce throughout this function
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.disableSiblings = function(target) {
@@ -263,7 +263,7 @@
  * @access public
  * @param  jQObject target An input element to referce throughout this function
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.enableSiblings = function(target) {
@@ -279,7 +279,7 @@
  * @param  jQObject target The <img> object to target
  * @param  string   newURL The new URL of the <img> object
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.changePreview = function(target, newURL) {
@@ -301,7 +301,7 @@
  * @access public
  * @param  string URL The URL to validate
  * @return bool       Whether or not the given URL is valid
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.FFI_BE_Approve.URLValid = function(URL) {
@@ -315,7 +315,7 @@
  * @access public
  * @param  string message The message inside of the tooltip
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.FFI_BE_Approve.whoot = function(message) {

@@ -14,7 +14,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.display
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -27,7 +27,7 @@ class Admin {
  * 
  * @access public
  * @return object An object containing a set of values from the API table in the database
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 
@@ -43,7 +43,7 @@ class Admin {
  * 
  * @access public
  * @return object A list of book whose covers require approval
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 	
@@ -58,7 +58,7 @@ class Admin {
  * 
  * @access public
  * @return object An object containing the plugin's settings from the settings table in the database
- * @since  3.0
+ * @since  3.0.0
  * @static 
 */
 	

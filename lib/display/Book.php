@@ -26,7 +26,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.display
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -45,7 +45,7 @@ class Book {
  * @access public
  * @param  int    $ID The ID of the book to fetch from the database
  * @return object     The object returned from the SQL query containing all available book data
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -72,7 +72,7 @@ class Book {
  * @param  string            $ISBN       The ISBN10 or ISBN13 of the book of interest
  * @param  bool              $JSONEncode Whether or not the returned data should be JSON encoded
  * @return array|string                  A set of information which can be used to identify the book            
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws No_Data_Returned             Thrown if the ISBN does not exist in the database
  * @throws Validation_Failed            Thrown if the ISBN is invalid
@@ -157,7 +157,7 @@ class Book {
  * @param  int    $price     The price of the book, rounded to the dollar
  * @param  string $imageID   The ID of the image of the book
  * @return string            The HTML to generate a quick view object
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -194,7 +194,7 @@ class Book {
  * @access public
  * @param  int                      $ISBN The ISBN10 or ISBN13 for which to suggest a cover
  * @return array<string>                  A list of URLs to possible covers for the ISBN
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Network_Connection_Error       [Bubbled up] Thrown in the server could not connect to the InvisibleHand API
  * @throws Validation_Failed              Thrown if the ISBN is invalid
@@ -260,7 +260,7 @@ class Book {
  * @access public
  * @param  string $name The name of a state
  * @return string       The URL purified version of the string
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 

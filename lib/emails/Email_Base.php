@@ -13,7 +13,7 @@
  * @license    MIT
  * @namespace  FFI\BE
  * @package    lib.email
- * @since      3.0
+ * @since      3.0.0
 */
 
 namespace FFI\BE;
@@ -93,7 +93,7 @@ abstract class Email_Base implements IEmail {
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Mandrill_Send_Failed     Thrown when Mandrill cannot send the email
  * @throws Network_Connection_Error [Bubbled up] Thrown when the server cannot communicate with the Mandrill servers
 */

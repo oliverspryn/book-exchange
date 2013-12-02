@@ -15,7 +15,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.exceptions
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -33,7 +33,7 @@ abstract class Base extends \Exception {
  * @param  string $message The message to be included with the exception
  * @param  int    $code    A custom error code to accompany the exception
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	public function __construct($message = NULL, $code = 0) {
@@ -60,7 +60,7 @@ abstract class Base extends \Exception {
  * @access    public
  * @overrides parent::toString()
  * @return    string             A string containing nearly all relevant information about the current exception, see description
- * @since     3.0
+ * @since     3.0.0
 */
 
 	public function __toString() {

@@ -14,12 +14,12 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
 
-require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
+require_once(dirname(__FILE__) . "/Processor_Base.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 
 class Settings_Process extends Processor_Base {
@@ -70,34 +70,17 @@ class Settings_Process extends Processor_Base {
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function __construct() {
 		parent::__construct();
-		$this->hasPrivileges();
+		$this->hasAdminPrivileges();
 		
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->validateAndRetain();
 			$this->update();
-		}
-	}
-	
-/**
- * Ensure the user is logged in with administrative privileges.
- *
- * @access private
- * @return bool              Whether or not the user is logged in as the administrator
- * @since  3.0
- * @throws Validation_Failed Thrown if the user does not have sufficent privileges to update the settings
-*/
-	
-	private function hasPrivileges() {	
-		if ($this->isAdmin) {
-			//Nice!
-		} else {
-			throw new Validation_Failed("You are not logged in with administrator privileges");
 		}
 	}
 	
@@ -108,7 +91,7 @@ class Settings_Process extends Processor_Base {
  *
  * @access private
  * @return bool     Whether or not the user has submitted the form
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	private function userSubmittedForm() {
@@ -128,7 +111,7 @@ class Settings_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Validation_Failed Thrown when ANY portion of the validation process fails
 */
 
@@ -172,7 +155,7 @@ class Settings_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	private function update() {

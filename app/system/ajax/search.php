@@ -9,7 +9,7 @@
 	try {
 		echo FFI\BE\IndexDen::search($_GET['q'], $_GET['by'], $_GET['in'], $_GET['sort'], $_GET['page'], $_GET['limit']);
 	} catch (Indextank_Exception_HttpException $e) {
-		echo "IndexDen error dump: " . $e->getMessage();
+		echo $e->getMessage();
 	} catch (FFI\BE\Validation_Failed $e) {
 		echo "USER_ERROR" . $e->getMessage(); //Prefixed with "USER_ERROR" so the user will be alerted of their mistake
 	} catch (Exception $e) {

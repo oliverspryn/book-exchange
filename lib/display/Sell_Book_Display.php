@@ -15,7 +15,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.display
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -55,7 +55,7 @@ class Sell_Book_Display {
  * @param  int              $userID The ID of the user requesting this page
  * @return void
  * @throws No_Data_Returned         Thrown when no data is returned from the database
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function __construct($ID, $userID) {
@@ -84,7 +84,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getISBN10() {
@@ -101,7 +101,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getISBN13() {
@@ -118,7 +118,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getTitle() {
@@ -131,7 +131,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getAuthors() {
@@ -144,7 +144,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getEdition() {
@@ -157,7 +157,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form section prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getCover() {
@@ -183,7 +183,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A table prefilled with the specific classes where this book was used
- * @since  3.0
+ * @since  3.0.0
 */
 
 	public function getCourses() {
@@ -296,7 +296,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getPrice() {
@@ -309,7 +309,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getWriting() {
@@ -331,7 +331,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getCondition() {
@@ -362,7 +362,7 @@ class Sell_Book_Display {
  * 
  * @access public
  * @return string   A form item prefilled with a value from either the database or a default value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function getComments() {

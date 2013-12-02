@@ -14,16 +14,13 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     1.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
 
+require_once(dirname(__FILE__) . "/Processor_Base.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Login_Failed.php");
-require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
 
 class API_Process extends Processor_Base {
 /**
@@ -127,34 +124,17 @@ class API_Process extends Processor_Base {
  * 
  * @access public
  * @return void
- * @since  1.0
+ * @since  3.0.0
 */
 	
 	public function __construct() {
 		parent::__construct();
-		$this->hasPrivileges();
+		$this->hasAdminPrivileges();
 		
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->validateAndRetain();
 			$this->update();
-		}
-	}
-	
-/**
- * Ensure the user is logged in with administrative privileges.
- *
- * @access private
- * @return bool         Whether or not the user is logged in as the administrator
- * @throws Login_Failed Thrown if the user does not have sufficent privileges to update the APIs
- * @since  1.0
-*/
-	
-	private function hasPrivileges() {
-		if ($this->isAdmin) {
-			//Nice!
-		} else {
-			throw new Login_Failed("You are not logged in with administrator privileges");
 		}
 	}
 	
@@ -165,7 +145,7 @@ class API_Process extends Processor_Base {
  *
  * @access private
  * @return bool     Whether or not the user has submitted the form
- * @since  1.0
+ * @since  3.0.0
 */
 	
 	private function userSubmittedForm() {
@@ -185,7 +165,7 @@ class API_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  1.0
+ * @since  3.0.0
 */
 
 	private function validateAndRetain() {
@@ -225,7 +205,7 @@ class API_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  1.0
+ * @since  3.0.0
 */
 
 	private function update() {

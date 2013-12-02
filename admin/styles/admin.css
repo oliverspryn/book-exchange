@@ -33,6 +33,13 @@ table.approve-covers tbody tr td p {
 	margin: 10px 0px 10px 225px; 
 }
 
+table.approve-covers tbody tr td.none p {
+	font-weight: bolder;
+	margin: 0px;
+	padding: 70px;
+	text-align: center;
+}
+
 table.approve-covers tbody tr td p input.alternative-url-input {
 	display: inline;
 	width: 250px;

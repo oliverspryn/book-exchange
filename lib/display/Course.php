@@ -39,7 +39,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.display
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -57,7 +57,7 @@ class Course {
  * @param  string $courseName The name of the course for which the graph is being generated
  * @param  string $courseURL  The URL version of the course of interest
  * @return string             Minified JavaScript whcih is used to initialize Arbor JS
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -117,7 +117,7 @@ class Course {
  * 
  * @access public
  * @return object A listing of all Arts and Letters courses
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -135,7 +135,7 @@ class Course {
  * @param  int    $number    The course number of interest
  * @param  char   $section   The course section letter of interest
  * @return object            A listing of books for a particular course section
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -151,7 +151,7 @@ class Course {
  * @access public
  * @param  string $courseURL The URL of the course of interest
  * @return object            Data regarding the name of the course, the type, code, and book tally
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -166,7 +166,7 @@ class Course {
  * 
  * @access public
  * @return object A listing of all available courses
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -184,7 +184,7 @@ class Course {
  * @access public
  * @param  string $courseURL The URL version of the course of interest
  * @return object                   A listing of all available course numbers and sections with books
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -200,7 +200,7 @@ class Course {
  * 
  * @access public
  * @return object A listing of all Science, Engineering & Mathematics courses
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 	
@@ -222,7 +222,7 @@ class Course {
  * @param  int    $limit    The maximum number of books to list
  * @param  int    $exclude  The ID of a book to exclude from the list, should it appear in the list
  * @return string           An HTML list of recent books
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -269,7 +269,7 @@ class Course {
  *
  * @access public
  * @return int    The number of available books
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -287,7 +287,7 @@ class Course {
  * @access public
  * @param  string $courseURL The URL-version of the course of interest
  * @return int               The number of available books in a course
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -308,7 +308,7 @@ class Course {
  * @access public
  * @param  string $name The name of a state
  * @return string       The URL purified version of the string
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 

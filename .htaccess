@@ -1,0 +1,6 @@
+# Forbid directory listing
+Options -Indexes
+
+# Deny public access to all of the files, exceptions to this rule will be added on an as-needed basis
+order deny,allow
+deny from all

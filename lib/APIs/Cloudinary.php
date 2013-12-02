@@ -18,7 +18,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.APIs
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -47,14 +47,14 @@ class Cloudinary {
  * @param  string $imageKey The key of the image to fetch from Cloudinary
  * @return string           The URL of the image with the supplied key
  * @static
- * @since  3.0
+ * @since  3.0.0
 */
 
 	public static function background($imageKey) {
 		self::getCloudName();
 		$cover = self::checkStatus($imageKey);
 		
-		return $cover ? ($cover . "background.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_fill,e_blur:800,h_385,w_2000/e_vibrance:100/" . $imageKey);
+		return $cover ? ($cover . "background.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_fill,e_blur:800,f_auto,h_385,w_2000/e_vibrance:100/" . $imageKey);
 	}
 	
 /**
@@ -75,7 +75,7 @@ class Cloudinary {
  * @access private
  * @param  string      $image The unique ID or URL of the image in the "ffi_be_books" table
  * @return bool|string        A string with the beginning of the URL to the temporary cover, or "false" if one is not necessary
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -101,7 +101,7 @@ class Cloudinary {
  * @access public
  * @param  string $imageKey The key of the image to fetch from Cloudinary
  * @return string           The URL of the image with the supplied key
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -109,7 +109,7 @@ class Cloudinary {
 		self::getCloudName();
 		$cover = self::checkStatus($imageKey);
 		
-		return $cover ? ($cover . "cover.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,h_355,w_275/" . $imageKey);
+		return $cover ? ($cover . "cover.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,f_auto,h_355,w_275/" . $imageKey);
 	}
 	
 /**
@@ -119,8 +119,7 @@ class Cloudinary {
  * @access public
  * @param  string $imageKey The key of the image to fetch from Cloudinary
  * @return string           The URL of the image with the supplied key
- * @see                     lib.display.Book.quickView()
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -128,7 +127,7 @@ class Cloudinary {
 		self::getCloudName();
 		$cover = self::checkStatus($imageKey);
 		
-		return $cover ? ($cover . "preview.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,h_300,w_200/" . $imageKey);
+		return $cover ? ($cover . "preview.jpg") : ("//cloudinary-a.akamaihd.net/" . self::$cloudName . "/image/upload/c_pad,e_vibrance:100,f_auto,h_300,w_200/" . $imageKey);
 	}
 	
 /**
@@ -136,7 +135,7 @@ class Cloudinary {
  * 
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
 */
 
@@ -155,7 +154,7 @@ class Cloudinary {
  * @access public
  * @param  string                   $imageURL The URL of the image to fetch and upload
  * @return array<mixed>                       A set of data returned from Cloudinary regarding the details of the uploaded image
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Exception                          [Bubbled up] Thrown when there is an error communicating with or uploading to Cloudinary
  * @throws InvalidArgumentException           [Bubbled up] Thrown when the uploader script is not supplied with the necessary information

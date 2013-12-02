@@ -16,7 +16,7 @@
 	} catch (FFI\BE\Validation_Failed $e) {
 		echo $e->getMessage();
 	} catch (Indextank_Exception_HttpException $e) {
-		echo "Error communicating with IndexDen";
+		echo $e->getMessage();
 	} catch (FFI\BE\Network_Connection_Error $e) {
 		echo $e->getMessage();
 	} catch (FFI\BE\Mandrill_Send_Failed $e) {

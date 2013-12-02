@@ -29,7 +29,7 @@
 <table class=\"form-table\">
 <tbody>
 <tr>
-<th><label for=\"cloudinary-cloud-name\">Cloudinary cloud name:</label></th>
+<th><label for=\"cloudinary-cloud-name\">Cloudinary Cloud Name:</label></th>
 <td><input autocomplete=\"off\" class=\"regular-text\" id=\"cloudinary-cloud-name\" name=\"cloudinary-cloud-name\" type=\"text\" value=\"" . $API->CloudinaryCloudName . "\"></td>
 </tr>
 

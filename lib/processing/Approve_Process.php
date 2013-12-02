@@ -14,15 +14,15 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
 
+require_once(dirname(__FILE__) . "/Processor_Base.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Login_Failed.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
-require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 
 class Approve_Process extends Processor_Base {
@@ -64,34 +64,17 @@ class Approve_Process extends Processor_Base {
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function __construct() {
 		parent::__construct();
-		$this->hasPrivileges();
+		$this->hasAdminPrivileges();
 		
 	//Check to see if the user has submitted the form
 		if ($this->userSubmittedForm()) {
 			$this->validateAndRetain();
 			$this->update();
-		}
-	}
-	
-/**
- * Ensure the user is logged in with administrative privileges.
- *
- * @access private
- * @return void
- * @since  3.0
- * @throws Login_Failed Thrown if the user does not have sufficent privileges to update the settings
-*/
-	
-	private function hasPrivileges() {	
-		if ($this->isAdmin) {
-			//Nice!
-		} else {
-			throw new Login_Failed("You are not logged in with administrator privileges");
 		}
 	}
 	
@@ -102,7 +85,7 @@ class Approve_Process extends Processor_Base {
  *
  * @access private
  * @return bool    Whether or not the user has submitted the form
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	private function userSubmittedForm() {
@@ -122,7 +105,7 @@ class Approve_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Validation_Failed Thrown when ANY portion of the validation process fails
 */
 
@@ -166,7 +149,7 @@ class Approve_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Exception                [Bubbled up] Thrown when there is an error communicating with or uploading to Cloudinary
  * @throws InvalidArgumentException [Bubbled up] Thrown when the uploader script is not supplied with the necessary information
 */

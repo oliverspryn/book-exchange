@@ -8,6 +8,7 @@
 		new FFI\BE\API_Process();
 	} catch (FFI\BE\Login_Failed $e) {
 		echo $e->getMessage();
-		exit;
+	} catch (Exception $e) {
+		echo "Unknown error: " . $e->getMessage();
 	}
 ?>

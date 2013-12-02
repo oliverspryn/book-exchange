@@ -10,7 +10,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI_BE
- * @since     3.0
+ * @since     3.0.0
 */
 
 (function($) {
@@ -55,7 +55,7 @@
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Reload_Index.reload = function() {
@@ -95,7 +95,7 @@
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Reload_Index.validate = function() {

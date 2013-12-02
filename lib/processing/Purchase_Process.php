@@ -14,11 +14,12 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
 
+require_once(dirname(__FILE__) . "/Processor_Base.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/IndexDen.php");
 require_once(dirname(dirname(__FILE__)) . "/APIs/Cloudinary.php");
 require_once(dirname(dirname(__FILE__)) . "/display/Book.php");
@@ -26,11 +27,8 @@ require_once(dirname(dirname(__FILE__)) . "/emails/Email_Buyer.php");
 require_once(dirname(dirname(__FILE__)) . "/emails/Email_Merchant.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Login_Failed.php");
 require_once(dirname(dirname(__FILE__)) . "/exceptions/Validation_Failed.php");
-require_once(dirname(dirname(__FILE__)) . "/processing/Processor_Base.php");
 require_once(dirname(dirname(__FILE__)) . "/third-party/Indextank/Exception/HttpException.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/pluggable.php");
-require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/user.php");
 	
 class Purchase_Process extends Processor_Base {
 /**
@@ -90,7 +88,7 @@ class Purchase_Process extends Processor_Base {
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
 	
@@ -115,7 +113,7 @@ class Purchase_Process extends Processor_Base {
  *
  * @access private
  * @return bool     Whether or not the user has submitted the form
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	private function userSubmittedForm() {
@@ -135,7 +133,7 @@ class Purchase_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @throws Validation_Failed Thrown when ANY portion of the validation process fails
 */
 
@@ -185,7 +183,7 @@ class Purchase_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	private function sendEmails() {
@@ -231,7 +229,7 @@ class Purchase_Process extends Processor_Base {
  *
  * @access private
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	private function updateLocal() {

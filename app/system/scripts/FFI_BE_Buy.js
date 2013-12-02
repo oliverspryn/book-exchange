@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI_BE
- * @since     3.0
+ * @since     3.0.0
 */
 
 (function($) {
@@ -56,7 +56,7 @@
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Buy.buildDialog = function() {
@@ -139,7 +139,7 @@
  *
  * @access public
  * @return bool   Whether the user's browser supports placeholders
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.placeholderSupported = function () {
@@ -154,7 +154,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.submitHandler = function() {
@@ -241,7 +241,7 @@
  *
  * @access public
  * @return bool   Whether or not both the username and password have been provided
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.validate = function() {
@@ -254,7 +254,7 @@
  * @access public
  * @param  string text The text to fill in as the dialog's validation message
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.msg = function(text) {
@@ -272,7 +272,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.clearMsg = function() {
@@ -285,7 +285,7 @@
  * @access public
  * @param  string input The string to be decoded from HTML entities
  * @return string       The input string decoded from HTML entities
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Buy.htmlEntitiesDecode = function(input) {

@@ -12,7 +12,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.email
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -80,7 +80,7 @@ class Email_Merchant extends Email_Base {
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function buildBody() {

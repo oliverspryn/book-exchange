@@ -13,7 +13,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.processing
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -83,7 +83,7 @@ class Proxy {
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function __construct($URL) {
@@ -97,7 +97,7 @@ class Proxy {
  * @param  int    $option A constant which resembles the cURL option to configure <http://php.net/manual/en/function.curl-setopt.php>
  * @param  mixed  $value  The value to be paired with the option
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function addCURLOption($option, $value) {
@@ -113,7 +113,7 @@ class Proxy {
  * 
  * @access public
  * @return string The results returned from the specified URL
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function fetch() {

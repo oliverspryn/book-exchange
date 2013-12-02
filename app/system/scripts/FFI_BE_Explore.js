@@ -20,7 +20,7 @@
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
  * @license   MIT
  * @namespace FFI_BE
- * @since     3.0
+ * @since     3.0.0
 */
 
 (function($) {
@@ -74,7 +74,7 @@
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 						 
 	$.fn.FFI_BE_Explore.searchBar = function() {
@@ -114,7 +114,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.eventsInit = function() {
@@ -202,7 +202,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.removeMask = function() {
@@ -221,7 +221,7 @@
  *
  * @access public
  * @return bool   Whether or not the trigger object is within view
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Explore.endVisible = function() {
@@ -245,7 +245,7 @@
  *
  * @access public
  * @return boolean  Whether or not the explore section is in search mode
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.searchActive = function() {
@@ -257,7 +257,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.updateHash = function() {
@@ -283,7 +283,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.search = function() {
@@ -400,7 +400,7 @@
  *
  * @access public
  * @return array<string> An array containing the keys and values to each query in the hash value
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.parseHash = function() {
@@ -424,7 +424,7 @@
  * @param  int    ID    The ID of the book
  * @param  string title The title of the book
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Explore.generateURL = function(ID, title) {
@@ -449,7 +449,7 @@
  * @param  string imageID   The ID of the image of the book
  * @return void
  * @see                     FFI\BE\lib.display.Book::quickView()
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Explore.addSearchResult = function(ID, title, author, condition, price, imageURL) {
@@ -476,7 +476,7 @@
  * @access public
  * @param  string input The string to be encoded to HTML entities
  * @return string       The input string encoded to HTML entities
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Explore.htmlEntities = function(input) {
@@ -489,7 +489,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 
 	$.fn.FFI_BE_Explore.nextPage = function() {
@@ -564,7 +564,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.updateInputsFromHash = function() {
@@ -590,7 +590,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.scrollToSearch = function(animate) {
@@ -608,7 +608,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.showControls = function() {
@@ -620,7 +620,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.hideControls = function() {
@@ -635,7 +635,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.activateSearch = function() {
@@ -656,7 +656,7 @@
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	$.fn.FFI_BE_Explore.resetSearch = function() {

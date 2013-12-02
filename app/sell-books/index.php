@@ -1,7 +1,6 @@
 <?php
 //Include the necessary scripts
-	$essentials->requireLogin();
-	$essentials->setTitle("Sell Your Books");
+	$essentials->includeCSS("sell.superpackage.min.css");
 	$essentials->includePluginClass("display/Course");
 	$essentials->includePluginClass("display/Sell_Book_Display");
 	$essentials->includePluginClass("exceptions/No_Data_Returned");
@@ -9,7 +8,8 @@
 	$essentials->includePluginClass("processing/Sell_Book_Process");
 	$essentials->includeJS("//tinymce.cachefly.net/4/tinymce.min.js");
 	$essentials->includeJS("sell.superpackage.min.js");
-	$essentials->includeCSS("sell.superpackage.min.css");
+	$essentials->requireLogin();
+	$essentials->setTitle("Sell Your Books");
 	
 //Instantiate the form element display and processor classes
 	$params = $essentials->params ? $essentials->params[0] : 0;

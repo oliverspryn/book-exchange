@@ -9,5 +9,7 @@
 		echo "success";
 	} catch (Indextank_Exception_HttpException $e) {
 		echo $e->getMessage();
+	} catch (Exception $e) {
+		echo "Unknown error: " . $e->getMessage();
 	}
 ?>

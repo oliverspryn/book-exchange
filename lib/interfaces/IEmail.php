@@ -1,6 +1,6 @@
 <?php
 /**
- * Email Fefinition Interface
+ * Email Definition interface
  *
  * This interface is designed to enforce abilities each of the
  * custom emailer classes must posses within this plugin.
@@ -13,7 +13,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.interfaces
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -25,7 +25,7 @@ interface IEmail {
  *
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
 */
 	
 	public function buildBody();
@@ -38,7 +38,7 @@ interface IEmail {
  * @return void
  * @throws Mandrill_Send_Failed     Thrown in the event that Mandrill cannot send the email
  * @throws Network_Connection_Error Thrown in the event there is an error while trying to communicate with Mandrill
- * @since  3.0
+ * @since  3.0.0
 */
 
 	public function send();

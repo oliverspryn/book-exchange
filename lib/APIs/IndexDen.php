@@ -19,7 +19,7 @@
  * @license   MIT
  * @namespace FFI\BE
  * @package   lib.APIs
- * @since     3.0
+ * @since     3.0.0
 */
 
 namespace FFI\BE;
@@ -43,7 +43,7 @@ class IndexDen {
  * @param  string                            $title  The title of the book
  * @param  string                            $author The author of the book
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
 */
@@ -69,7 +69,7 @@ class IndexDen {
  * @access public
  * @param  int                               $ID The sale ID of the book to remove from the IndexDen index
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException     [Bubbled up] Thrown in the event of an IndexDen communication error
 */
@@ -93,7 +93,7 @@ class IndexDen {
  * 
  * @access public
  * @return int                               The size of the index
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
@@ -118,7 +118,7 @@ class IndexDen {
  * 
  * @access public
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException [Bubbled up] Thrown in the event of an IndexDen communication error
 */
@@ -154,7 +154,7 @@ class IndexDen {
  * @access public
  * @return array<bool|int>                        An array indicating whether all of the data has been indexed, and the number of documents indexed in this batch
  * @throws Indexing_Error                         Thrown in the event that IndexDen cannot index the batch of books
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException      [Bubbled up] Thrown in the event of an IndexDen communication error
  * @throws Indextank_Exception_IndexAlreadyExists [Bubbled up] Thrown if an index with the same name already exists
@@ -265,7 +265,7 @@ class IndexDen {
  * @param  int                               $page  The page number from which the results should begin
  * @param  int                               $limit The maximum number of results to return
  * @return string                                   A JSON encoded array of search results, containing the title, author, etc...
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException        [Bubbled up] Thrown in the event of an IndexDen communication error
  * @throws Validation_Failed                        Thrown when a parameter does not pass validation or has an IndexDen syntax error
@@ -373,7 +373,7 @@ class IndexDen {
  * @param  string                            $title  The updated title of the book
  * @param  string                            $author The updated author of the book
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
 */
@@ -404,7 +404,7 @@ class IndexDen {
  * @param  string                            $title  The updated title of the book
  * @param  string                            $author The updated author of the book
  * @return void
- * @since  3.0
+ * @since  3.0.0
  * @static
  * @throws Indextank_Exception_HttpException         [Bubbled up] Thrown in the event of an IndexDen communication error
 */
