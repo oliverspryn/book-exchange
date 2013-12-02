@@ -79,7 +79,7 @@ abstract class Processor_Base {
 	
 	protected function __construct() {
 		$this->loggedIn = is_user_logged_in();
-		$this->isAdmin = $this->logggedIn && current_user_can("update_core");
+		$this->isAdmin = is_user_logged_in() && current_user_can("update_core");
 	}
 	
 /**

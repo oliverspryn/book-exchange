@@ -24,7 +24,7 @@
 <img src=\"" . $book->ImageID . "\">
 <h3>" . $book->Title . "</h3>
 <h4>by " . $book->Author . "</h4>
-
+" . ($book->Edition != "" ? "<h4>Edition: " . $book->Edition . "</h4>\n" : "") . "
 <p>
 <button class=\"approve button button-primary\" data-id=\"" . $book->BookID . "\">Approve</button>
 <button class=\"button inappropriate\" data-id=\"" . $book->BookID . "\">Inappropriate</button>

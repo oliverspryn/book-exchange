@@ -188,7 +188,7 @@ class IndexDen {
 			$oldAPI = new \Indextank_Api($URL);
 			$oldIndex = $oldAPI->get_index($indexName);
 			$oldIndex->delete_index();
-	
+			
 		//Create a new index with the same name
 			$newAPI = new \Indextank_Api($URL);
 			$newIndex = $newAPI->create_index($indexName, true); //true is IMPORTANT!!! It allows the plugin to search the index!
@@ -239,8 +239,8 @@ class IndexDen {
 		}
 		
 		return array (
-			"Completed" => $lastIteration,
-			"Indexed"   => $dataCount
+			"completed" => $lastIteration,
+			"indexed"   => $dataCount
 		);
 	}
 	
@@ -322,7 +322,7 @@ class IndexDen {
 		$APIData = $wpdb->get_results("SELECT `IndexDenURL`, `IndexDenIndex` FROM `ffi_be_apis`");
 		$URL = $APIData[0]->IndexDenURL;
 		$indexName = $APIData[0]->IndexDenIndex;
-
+		
 		try {
 			$API = new \Indextank_Api($URL);
 			$index = $API->get_index($indexName);

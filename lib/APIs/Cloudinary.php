@@ -10,6 +10,8 @@
  *    provide a placeholder image, if necessary.
  *  - Obtain the name of the Cloudinary cloud name from the 
  *    API table in the database.
+ *  - Upload an image to Cloudinary and return the data from
+ *    the upload process.
  *
  * @author    Oliver Spryn
  * @copyright Copyright (c) 2013 and Onwards, ForwardFour Innovations
@@ -21,6 +23,8 @@
 
 namespace FFI\BE;
 
+require_once(dirname(dirname(__FILE__)) . "/third-party/Cloudinary/Cloudinary.php");
+require_once(dirname(dirname(__FILE__)) . "/third-party/Cloudinary/Uploader.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-blog-header.php");
 require_once(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . "/wp-includes/link-template.php");
 
@@ -40,8 +44,8 @@ class Cloudinary {
  * details page splash image
  * 
  * @access public
- * @param  string   $imageKey The key of the image to fetch from Cloudinary
- * @return string             The URL of the image with the supplied key
+ * @param  string $imageKey The key of the image to fetch from Cloudinary
+ * @return string           The URL of the image with the supplied key
  * @static
  * @since  3.0
 */
@@ -92,11 +96,11 @@ class Cloudinary {
 	
 /**
  * Generate the URL of the scaled book cover image for display on the
- * book details page
+ * book details page.
  * 
  * @access public
- * @param  string   $imageKey The key of the image to fetch from Cloudinary
- * @return string             The URL of the image with the supplied key
+ * @param  string $imageKey The key of the image to fetch from Cloudinary
+ * @return string           The URL of the image with the supplied key
  * @since  3.0
  * @static
 */
@@ -110,12 +114,12 @@ class Cloudinary {
 	
 /**
  * Generate the URL of the scaled book cover image for display in search 
- * results and book browsing pages
+ * results and book browsing pages.
  * 
  * @access public
- * @param  string   $imageKey The key of the image to fetch from Cloudinary
- * @return string             The URL of the image with the supplied key
- * @see                       lib.display.Book.quickView()
+ * @param  string $imageKey The key of the image to fetch from Cloudinary
+ * @return string           The URL of the image with the supplied key
+ * @see                     lib.display.Book.quickView()
  * @since  3.0
  * @static
 */
@@ -143,6 +147,33 @@ class Cloudinary {
 			$APIs = $wpdb->get_results("SELECT `CloudinaryCloudName` FROM `ffi_be_apis`");
 			self::$cloudName = $APIs[0]->CloudinaryCloudName;
 		}
+	}
+	
+/**
+ * Upload an image to Cloudinary.
+ * 
+ * @access public
+ * @param  string                   $imageURL The URL of the image to fetch and upload
+ * @return array<mixed>                       A set of data returned from Cloudinary regarding the details of the uploaded image
+ * @since  3.0
+ * @static
+ * @throws Exception                          [Bubbled up] Thrown when there is an error communicating with or uploading to Cloudinary
+ * @throws InvalidArgumentException           [Bubbled up] Thrown when the uploader script is not supplied with the necessary information
+*/
+
+	public static function upload($imageURL) {
+		global $wpdb;
+		$APIData = $wpdb->get_results("SELECT * FROM `ffi_be_apis`");
+		
+	//Configure the API for uploading
+		\Cloudinary::config(array (
+			"api_key"    => $APIData[0]->CloudinaryAPIKey,
+			"api_secret" => $APIData[0]->CloudinaryAPISecret,
+			"cloud_name" => $APIData[0]->CloudinaryCloudName
+		));
+		
+	//Do the uploadz!!!
+		return \Cloudinary\Uploader::upload($imageURL);
 	}
 }
 ?>

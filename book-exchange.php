@@ -49,6 +49,9 @@ License: MIT
 		function adminScripts() {
 			wp_register_script("ffi-be-admin-approve-script", REAL_ADDR . "admin/scripts/FFI_BE_Approve.js", array("jquery"));
 			wp_enqueue_script("ffi-be-admin-approve-script");
+			
+			wp_register_script("ffi-be-admin-reload-index", REAL_ADDR . "admin/scripts/FFI_BE_Reload_Index.js", array("jquery"));
+			wp_enqueue_script("ffi-be-admin-reload-index");
 		
 			wp_register_style("ffi-be-admin-styles", REAL_ADDR . "admin/styles/admin.css");
 			wp_enqueue_style("ffi-be-admin-styles");

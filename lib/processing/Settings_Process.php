@@ -89,8 +89,8 @@ class Settings_Process extends Processor_Base {
  *
  * @access private
  * @return bool              Whether or not the user is logged in as the administrator
- * @throws Validation_Failed Thrown if the user does not have sufficent privileges to update the settings
  * @since  3.0
+ * @throws Validation_Failed Thrown if the user does not have sufficent privileges to update the settings
 */
 	
 	private function hasPrivileges() {	
@@ -184,7 +184,7 @@ class Settings_Process extends Processor_Base {
 			"EmailAddress"     => $this->address,
 			"TimeZone"         => $this->timeZone
 		), array (
-			"SettingsID" => 1
+			"ID" => 1
 		), array (
 			"%d", "%s", "%s", "%s"
 		), array (

@@ -1,7 +1,7 @@
 <?php
 //Include the necessary scripts
-	require_once("../lib/APIs/IndexDen.php");
-	require_once("../lib/third-party/Indextank/Exception/HttpException.php");
+	require_once("../../lib/APIs/IndexDen.php");
+	require_once("../../lib/third-party/Indextank/Exception/HttpException.php");
 	
 //Perform the expired books purge operation
 	try {
