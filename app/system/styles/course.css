@@ -60,6 +60,12 @@ section#splash ul.welcome-minor li img {
 	padding: 3px 7px 7px 7px;
 }
 
+@media screen and (min-width: 2000px) {
+	section#splash div.ad-container {
+		background-size: 100% auto;
+	}
+}
+
 @media screen and (max-width: 980px) {
 	section#splash div.ad-container div.ad-contents > h2.force-show {
 		display: none;

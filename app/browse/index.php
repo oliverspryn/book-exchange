@@ -38,7 +38,7 @@
 
 //Generate the arbor.js initialization script
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-		$essentials->includeHeadHTML("\n<script>" . FFI\BE\Book::generateArborJSInit($info->Name, $course) . "</script>");
+		$essentials->includeHeadHTML("\n<script>" . FFI\BE\Course::generateArborJSInit($info->Name, $course) . "</script>");
 	}
 	
 //Set the page title
@@ -84,7 +84,7 @@
 
 //This content must ONLY be displayed when the DISPLAY_MODE is set to "courses"
 	if (FFI\BE\DISPLAY_MODE == "courses") {
-		$total = FFI\BE\Book::totalInCourse($course);
+		$total = FFI\BE\Course::totalInCourse($course);
 		$sections = FFI\BE\Course::getNumbersWithBooks($course);
 		
 		echo "<section class=\"container\">

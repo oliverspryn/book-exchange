@@ -4,7 +4,7 @@
 */
 
 article.book-welcome {	
-	background-position: center;
+	background-position: center center;
 	background-repeat: no-repeat;
 	border-top: 1px solid #DDDDDD;
 	height: 385px;
@@ -78,6 +78,12 @@ article.book-welcome section.cover span.purchase:hover {
 
 article.book-welcome section.cover span.disabled.purchase:hover {
 	background: #CCCCCC;
+}
+
+@media screen and (min-width: 2000px) {
+	article.book-welcome {
+		background-size: 100% auto;
+	}
 }
 
 @media screen and (max-width: 980px) {
@@ -365,6 +371,7 @@ section.container div.row aside.supplement ul.new li p.price {
 
 section.container div.row section.details {
 	background-color: #FFFFFF;
+	border-top: 1px solid #DDDDDD;
 	display: table-cell;
 	margin-right: 350px;
 	vertical-align: top;
@@ -428,7 +435,11 @@ section.container div.row section.details section.content figure.comments {
 	}
 }
 
-@media screen and (max-width: 650px) { 
+@media screen and (max-width: 650px) {
+	section.container div.row section.details {
+		border-top: none;
+	}
+
 	section.container div.row section.details section.content {
 		background: #EAF3FA;
 		padding-bottom: 50px;

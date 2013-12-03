@@ -82,6 +82,12 @@ section#splash div.ad-container {
 	background-image: url(backgrounds/library.jpg);
 }
 
+@media screen and (min-width: 2000px) {
+	section#splash div.ad-container {
+		background-size: 100% auto;
+	}
+}
+
 /**
  * Welcome section
  * ----------------------------------
