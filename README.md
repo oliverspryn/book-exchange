@@ -32,6 +32,7 @@ Installation
 System Requirements
 ---
 
+* WordPress 3.5 or above
 * PHP 5.3 or above
 * MySQL 5.1 or above
 * Apache 2 or above
