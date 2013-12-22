@@ -25,8 +25,7 @@ Installation
 1. Click on "Pages" on the navigation panel
 2. Add a new page and give it a title which can be used to access the Book Exchange on your site's navigation bar, such as "Book Exchange" or "Sell Books"
 3. Click the "Edit" button under the page title text input
-4. Enter "book-exchange" in the text input, and select "OK"
-5. It is not necessary to add any content to the page. since the plugin will replace this page with the Book Exchange home page.
+4. Enter "book-exchange" in the text input, and select "OK". It is not necessary to add any content to the page, since the plugin will replace the contents of the page with the Book Exchange home page.
 6. Click "Publish"
 7. The Book Exchange will now appear as a link on your site's navigation bar
 
